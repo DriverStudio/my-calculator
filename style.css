@@ -338,6 +338,74 @@ button.btn-secondary { background: #6c757d; font-size: 14px; }
 .plank { position: absolute; top: -15px; height: 20px; background: #8B4513; border-radius: 5px; border: 1px solid #5c2e0c; opacity: 0; transform: translateY(-20px); transition: 0.3s; }
 .plank.placed { opacity: 1; transform: translateY(0); }
 
+/* ==========================================
+   🎮 НОВЫЕ СТИЛИ ДЛЯ CAPTCHA (СОРТИРОВКА и НАБОР)
+   ========================================== */
+
+/* Сортировка (Drag & Drop) */
+.sort-game {
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center;
+}
+.sort-target {
+    font-size: 60px;
+    width: 100px; height: 100px;
+    border: 3px dashed #6c757d;
+    border-radius: 15px;
+    display: flex; justify-content: center; align-items: center;
+    margin-bottom: 20px;
+    transition: all 0.2s;
+}
+.sort-target.drag-over {
+    border-color: #28a745;
+    background: rgba(40, 167, 69, 0.1);
+    transform: scale(1.05);
+}
+.sort-item {
+    font-size: 50px;
+    cursor: grab;
+    position: absolute; /* Позиционируем, чтобы можно было перетаскивать */
+    top: 100px;
+    z-index: 10;
+    transition: transform 0.2s;
+}
+.sort-item.dragging {
+    opacity: 0.7;
+    transform: scale(1.1);
+}
+
+/* Быстрый Набор (Sequence) */
+.sequence-buttons-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 15px;
+    width: 180px;
+    height: 180px;
+}
+.seq-btn {
+    font-size: 30px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border: 2px solid #333;
+    border-radius: 10px;
+    display: flex; justify-content: center; align-items: center;
+    cursor: pointer;
+    transition: all 0.1s ease;
+    user-select: none;
+}
+.seq-btn:active {
+    transform: scale(0.95);
+}
+.seq-info {
+    position: absolute;
+    bottom: 10px;
+    color: #ccc;
+    font-size: 14px;
+}
+
 /* === ПОДВАЛ (FOOTER) === */
 .global-footer {
     text-align: center;

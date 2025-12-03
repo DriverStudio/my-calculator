@@ -53,7 +53,12 @@ function showRandomGame() {
         playFixWires,
         playCoinDrop,
         playSwitches,
-        playBuildBridge
+        playBuildBridge,
+        // ============================
+        // 🎮 НОВЫЕ ИГРЫ
+        playSortItems,
+        playQuickSequence
+        // ============================
     ];
 
     // Выбираем случайную
@@ -343,12 +348,12 @@ function playFixWires(container, titleLabel, callback) {
 // 🎮 ИГРА 7: ПОЙМАЙ МОНЕТУ (TIMING DROP)
 // ==========================================
 function playCoinDrop(container, titleLabel, callback) {
-    titleLabel.innerText = "🪙 Поймай монету в кошелек!";
+    titleLabel.innerText = "💲 Поймай монету в кошелек!";
     
     container.innerHTML = `
         <div class="coin-track">
             <div class="coin-wallet" id="walletZone">👛</div>
-            <div class="coin-obj" id="fallingCoin">🪙</div>
+            <div class="coin-obj" id="fallingCoin">💲</div>
         </div>
         <button id="catchBtn" style="margin-top:10px; padding:5px 20px; cursor:pointer;">ХВАТЬ!</button>
     `;
@@ -480,4 +485,159 @@ function playBuildBridge(container, titleLabel, callback) {
             setTimeout(callback, 1200);
         }
     };
+}
+
+// ==========================================
+// 🎮 ИГРА 10: СОРТИРОВКА (DRAG & DROP)
+// ==========================================
+function playSortItems(container, titleLabel, callback) {
+    titleLabel.innerText = "🗑️ Перетащи мусор в корзину!";
+    container.className = 'captcha-game-area sort-game';
+    container.style.background = '#f0f2f5';
+    
+    container.innerHTML = `
+        <div class="sort-target" id="trashBin">🗑️</div>
+        <div class="sort-item draggable" id="draggableItem" draggable="true">🍎</div>
+    `;
+    
+    const item = document.getElementById('draggableItem');
+    const bin = document.getElementById('trashBin');
+    let isDropped = false;
+    
+    // 1. Drag Start (для переноса данных)
+    item.ondragstart = (e) => {
+        e.dataTransfer.setData('text/plain', 'item');
+        item.classList.add('dragging');
+    };
+    
+    // 2. Drag Over (чтобы разрешить дроп)
+    bin.ondragover = (e) => {
+        e.preventDefault();
+        bin.classList.add('drag-over');
+    };
+    
+    // 3. Drag Leave (убрать подсветку)
+    bin.ondragleave = () => {
+        bin.classList.remove('drag-over');
+    };
+
+    // 4. Drop (логика победы)
+    bin.ondrop = (e) => {
+        e.preventDefault();
+        bin.classList.remove('drag-over');
+        
+        if (!isDropped) {
+            isDropped = true;
+            item.style.transition = 'all 0.3s ease-out';
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(50px) scale(0.5)';
+            bin.style.transform = 'scale(1.1)';
+            
+            setTimeout(() => {
+                bin.style.transform = 'scale(1)';
+                callback();
+            }, 300);
+        }
+    };
+    
+    item.ondragend = () => {
+        item.classList.remove('dragging');
+    };
+}
+
+// ==========================================
+// 🎮 ИГРА 11: БЫСТРЫЙ НАБОР (SEQUENCE)
+// ==========================================
+function playQuickSequence(container, titleLabel, callback) {
+    titleLabel.innerText = "🧠 Повтори последовательность!";
+    container.style.background = '#222';
+
+    const buttons = ['🔔', '🔑', '💡', '⚙️'];
+    const sequenceLength = 3;
+    let sequence = [];
+    let playerSequence = [];
+    let isPlaying = false;
+    
+    container.innerHTML = `
+        <div class="sequence-buttons-grid">
+            ${buttons.map((btn, index) => `<div class="seq-btn" data-index="${index}">${btn}</div>`).join('')}
+        </div>
+        <div class="seq-info" id="seqInfo">Смотри внимательно...</div>
+    `;
+
+    const infoLabel = document.getElementById('seqInfo');
+    const buttonElements = container.querySelectorAll('.seq-btn');
+    
+    // Генерация последовательности
+    for(let i=0; i<sequenceLength; i++) {
+        sequence.push(Math.floor(Math.random() * buttons.length));
+    }
+
+    // 1. Показать последовательность
+    const showSequence = (index = 0) => {
+        if (index >= sequence.length) {
+            infoLabel.innerText = "Твой ход!";
+            isPlaying = true;
+            return;
+        }
+
+        const btnIndex = sequence[index];
+        const btn = buttonElements[btnIndex];
+        
+        // Эффект подсветки
+        btn.style.boxShadow = '0 0 20px 5px rgba(255, 255, 0, 0.8)';
+        btn.style.transform = 'scale(1.1)';
+
+        setTimeout(() => {
+            btn.style.boxShadow = 'none';
+            btn.style.transform = 'scale(1.0)';
+            
+            // Следующий элемент
+            setTimeout(() => showSequence(index + 1), 200); 
+        }, 500); // Время свечения
+    };
+
+    // 2. Обработка клика игрока
+    const handlePlayerClick = (e) => {
+        if (!isPlaying) return;
+
+        const index = parseInt(e.currentTarget.dataset.index);
+        playerSequence.push(index);
+        
+        // Эффект клика
+        e.currentTarget.style.backgroundColor = '#10b981';
+        setTimeout(() => e.currentTarget.style.backgroundColor = 'transparent', 100);
+
+        // Проверка последнего нажатия
+        const currentStep = playerSequence.length - 1;
+        
+        if (playerSequence[currentStep] !== sequence[currentStep]) {
+            // Проигрыш
+            isPlaying = false;
+            infoLabel.innerText = "❌ Ошибка! Попробуй снова.";
+            container.style.background = '#500';
+            playerSequence = [];
+            
+            setTimeout(() => {
+                container.style.background = '#222';
+                infoLabel.innerText = "Смотри внимательно...";
+                setTimeout(showSequence, 800);
+            }, 500);
+            return;
+        }
+
+        if (playerSequence.length === sequence.length) {
+            // Победа!
+            isPlaying = false;
+            infoLabel.innerText = "✅ Успех!";
+            callback();
+        }
+    };
+    
+    buttonElements.forEach(btn => {
+        btn.addEventListener('click', handlePlayerClick);
+    });
+
+    // Запуск игры
+    setTimeout(showSequence, 500);
 }

@@ -33,10 +33,12 @@ const APPS = [
     { id: 'metronome',  name: 'Метроном',       icon: '🥁', category: 'tools' },
     { id: 'blob',       name: 'Liquid Blob',    icon: '💧', category: 'tools' },
     { id: 'mesh',       name: 'Mesh Gradients', icon: '🌈', category: 'tools' },
+    { id: 'image',      name: 'Сжатие фото', icon: '🖼️', category: 'tools' },
 
     // === 🎮 РАЗВЛЕЧЕНИЯ ===
     { id: 'clicker',    name: 'Принтер $',      icon: '🖨️', category: 'fun' },
     { id: 'reaction',   name: 'Реакция',        icon: '⚡', category: 'fun' },
+    { id: 'typer',      name: 'Хакер Тайпер', icon: '⌨️', category: 'fun' },
     { id: 'wheel',      name: 'Колесо удачи',   icon: '🎡', category: 'fun' }
 ];
 
