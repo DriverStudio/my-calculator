@@ -15,6 +15,7 @@ const APPS = [
     { id: 'gym',        name: 'Жим (1ПМ)',      icon: '💪', category: 'health' },
     { id: 'breathe',    name: 'Релакс',         icon: '🧘', category: 'health' },
     { id: 'life',       name: 'Жизнь (Memento)',icon: '⏳', category: 'health' },
+    { id: 'sounds',     name: 'Фокус и Релакс', icon: '🎧', category: 'health' },
 
     // === 🛠 РАБОТА & IT ===
     { id: 'freelance',  name: 'Рейт в час',     icon: '💸', category: 'work' },
@@ -31,6 +32,7 @@ const APPS = [
     { id: 'date',       name: 'Дней до...',     icon: '📅', category: 'tools' },
     { id: 'metronome',  name: 'Метроном',       icon: '🥁', category: 'tools' },
     { id: 'blob',       name: 'Liquid Blob',    icon: '💧', category: 'tools' },
+    { id: 'mesh',       name: 'Mesh Gradients', icon: '🌈', category: 'tools' },
 
     // === 🎮 РАЗВЛЕЧЕНИЯ ===
     { id: 'clicker',    name: 'Принтер $',      icon: '🖨️', category: 'fun' },

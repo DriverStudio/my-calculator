@@ -497,9 +497,9 @@ button.btn-secondary { background: #6c757d; font-size: 14px; }
     background: transparent;
 }
 
-#star-layer-1 { filter: blur(0.8px); opacity: 0.8; }
-#star-layer-2 { filter: blur(1.5px); opacity: 0.9; }
-#star-layer-3 { filter: blur(2.5px); opacity: 1; }
+#star-layer-1 { filter: blur(0.0px); opacity: 0.8; }
+#star-layer-2 { filter: blur(0.4px); opacity: 0.9; }
+#star-layer-3 { filter: blur(0.8px); opacity: 1; }
 
 /* === 🌌 AMBIENT BLOBS (ЖИВОЙ ФОН - V2) === */
 .ambient-blob {

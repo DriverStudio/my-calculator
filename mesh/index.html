@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор Mesh Градиентов | Aura Backgrounds</title>
+    <meta name="description" content="Создавай трендовые анимированные Mesh-градиенты на чистом CSS. Идеально для фонов сайтов и UI.">
+    
+    <link rel="stylesheet" href="../style.css">
+    <!-- Иконка радуги -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌈</text></svg>">
+    
+    <style>
+        /* === UI MESH GENERATOR === */
+        .workspace {
+            display: flex; gap: 30px; align-items: flex-start; flex-wrap: wrap;
+        }
+
+        /* Область превью */
+        .preview-container {
+            flex: 1; min-width: 300px; height: 500px;
+            border-radius: 24px;
+            position: relative; overflow: hidden;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 60px -10px rgba(0,0,0,0.2);
+            /* Шашечки для прозрачности, если градиент будет с альфа-каналом */
+            background-image: 
+                linear-gradient(45deg, #ccc 25%, transparent 25%), 
+                linear-gradient(-45deg, #ccc 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #ccc 75%), 
+                linear-gradient(-45deg, transparent 75%, #ccc 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            background-color: #eee;
+        }
+
+        /* Сам градиент */
+        .mesh-target {
+            width: 100%; height: 100%;
+            position: relative;
+            background-color: #ffffff; /* Базовый цвет */
+            transition: background-color 0.3s;
+        }
+        
+        /* Шум (Noise) - добавляет "дороговизны" */
+        .noise-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0.05; pointer-events: none;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Панель настроек */
+        .controls-panel {
+            width: 350px; flex-shrink: 0;
+            background: var(--bg-card);
+            padding: 25px; border-radius: 20px;
+            border: 1px solid var(--border-color);
+            display: flex; flex-direction: column; gap: 20px;
+        }
+
+        .control-group h4 { margin: 0 0 10px 0; font-size: 14px; text-transform: uppercase; color: var(--text-muted); }
+
+        .colors-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+        }
+        
+        .color-input-wrap {
+            display: flex; align-items: center; gap: 10px;
+            background: var(--bg-body); padding: 8px; border-radius: 10px; border: 1px solid var(--border-color);
+        }
+        input[type="color"] {
+            width: 30px; height: 30px; border: none; background: none; cursor: pointer; padding: 0; border-radius: 50%;
+        }
+        
+        .slider-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px; }
+        input[type="range"] { width: 100%; margin-top: 5px; cursor: pointer; }
+
+        /* Код */
+        .code-output {
+            background: #1e1e1e; color: #a9b7c6;
+            padding: 15px; border-radius: 10px;
+            font-family: monospace; font-size: 11px;
+            max-height: 150px; overflow-y: auto;
+            border: 1px solid #333; position: relative;
+        }
+
+        /* Кнопки действий */
+        .action-btns { display: flex; gap: 10px; margin-top: 10px; }
+        
+        @media (max-width: 800px) {
+            .workspace { flex-direction: column; }
+            .controls-panel { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" style="max-width: 1200px;">
+    <div style="width: 100%;">
+        <h1>🌈 Mesh Gradients</h1>
+        <p style="margin-bottom: 30px;">Генератор анимированных атмосферных фонов.</p>
+
+        <div class="workspace">
+            
+            <!-- ПРЕВЬЮ -->
+            <div class="preview-container">
+                <div id="meshTarget" class="mesh-target">
+                    <!-- Сюда JS вставит градиенты -->
+                </div>
+                <div id="noiseLayer" class="noise-overlay"></div>
+            </div>
+
+            <!-- НАСТРОЙКИ -->
+            <div class="controls-panel">
+                
+                <div class="control-group">
+                    <h4>🎨 Цветовые пятна</h4>
+                    <div class="colors-grid" id="colorsContainer">
+                        <!-- JS сгенерирует инпуты -->
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <label style="font-size: 13px; font-weight: bold;">Фон подложки:</label>
+                        <input type="color" id="bgColor" value="#ffffff" style="vertical-align: middle;">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h4>⚙️ Физика</h4>
+                    
+                    <div class="slider-row"><span>Скорость анимации</span> <span id="valSpeed">5s</span></div>
+                    <input type="range" id="inSpeed" min="2" max="60" value="10">
+
+                    <div style="margin-top: 15px;">
+                        <label class="slider-row">
+                            <input type="checkbox" id="inNoise" checked style="width: auto;"> 
+                            Добавить "Шум" (Texture)
+                        </label>
+                    </div>
+                </div>
+
+                <div class="action-btns">
+                    <button class="btn-secondary" onclick="randomize()">🎲 Random</button>
+                    <button onclick="copyCSS()">📋 Copy CSS</button>
+                </div>
+
+                <div class="control-group">
+                    <h4>CSS Output</h4>
+                    <div class="code-output" id="cssOut"></div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="../main.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

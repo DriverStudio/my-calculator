@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Фоновые звуки для работы и сна | Империя Сервисов</title>
+    <meta name="description" content="Бесплатный конструктор фоновых шумов: дождь, кафе, лес, белый шум. Помогает сосредоточиться или уснуть.">
+    
+    <link rel="stylesheet" href="../style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎧</text></svg>">
+    
+    <style>
+        /* === UI SOUND MIXER === */
+        .sound-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 20px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .sound-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 20px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* Активное состояние */
+        .sound-card.active {
+            border-color: var(--accent);
+            background: rgba(40, 167, 69, 0.05); /* Легкий зеленый оттенок */
+            box-shadow: 0 10px 30px -5px rgba(40, 167, 69, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        /* В Dark Mode активный фон чуть заметнее */
+        [data-theme="dark"] .sound-card.active {
+            background: rgba(16, 185, 129, 0.15);
+        }
+
+        .sound-icon { font-size: 40px; margin-bottom: 10px; transition: transform 0.3s; }
+        .sound-card.active .sound-icon { transform: scale(1.1); animation: floatIcon 3s ease-in-out infinite alternate; }
+
+        .sound-name { font-weight: 600; font-size: 14px; margin-bottom: 10px; color: var(--text-main); }
+
+        /* Ползунок громкости (скрыт, пока не активно) */
+        .volume-control {
+            width: 100%;
+            height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            display: flex; align-items: center;
+        }
+
+        .sound-card.active .volume-control {
+            height: 30px;
+            opacity: 1;
+            margin-top: 5px;
+        }
+
+        input[type="range"] {
+            width: 100%; height: 4px;
+            background: var(--border-color);
+            border-radius: 2px;
+            appearance: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none; width: 14px; height: 14px;
+            background: var(--accent); border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* Анимация иконки */
+        @keyframes floatIcon {
+            from { transform: translateY(0) scale(1.1); }
+            to { transform: translateY(-5px) scale(1.1); }
+        }
+
+        /* Общие кнопки управления */
+        .master-controls {
+            display: flex; gap: 15px; margin-top: 30px; justify-content: center;
+            background: var(--bg-card); padding: 15px; border-radius: 15px;
+            box-shadow: 0 4px 20px var(--shadow);
+            border: 1px solid var(--border-color);
+            width: fit-content; margin-left: auto; margin-right: auto;
+        }
+        .icon-btn {
+            background: none; border: none; font-size: 24px; cursor: pointer;
+            padding: 10px; border-radius: 10px; transition: 0.2s;
+            color: var(--text-main);
+        }
+        .icon-btn:hover { background: var(--border-color); }
+        
+        .status-text { margin-top: 10px; font-size: 13px; color: var(--text-muted); text-align: center; height: 20px;}
+    </style>
+</head>
+<body>
+
+<div class="container" style="max-width: 900px;">
+    <div style="width: 100%;">
+        
+        <div style="text-align: center;">
+            <h1>🎧 Звуковой Микшер</h1>
+            <p>Создай свою атмосферу. Кликни, чтобы добавить звук.</p>
+        </div>
+
+        <!-- Сетка звуков -->
+        <div class="sound-grid" id="grid">
+            <!-- JS сгенерирует карточки -->
+        </div>
+
+        <!-- Общее управление -->
+        <div class="master-controls">
+            <button class="icon-btn" onclick="toggleMuteAll()" title="Выключить/Включить всё" id="btnMute">🔇</button>
+            <button class="icon-btn" onclick="stopAll()" title="Сбросить всё">⏹</button>
+        </div>
+        
+        <div class="status-text" id="status">Все звуки выключены</div>
+
+    </div>
+</div>
+
+<script src="../main.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
