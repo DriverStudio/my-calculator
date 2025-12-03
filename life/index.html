@@ -1,19 +1,17 @@
 <!DOCTYPE html>
+
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>Календарь Жизни Memento Mori</title>
-    <meta name="description" content="Недели в квадратиках">
-    
-    <meta property="og:title" content="Календарь Жизни Memento Mori">
-    <meta property="og:description" content="Недели в квадратиках">
-    <meta property="og:type" content="website">
-    <link rel="stylesheet" href="../style.css">
-    
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧰</text></svg>">
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Календарь Жизни Memento Mori</title>
+<meta content="Недели в квадратиках" name="description"/>
+<meta content="Календарь Жизни Memento Mori" property="og:title"/>
+<meta content="Недели в квадратиках" property="og:description"/>
+<meta content="website" property="og:type"/>
+<link href="../style.css" rel="stylesheet"/>
+<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🧰&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
+<style>
         /* Сетка жизни */
         #lifeGrid {
             display: flex;
@@ -43,43 +41,32 @@
     </style>
 </head>
 <body>
-
 <div class="container">
-    <div class="calculator" style="flex: 3;"> <h1>⏳ Жизнь в неделях</h1>
-        <p>Посмотри на свою жизнь целиком. Один квадрат = одна неделя.</p>
-        
-        <div id="ad-banner-top" class="ad-slot"></div>
-
-        <div class="input-group">
-            <label>Дата рождения</label>
-            <input type="date" id="birthDate">
-        </div>
-
-        <button onclick="calculate()">Показать мою жизнь</button>
-
-        <div id="resultBox" class="result" style="display:none">
-            <h3>Вы прожили <span id="weeksLived">0</span> недель</h3>
-            <p id="subText"></p>
-            
-            <div class="legend">
-                <div><span class="dot" style="background:#333"></span>Прожито</div>
-                <div><span class="dot" style="background:#28a745"></span>Сейчас</div>
-                <div><span class="dot" style="background:#e9ecef"></span>Будущее (до 90 лет)</div>
-            </div>
-
-            <div id="lifeGrid"></div>
-            
-            <button id="btnCopy" class="btn-secondary">📋 Скопировать ссылку</button>
-        </div>
-    </div>
-
-    <div class="sidebar">
-        <div id="ad-sidebar" class="ad-slot"></div>
-    </div>
+<div class="calculator" style="flex: 3;"> <h1 data-i18n="life.Жизнь_в_неделях">⏳ Жизнь в неделях</h1>
+<p data-i18n="life.Посмотри_на_свою_жизнь_целиком_Один_квадрат_одна_неделя">Посмотри на свою жизнь целиком. Один квадрат = одна неделя.</p>
+<div class="ad-slot" id="ad-banner-top"></div>
+<div class="input-group">
+<label data-i18n="life.Дата_рождения">Дата рождения</label>
+<input id="birthDate" type="date"/>
 </div>
-
+<button data-i18n="life.Показать_мою_жизнь" onclick="calculate()">Показать мою жизнь</button>
+<div class="result" id="resultBox" style="display:none">
+<h3>Вы прожили <span id="weeksLived">0</span> недель</h3>
+<p id="subText"></p>
+<div class="legend">
+<div><span class="dot" style="background:#333"></span>Прожито</div>
+<div><span class="dot" style="background:#28a745"></span>Сейчас</div>
+<div><span class="dot" style="background:#e9ecef"></span>Будущее (до 90 лет)</div>
+</div>
+<div id="lifeGrid"></div>
+<button class="btn-secondary" data-i18n="life.Скопировать_ссылку" id="btnCopy">📋 Скопировать ссылку</button>
+</div>
+</div>
+<div class="sidebar">
+<div class="ad-slot" id="ad-sidebar"></div>
+</div>
+</div>
 <script src="../main.js"></script>
 <script src="script.js"></script>
-
 </body>
 </html>

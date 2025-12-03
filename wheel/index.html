@@ -1,19 +1,17 @@
 <!DOCTYPE html>
+
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>Колесо Фортуны онлайн</title>
-    <meta name="description" content="Рандомайзер решений">
-    
-    <meta property="og:title" content="Колесо Фортуны онлайн">
-    <meta property="og:description" content="Рандомайзер решений">
-    <meta property="og:type" content="website">
-    <link rel="stylesheet" href="../style.css">
-    
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧰</text></svg>">
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Колесо Фортуны онлайн</title>
+<meta content="Рандомайзер решений" name="description"/>
+<meta content="Колесо Фортуны онлайн" property="og:title"/>
+<meta content="Рандомайзер решений" property="og:description"/>
+<meta content="website" property="og:type"/>
+<link href="../style.css" rel="stylesheet"/>
+<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🧰&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
+<style>
         .wheel-container {
             display: flex;
             flex-direction: column;
@@ -70,33 +68,29 @@
     </style>
 </head>
 <body>
-
 <div class="container">
-    <div class="calculator">
-        <h1>🎡 Колесо Фортуны</h1>
-        <p>Не можете принять решение? Пусть решит случай.</p>
-
-        <div class="wheel-container">
-            <div class="arrow"></div>
-            <canvas id="wheelCanvas" width="500" height="500"></canvas>
-        </div>
-
-        <div id="winner" class="winner-box"></div>
-
-        <button id="btnSpin" style="margin-top: 20px; font-size: 20px; padding: 20px;">🎲 КРУТИТЬ!</button>
-    </div>
-
-    <div class="sidebar">
-        <div class="input-group">
-            <label>Варианты (каждый с новой строки):</label>
-            <textarea id="inputs" placeholder="Пицца&#10;Суши&#10;Бургеры&#10;Голодать"></textarea>
-        </div>
-        <button id="btnUpdate" class="btn-secondary">Обновить колесо</button>
-        
-        <div id="ad-sidebar" class="ad-slot" style="margin-top:20px"></div>
-    </div>
+<div class="calculator">
+<h1 data-i18n="wheel.Колесо_Фортуны">🎡 Колесо Фортуны</h1>
+<p data-i18n="wheel.Не_можете_принять_решение_Пусть_решит_случай">Не можете принять решение? Пусть решит случай.</p>
+<div class="wheel-container">
+<div class="arrow"></div>
+<canvas height="500" id="wheelCanvas" width="500"></canvas>
 </div>
-
+<div class="winner-box" id="winner"></div>
+<button data-i18n="wheel.КРУТИТЬ" id="btnSpin" style="margin-top: 20px; font-size: 20px; padding: 20px;">🎲 КРУТИТЬ!</button>
+</div>
+<div class="sidebar">
+<div class="input-group">
+<label data-i18n="wheel.Варианты_каждый_с_новой_строки">Варианты (каждый с новой строки):</label>
+<textarea id="inputs" placeholder="Пицца
+Суши
+Бургеры
+Голодать"></textarea>
+</div>
+<button class="btn-secondary" data-i18n="wheel.Обновить_колесо" id="btnUpdate">Обновить колесо</button>
+<div class="ad-slot" id="ad-sidebar" style="margin-top:20px"></div>
+</div>
+</div>
 <script src="../main.js"></script>
 <script src="script.js"></script>
 </body>

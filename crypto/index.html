@@ -1,23 +1,18 @@
 <!DOCTYPE html>
+
 <html lang="ru">
 <head>
-    
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>Калькулятор Сложного Процента</title>
-    <meta name="description" content="График роста капитала">
-    
-    <meta property="og:title" content="Калькулятор Сложного Процента">
-    <meta property="og:description" content="График роста капитала">
-    <meta property="og:type" content="website">
-    <link rel="stylesheet" href="../style.css">
-    
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧰</text></svg>">
-    
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Калькулятор Сложного Процента</title>
+<meta content="График роста капитала" name="description"/>
+<meta content="Калькулятор Сложного Процента" property="og:title"/>
+<meta content="График роста капитала" property="og:description"/>
+<meta content="website" property="og:type"/>
+<link href="../style.css" rel="stylesheet"/>
+<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🧰&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
         /* Контейнер для графика, чтобы он был отзывчивым */
         .chart-container {
             position: relative; 
@@ -29,55 +24,41 @@
     </style>
 </head>
 <body>
-
 <div class="container">
-    <div class="calculator">
-        <h1>Сложный процент 🚀</h1>
-        <p>Визуализация роста вашего капитала.</p>
-        
-        <div id="ad-banner-top" class="ad-slot"></div>
-
-        <div class="input-group">
-            <label>Стартовый капитал ($)</label>
-            <input type="text" inputmode="decimal" id="input1" placeholder="1 000">
-        </div>
-        
-        <div class="input-group">
-            <label>Докладываю каждый месяц ($)</label>
-            <input type="text" inputmode="decimal" id="input2" placeholder="100">
-        </div>
-
-        <div class="input-group">
-            <label>Годовой процент (%)</label>
-            <input type="number" id="input3" placeholder="20">
-        </div>
-
-        <div class="input-group">
-            <label>Срок инвестирования (лет)</label>
-            <input type="number" id="input4" placeholder="15">
-        </div>
-
-        <button onclick="calculate()">Рассчитать и построить график</button>
-
-        <div id="resultBox" class="result">
-            <h3>Итоговый капитал:</h3>
-            <h2 id="resultValue" style="color: #28a745;">$0</h2>
-            
-            </div>
-
-        <div id="chartBox" class="chart-container">
-            <canvas id="growthChart"></canvas>
-        </div>
-
-    </div>
-
-    <div class="sidebar">
-        <div id="ad-sidebar" class="ad-slot"></div>
-    </div>
+<div class="calculator">
+<h1 data-i18n="crypto.Сложный_процент">Сложный процент 🚀</h1>
+<p data-i18n="crypto.Визуализация_роста_вашего_капитала">Визуализация роста вашего капитала.</p>
+<div class="ad-slot" id="ad-banner-top"></div>
+<div class="input-group">
+<label data-i18n="crypto.Стартовый_капитал">Стартовый капитал ($)</label>
+<input id="input1" inputmode="decimal" placeholder="1 000" type="text"/>
 </div>
-
+<div class="input-group">
+<label data-i18n="crypto.Докладываю_каждый_месяц">Докладываю каждый месяц ($)</label>
+<input id="input2" inputmode="decimal" placeholder="100" type="text"/>
+</div>
+<div class="input-group">
+<label data-i18n="crypto.Годовой_процент">Годовой процент (%)</label>
+<input id="input3" placeholder="20" type="number"/>
+</div>
+<div class="input-group">
+<label data-i18n="crypto.Срок_инвестирования_лет">Срок инвестирования (лет)</label>
+<input id="input4" placeholder="15" type="number"/>
+</div>
+<button data-i18n="crypto.Рассчитать_и_построить_график" onclick="calculate()">Рассчитать и построить график</button>
+<div class="result" id="resultBox">
+<h3>Итоговый капитал:</h3>
+<h2 id="resultValue" style="color: #28a745;">$0</h2>
+</div>
+<div class="chart-container" id="chartBox">
+<canvas id="growthChart"></canvas>
+</div>
+</div>
+<div class="sidebar">
+<div class="ad-slot" id="ad-sidebar"></div>
+</div>
+</div>
 <script src="../main.js"></script>
 <script src="script.js"></script>
-
 </body>
 </html>

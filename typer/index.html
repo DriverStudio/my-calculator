@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hacker Typer | Тренажер скорости</title>
-    <link rel="stylesheet" href="../style.css"> <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Hacker Typer | Тренажер скорости</title>
+<link href="../style.css" rel="stylesheet"/> <style>
         .game-wrapper {
             position: relative;
             width: 100%;
@@ -48,41 +49,32 @@
     </style>
 </head>
 <body>
-
 <div class="container" style="max-width: 1000px;">
-    <div style="width: 100%;">
-        <h1>⌨️ Hacker Typer</h1>
-        <p>Набирай падающий код, пока система не рухнула.</p>
-        
-        <div class="game-wrapper" onclick="document.getElementById('hiddenInput').focus()">
-            <canvas id="gameCanvas"></canvas>
-            
-            <div class="hud">
-                <div>SCORE: <span id="scoreVal">0</span></div>
-                <div>LIVES: <span id="livesVal">3</span></div>
-            </div>
-
-            <div class="overlay" id="startScreen">
-                <h2 style="font-size: 40px; color: #0f0; margin-bottom: 20px;">SYSTEM READY</h2>
-                <button class="big-btn" onclick="startGame()">INITIALIZE</button>
-            </div>
-
-            <div class="overlay" id="gameOverScreen" style="display: none;">
-                <h2 style="color: #ff3333; font-size: 40px;">SYSTEM FAILURE</h2>
-                <p>Final Score: <span id="finalScore">0</span></p>
-                <button class="big-btn" onclick="startGame()" style="border-color: #ff3333; color: #ff3333;">REBOOT</button>
-            </div>
-            
-            <input type="text" id="hiddenInput" autocomplete="off">
-        </div>
-        
-        <div style="margin-top: 20px; font-size: 12px; opacity: 0.6; text-align: center;">
+<div style="width: 100%;">
+<h1>⌨️ Hacker Typer</h1>
+<p data-i18n="typer.Набирай_падающий_код_пока_система_не_рухнула">Набирай падающий код, пока система не рухнула.</p>
+<div class="game-wrapper" onclick="document.getElementById('hiddenInput').focus()">
+<canvas id="gameCanvas"></canvas>
+<div class="hud">
+<div>SCORE: <span id="scoreVal">0</span></div>
+<div>LIVES: <span id="livesVal">3</span></div>
+</div>
+<div class="overlay" id="startScreen">
+<h2 style="font-size: 40px; color: #0f0; margin-bottom: 20px;">SYSTEM READY</h2>
+<button class="big-btn" onclick="startGame()">INITIALIZE</button>
+</div>
+<div class="overlay" id="gameOverScreen" style="display: none;">
+<h2 style="color: #ff3333; font-size: 40px;">SYSTEM FAILURE</h2>
+<p>Final Score: <span id="finalScore">0</span></p>
+<button class="big-btn" onclick="startGame()" style="border-color: #ff3333; color: #ff3333;">REBOOT</button>
+</div>
+<input autocomplete="off" id="hiddenInput" type="text"/>
+</div>
+<div style="margin-top: 20px; font-size: 12px; opacity: 0.6; text-align: center;">
             Кликните по полю, чтобы активировать клавиатуру на телефоне.
         </div>
-
-    </div>
 </div>
-
+</div>
 <script src="../main.js"></script> <script src="script.js"></script>
 </body>
 </html>

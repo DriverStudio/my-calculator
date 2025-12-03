@@ -1,16 +1,14 @@
 <!DOCTYPE html>
+
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>Liquid Blob Generator | Жидкие формы CSS</title>
-    <meta name="description" content="Генератор органических форм (Blobs) и анимаций для веб-дизайна. Создай уникальную CSS фигуру за пару кликов.">
-    
-    <link rel="stylesheet" href="../style.css">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💧</text></svg>">
-    
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Liquid Blob Generator | Жидкие формы CSS</title>
+<meta content="Генератор органических форм (Blobs) и анимаций для веб-дизайна. Создай уникальную CSS фигуру за пару кликов." name="description"/>
+<link href="../style.css" rel="stylesheet"/>
+<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;💧&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
+<style>
         /* === BLOB STYLES === */
         .workspace {
             display: flex; flex-direction: column; align-items: center; gap: 30px;
@@ -101,53 +99,40 @@
     </style>
 </head>
 <body>
-
 <div class="container">
-    <div style="width: 100%; text-align: center;">
-        
-        <h1>💧 Liquid Blob</h1>
-        <p>Создавай органические формы и анимации.</p>
-
-        <div class="workspace">
-            
-            <div class="blob-stage">
-                <div class="blob-frame"></div>
-                
-                <div class="range-wrapper rw-top"><input type="range" id="r1" min="0" max="100" value="50"></div>
-                <div class="range-wrapper rw-right"><input type="range" id="r2" min="0" max="100" value="50"></div>
-                <div class="range-wrapper rw-bottom"><input type="range" id="r3" min="0" max="100" value="50"></div>
-                <div class="range-wrapper rw-left"><input type="range" id="r4" min="0" max="100" value="50"></div>
-
-                <div class="the-blob" id="blob"></div>
-            </div>
-
-            <div class="controls-panel">
-                
-                <div class="option-row">
-                    <strong>🎨 Цвет / Градиент:</strong>
-                    <div class="color-picker-wrap" id="gradients">
-                        </div>
-                </div>
-
-                <div class="option-row" style="justify-content: center;">
-                    <button id="btnRandom" class="btn-secondary" style="width: auto;">🎲 Случайная форма</button>
-                    <button id="btnAnimate" style="width: auto;">🎬 Оживить (Animate)</button>
-                </div>
-
-                <div>
-                    <strong>CSS Output:</strong>
-                    <div class="code-box" onclick="copyCSS()">
-                        <div class="copy-hint">Click to Copy</div>
-                        <span id="outputCode">border-radius: ...</span>
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-    </div>
+<div style="width: 100%; text-align: center;">
+<h1>💧 Liquid Blob</h1>
+<p data-i18n="blob.Создавай_органические_формы_и_анимации">Создавай органические формы и анимации.</p>
+<div class="workspace">
+<div class="blob-stage">
+<div class="blob-frame"></div>
+<div class="range-wrapper rw-top"><input id="r1" max="100" min="0" type="range" value="50"/></div>
+<div class="range-wrapper rw-right"><input id="r2" max="100" min="0" type="range" value="50"/></div>
+<div class="range-wrapper rw-bottom"><input id="r3" max="100" min="0" type="range" value="50"/></div>
+<div class="range-wrapper rw-left"><input id="r4" max="100" min="0" type="range" value="50"/></div>
+<div class="the-blob" id="blob"></div>
 </div>
-
+<div class="controls-panel">
+<div class="option-row">
+<strong>🎨 Цвет / Градиент:</strong>
+<div class="color-picker-wrap" id="gradients">
+</div>
+</div>
+<div class="option-row" style="justify-content: center;">
+<button class="btn-secondary" data-i18n="blob.Случайная_форма" id="btnRandom" style="width: auto;">🎲 Случайная форма</button>
+<button data-i18n="blob.Оживить_Animate" id="btnAnimate" style="width: auto;">🎬 Оживить (Animate)</button>
+</div>
+<div>
+<strong>CSS Output:</strong>
+<div class="code-box" onclick="copyCSS()">
+<div class="copy-hint">Click to Copy</div>
+<span id="outputCode">border-radius: ...</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 <script src="../main.js"></script>
 <script src="script.js"></script>
 </body>

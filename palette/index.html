@@ -1,19 +1,17 @@
 <!DOCTYPE html>
+
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>Генератор цветовых палитр</title>
-    <meta name="description" content="Подбор цветов для сайта">
-    
-    <meta property="og:title" content="Генератор цветовых палитр">
-    <meta property="og:description" content="Подбор цветов для сайта">
-    <meta property="og:type" content="website">
-    <link rel="stylesheet" href="../style.css">
-    
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧰</text></svg>">
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Генератор цветовых палитр</title>
+<meta content="Подбор цветов для сайта" name="description"/>
+<meta content="Генератор цветовых палитр" property="og:title"/>
+<meta content="Подбор цветов для сайта" property="og:description"/>
+<meta content="website" property="og:type"/>
+<link href="../style.css" rel="stylesheet"/>
+<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🧰&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
+<style>
         /* === УПРАВЛЕНИЕ === */
         .controls-bar {
             display: flex;
@@ -97,33 +95,26 @@
     </style>
 </head>
 <body>
-
 <div class="container" style="max-width: 100%; width: 98%;">
-    <div style="width: 100%;">
-        
-        <div class="controls-bar">
-            <div>
-                <h1>🎨 Pro Palette</h1>
-                <p style="font-size: 12px; margin:0; color:#777;">Пробел — генерация. <span id="modeName">Режим: Авто</span></p>
-            </div>
-            
-            <div style="display: flex; gap: 10px;">
-                <button class="sort-btn" onclick="sortColors()">📶 Сортировать</button>
-                
-                <div class="count-controls" style="display: flex; align-items: center;">
-                    <button class="btn-secondary" onclick="changeCount(-1)">-</button>
-                    <span style="margin: 0 5px; font-weight: bold; color:#555;" id="countVal">5</span>
-                    <button onclick="changeCount(1)">+</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="palette-grid" id="grid"></div>
-
-        <button id="btnGen" style="display: block; width: 100%; margin-top: 20px; padding: 15px;">🔄 Сгенерировать (Пробел)</button>
-    </div>
+<div style="width: 100%;">
+<div class="controls-bar">
+<div>
+<h1>🎨 Pro Palette</h1>
+<p style="font-size: 12px; margin:0; color:#777;">Пробел — генерация. <span data-i18n="palette.Режим_Авто" id="modeName">Режим: Авто</span></p>
 </div>
-
+<div style="display: flex; gap: 10px;">
+<button class="sort-btn" data-i18n="palette.Сортировать" onclick="sortColors()">📶 Сортировать</button>
+<div class="count-controls" style="display: flex; align-items: center;">
+<button class="btn-secondary" onclick="changeCount(-1)">-</button>
+<span id="countVal" style="margin: 0 5px; font-weight: bold; color:#555;">5</span>
+<button onclick="changeCount(1)">+</button>
+</div>
+</div>
+</div>
+<div class="palette-grid" id="grid"></div>
+<button data-i18n="palette.Сгенерировать_Пробел" id="btnGen" style="display: block; width: 100%; margin-top: 20px; padding: 15px;">🔄 Сгенерировать (Пробел)</button>
+</div>
+</div>
 <script src="../main.js"></script>
 <script src="script.js"></script>
 </body>

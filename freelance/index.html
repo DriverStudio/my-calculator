@@ -1,60 +1,55 @@
 <!DOCTYPE html>
+
 <html lang="ru">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>Калькулятор ставки фрилансера</title>
-    <meta name="description" content="Реальная стоимость часа">
-    
-    <meta property="og:title" content="Калькулятор ставки фрилансера">
-    <meta property="og:description" content="Реальная стоимость часа">
-    <meta property="og:type" content="website">
-    <link rel="stylesheet" href="../style.css">
-    
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧰</text></svg>">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Калькулятор ставки фрилансера</title>
+<meta content="Реальная стоимость часа" name="description"/>
+<meta content="Калькулятор ставки фрилансера" property="og:title"/>
+<meta content="Реальная стоимость часа" property="og:description"/>
+<meta content="website" property="og:type"/>
+<link href="../style.css" rel="stylesheet"/>
+<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🧰&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-
 <body>
-    <div class="container">
-        <div class="calculator">
-            <h1>💸 Рейт фрилансера</h1>
-            <p>Узнай свою реальную стоимость часа.</p>
-            <div id="ad-banner-top" class="ad-slot"></div>
-            <div class="input-group">
-                <label>Хочу на руки в месяц (₽)</label>
-                <input type="text" inputmode="decimal" id="input1" placeholder="100 000">
-            </div>
-            <div class="input-group">
-                <label>Налоги и комиссии (%)</label>
-                <input type="number" id="input2" value="6" placeholder="6">
-            </div>
-            <div class="input-group">
-                <label>Ежемесячные расходы (софт, связь, реклама) ₽</label>
-                <input type="text" inputmode="decimal" id="input3" placeholder="5 000">
-            </div>
-            <div class="input-group">
-                <label>Оплачиваемых часов в день</label>
-                <input type="number" id="input4" value="5" placeholder="5">
-                <small style="color:#777">Вряд ли вы кодите 8 часов без перерыва</small>
-            </div>
-            <button onclick="calculate()">Рассчитать ставку</button>
-            <div id="resultBox" class="result">
-                <h3>Минимальная ставка в час:</h3>
-                <h2 id="resultValue" style="color: #007bff;">0 ₽</h2>
-            </div>
-            <div id="chartBox" style="margin-top: 30px; height: 300px; display:none;">
-                <canvas id="rateChart"></canvas>
-            </div>
-        </div>
-        <div class="sidebar">
-            <div id="ad-sidebar" class="ad-slot"></div>
-        </div>
-    </div>
-    <script src="../main.js"></script>
-    <script src="script.js"></script>
+<div class="container">
+<div class="calculator">
+<h1 data-i18n="freelance.Рейт_фрилансера">💸 Рейт фрилансера</h1>
+<p data-i18n="freelance.Узнай_свою_реальную_стоимость_часа">Узнай свою реальную стоимость часа.</p>
+<div class="ad-slot" id="ad-banner-top"></div>
+<div class="input-group">
+<label data-i18n="freelance.Хочу_на_руки_в_месяц">Хочу на руки в месяц (₽)</label>
+<input id="input1" inputmode="decimal" placeholder="100 000" type="text"/>
+</div>
+<div class="input-group">
+<label data-i18n="freelance.Налоги_и_комиссии">Налоги и комиссии (%)</label>
+<input id="input2" placeholder="6" type="number" value="6"/>
+</div>
+<div class="input-group">
+<label data-i18n="freelance.Ежемесячные_расходы_софт_связь_реклама">Ежемесячные расходы (софт, связь, реклама) ₽</label>
+<input id="input3" inputmode="decimal" placeholder="5 000" type="text"/>
+</div>
+<div class="input-group">
+<label data-i18n="freelance.Оплачиваемых_часов_в_день">Оплачиваемых часов в день</label>
+<input id="input4" placeholder="5" type="number" value="5"/>
+<small style="color:#777" data-i18n="freelance.Вряд_ли_вы_кодите_8_часов_без_перерыва">Вряд ли вы кодите 8 часов без перерыва</small>
+</div>
+<button data-i18n="freelance.Рассчитать_ставку" onclick="calculate()">Рассчитать ставку</button>
+<div class="result" id="resultBox">
+<h3 data-i18n="freelance.Минимальная_ставка_в_час">Минимальная ставка в час:</h3>
+<h2 id="resultValue" style="color: #007bff;">0 ₽</h2>
+</div>
+<div id="chartBox" style="margin-top: 30px; height: 300px; display:none;">
+<canvas id="rateChart"></canvas>
+</div>
+</div>
+<div class="sidebar">
+<div class="ad-slot" id="ad-sidebar"></div>
+</div>
+</div>
+<script src="../main.js"></script>
+<script src="script.js"></script>
 </body>
-
 </html>

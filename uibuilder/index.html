@@ -1,16 +1,14 @@
 <!DOCTYPE html>
+
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>CSS Architect | Конструктор UI компонентов</title>
-    <meta name="description" content="Визуальный генератор CSS для кнопок, инпутов, карточек и других UI элементов. Настрой дизайн и скачай готовый код.">
-    
-    <link rel="stylesheet" href="../style.css">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏗️</text></svg>">
-    
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CSS Architect | Конструктор UI компонентов</title>
+<meta content="Визуальный генератор CSS для кнопок, инпутов, карточек и других UI элементов. Настрой дизайн и скачай готовый код." name="description"/>
+<link href="../style.css" rel="stylesheet"/>
+<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🏗️&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
+<style>
         /* === UI ARCHITECT STYLES === */
         body { overflow: hidden; /* Чтобы скроллились только колонки */ }
         
@@ -110,51 +108,43 @@
     </style>
 </head>
 <body>
-
 <div class="architect-layout">
-    
-    <div class="col-sidebar">
-        <h3>🏗️ Виджеты</h3>
-        <div id="widgetList">
-            </div>
-
-        <div style="margin-top: 40px;">
-            <h3>💾 История</h3>
-            <div id="historyList" class="history-list">
-                <div style="color: var(--text-muted); font-size: 12px;">Пока пусто...</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-settings">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h3 id="settingsTitle">Настройки</h3>
-            <button class="btn-secondary" style="width: auto; padding: 5px 10px; font-size: 12px;" onclick="resetToDefault()">Сброс</button>
-        </div>
-        <div id="controlsArea">
-            </div>
-    </div>
-
-    <div class="col-preview">
-        <div class="stage-area" id="stage">
-            <div id="previewElement">Preview</div>
-        </div>
-
-        <div class="code-panel">
-            <div class="code-header">
-                <span>CSS OUTPUT</span>
-                <div style="display: flex; gap: 10px;">
-                    <span style="cursor: pointer; color: var(--accent);" onclick="saveToHistory()">💾 Сохранить</span>
-                    <span style="cursor: pointer; color: var(--accent);" onclick="copyCSS()">📋 Копировать</span>
-                    <span style="cursor: pointer; color: var(--accent);" onclick="downloadCSS()">⬇️ Скачать</span>
-                </div>
-            </div>
-            <div class="code-content" id="cssOutput">/* Code will appear here */</div>
-        </div>
-    </div>
-
+<div class="col-sidebar">
+<h3 data-i18n="uibuilder.Виджеты">🏗️ Виджеты</h3>
+<div id="widgetList">
 </div>
-
+<div style="margin-top: 40px;">
+<h3 data-i18n="uibuilder.История">💾 История</h3>
+<div class="history-list" id="historyList">
+<div style="color: var(--text-muted); font-size: 12px;">Пока пусто...</div>
+</div>
+</div>
+</div>
+<div class="col-settings">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+<h3 data-i18n="uibuilder.Настройки" id="settingsTitle">Настройки</h3>
+<button class="btn-secondary" data-i18n="uibuilder.Сброс" onclick="resetToDefault()" style="width: auto; padding: 5px 10px; font-size: 12px;">Сброс</button>
+</div>
+<div id="controlsArea">
+</div>
+</div>
+<div class="col-preview">
+<div class="stage-area" id="stage">
+<div id="previewElement">Preview</div>
+</div>
+<div class="code-panel">
+<div class="code-header">
+<span>CSS OUTPUT</span>
+<div style="display: flex; gap: 10px;">
+<span data-i18n="uibuilder.Сохранить" onclick="saveToHistory()" style="cursor: pointer; color: var(--accent);">💾 Сохранить</span>
+<span data-i18n="uibuilder.Копировать" onclick="copyCSS()" style="cursor: pointer; color: var(--accent);">📋 Копировать</span>
+<span data-i18n="uibuilder.Скачать" onclick="downloadCSS()" style="cursor: pointer; color: var(--accent);">⬇️ Скачать</span>
+</div>
+</div>
+<div class="code-content" id="cssOutput">/* Code will appear here */</div>
+</div>
+</div>
+</div>
 <script src="../main.js"></script>
 <script src="script.js"></script>
 </body>

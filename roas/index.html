@@ -1,55 +1,43 @@
 <!DOCTYPE html>
+
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>Калькулятор ROAS и ROI онлайн</title>
-    <meta name="description" content="Считаем окупаемость рекламы">
-    
-    <meta property="og:title" content="Калькулятор ROAS и ROI онлайн">
-    <meta property="og:description" content="Считаем окупаемость рекламы">
-    <meta property="og:type" content="website">
-    <link rel="stylesheet" href="../style.css">
-    
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧰</text></svg>">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Калькулятор ROAS и ROI онлайн</title>
+<meta content="Считаем окупаемость рекламы" name="description"/>
+<meta content="Калькулятор ROAS и ROI онлайн" property="og:title"/>
+<meta content="Считаем окупаемость рекламы" property="og:description"/>
+<meta content="website" property="og:type"/>
+<link href="../style.css" rel="stylesheet"/>
+<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🧰&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
 </head>
 <body>
-
 <div class="container">
-    <div class="calculator">
-        <h1>Калькулятор ROAS</h1>
-        <p>Узнайте, насколько эффективно работает ваша реклама.</p>
-        
-        <div id="ad-banner-top" class="ad-slot"></div>
-
-        <div class="input-group">
-            <label>Потрачено на рекламу (₽)</label>
-            <input type="number" id="input1" placeholder="Например: 10 000">
-        </div>
-        
-        <div class="input-group">
-            <label>Доход с рекламы (₽)</label>
-            <input type="number" id="input2" placeholder="Например: 50 000">
-        </div>
-
-        <button onclick="calculate()">Рассчитать эффективность</button>
-
-        <div id="resultBox" class="result">
-            <h3>Ваш ROAS:</h3>
-            <h2 id="resultValue">0%</h2>
-            
-            <button id="btnCopy" class="btn-secondary">📋 Скопировать отчет</button>
-        </div>
-    </div>
-
-    <div class="sidebar">
-        <div id="ad-sidebar" class="ad-slot"></div>
-    </div>
+<div class="calculator">
+<h1 data-i18n="roas.Калькулятор_ROAS">Калькулятор ROAS</h1>
+<p data-i18n="roas.Узнайте_насколько_эффективно_работает_ваша_реклама">Узнайте, насколько эффективно работает ваша реклама.</p>
+<div class="ad-slot" id="ad-banner-top"></div>
+<div class="input-group">
+<label data-i18n="roas.Потрачено_на_рекламу">Потрачено на рекламу (₽)</label>
+<input id="input1" placeholder="Например: 10 000" type="number"/>
 </div>
-
+<div class="input-group">
+<label data-i18n="roas.Доход_с_рекламы">Доход с рекламы (₽)</label>
+<input id="input2" placeholder="Например: 50 000" type="number"/>
+</div>
+<button data-i18n="roas.Рассчитать_эффективность" onclick="calculate()">Рассчитать эффективность</button>
+<div class="result" id="resultBox">
+<h3 data-i18n="roas.Ваш_ROAS">Ваш ROAS:</h3>
+<h2 id="resultValue">0%</h2>
+<button class="btn-secondary" data-i18n="roas.Скопировать_отчет" id="btnCopy">📋 Скопировать отчет</button>
+</div>
+</div>
+<div class="sidebar">
+<div class="ad-slot" id="ad-sidebar"></div>
+</div>
+</div>
 <script src="../main.js"></script>
 <script src="script.js"></script>
-
 </body>
 </html>

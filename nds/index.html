@@ -1,21 +1,19 @@
 <!DOCTYPE html>
+
 <html lang="ru">
 <head>
-    <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>Калькулятор НДС 20% онлайн</title>
-    <meta name="description" content="Выделить и Начислить">
-    
-    <meta property="og:title" content="Калькулятор НДС 20% онлайн">
-    <meta property="og:description" content="Выделить и Начислить">
-    <meta property="og:type" content="website">
-    <link rel="stylesheet" href="../style.css">
-    
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧰</text></svg>">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Калькулятор НДС 20% онлайн</title>
+<meta content="Выделить и Начислить" name="description"/>
+<meta content="Калькулятор НДС 20% онлайн" property="og:title"/>
+<meta content="Выделить и Начислить" property="og:description"/>
+<meta content="website" property="og:type"/>
+<link href="../style.css" rel="stylesheet"/>
+<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🧰&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
 </head>
-    <style>
+<style>
         /* Стили для переключателя режима */
         select {
             width: 100%; padding: 12px 15px;
@@ -25,49 +23,38 @@
     </style>
 </head>
 <body>
-
 <div class="container">
-    <div class="calculator">
-        <h1>Калькулятор НДС</h1>
-        <p>Быстро выделить или начислить налог (20%).</p>
-        
-        <div id="ad-banner-top" class="ad-slot"></div>
-
-        <div class="input-group">
-            <label>Что нужно сделать?</label>
-            <select id="mode">
-                <option value="extract">Выделить НДС (Сумма уже с налогом)</option>
-                <option value="add">Начислить НДС (Сумма без налога)</option>
-            </select>
-        </div>
-
-        <div class="input-group">
-            <label>Сумма (₽)</label>
-            <input type="text" inputmode="decimal" id="input1" placeholder="100 000">
-        </div>
-        
-        <div class="input-group">
-            <label>Ставка налога (%)</label>
-            <input type="number" id="input2" value="20" placeholder="20">
-        </div>
-
-        <button onclick="calculate()">Посчитать</button>
-
-        <div id="resultBox" class="result">
-            <h3 id="resTitle">Сумма налога:</h3>
-            <h2 id="resultValue" style="color: #007bff;">0 ₽</h2>
-            
-            <button id="btnCopy" class="btn-secondary">📋 Скопировать расчет</button>
-        </div>
-    </div>
-
-    <div class="sidebar">
-        <div id="ad-sidebar" class="ad-slot"></div>
-    </div>
+<div class="calculator">
+<h1 data-i18n="nds.Калькулятор_НДС">Калькулятор НДС</h1>
+<p data-i18n="nds.Быстро_выделить_или_начислить_налог_20">Быстро выделить или начислить налог (20%).</p>
+<div class="ad-slot" id="ad-banner-top"></div>
+<div class="input-group">
+<label data-i18n="nds.Что_нужно_сделать">Что нужно сделать?</label>
+<select id="mode">
+<option value="extract">Выделить НДС (Сумма уже с налогом)</option>
+<option value="add">Начислить НДС (Сумма без налога)</option>
+</select>
 </div>
-
+<div class="input-group">
+<label data-i18n="nds.Сумма">Сумма (₽)</label>
+<input id="input1" inputmode="decimal" placeholder="100 000" type="text"/>
+</div>
+<div class="input-group">
+<label data-i18n="nds.Ставка_налога">Ставка налога (%)</label>
+<input id="input2" placeholder="20" type="number" value="20"/>
+</div>
+<button data-i18n="nds.Посчитать" onclick="calculate()">Посчитать</button>
+<div class="result" id="resultBox">
+<h3 data-i18n="nds.Сумма_налога" id="resTitle">Сумма налога:</h3>
+<h2 id="resultValue" style="color: #007bff;">0 ₽</h2>
+<button class="btn-secondary" data-i18n="nds.Скопировать_расчет" id="btnCopy">📋 Скопировать расчет</button>
+</div>
+</div>
+<div class="sidebar">
+<div class="ad-slot" id="ad-sidebar"></div>
+</div>
+</div>
 <script src="../main.js"></script>
 <script src="script.js"></script>
-
 </body>
 </html>

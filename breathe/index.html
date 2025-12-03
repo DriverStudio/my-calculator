@@ -1,19 +1,17 @@
 <!DOCTYPE html>
+
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>Дыхательная гимнастика</title>
-    <meta name="description" content="Релакс анимация 4-7-8">
-    
-    <meta property="og:title" content="Дыхательная гимнастика">
-    <meta property="og:description" content="Релакс анимация 4-7-8">
-    <meta property="og:type" content="website">
-    <link rel="stylesheet" href="../style.css">
-    
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧰</text></svg>">
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Дыхательная гимнастика</title>
+<meta content="Релакс анимация 4-7-8" name="description"/>
+<meta content="Дыхательная гимнастика" property="og:title"/>
+<meta content="Релакс анимация 4-7-8" property="og:description"/>
+<meta content="website" property="og:type"/>
+<link href="../style.css" rel="stylesheet"/>
+<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🧰&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
+<style>
         /* Анимация круга */
         .circle-container {
             display: flex;
@@ -56,29 +54,23 @@
     </style>
 </head>
 <body>
-
 <div class="container">
-    <div class="calculator">
-        <h1>🧘 Дыхание (Квадрат)</h1>
-        <p>Синхронизируйте дыхание с анимацией для успокоения.</p>
-
-        <div class="circle-container">
-            <div id="circle" class="circle"></div>
-            <div id="text" class="status-text">Нажми старт</div>
-        </div>
-
-        <button id="btnToggle">▶️ Начать</button>
-        
-        <div style="margin-top: 20px; text-align: center; color: #777; font-size: 14px;">
+<div class="calculator">
+<h1 data-i18n="breathe.Дыхание_Квадрат">🧘 Дыхание (Квадрат)</h1>
+<p data-i18n="breathe.Синхронизируйте_дыхание_с_анимацией_для_успокоения">Синхронизируйте дыхание с анимацией для успокоения.</p>
+<div class="circle-container">
+<div class="circle" id="circle"></div>
+<div class="status-text" id="text">Нажми старт</div>
+</div>
+<button data-i18n="breathe.Начать" id="btnToggle">▶️ Начать</button>
+<div style="margin-top: 20px; text-align: center; color: #777; font-size: 14px;" data-i18n="breathe.Техника_Вдох_4_сек_Задержка_1_сек_Выдох_4_сек">
             Техника: Вдох (4 сек) — Задержка (1 сек) — Выдох (4 сек)
         </div>
-    </div>
-
-    <div class="sidebar">
-        <div id="ad-sidebar" class="ad-slot"></div>
-    </div>
 </div>
-
+<div class="sidebar">
+<div class="ad-slot" id="ad-sidebar"></div>
+</div>
+</div>
 <script src="../main.js"></script>
 <script src="script.js"></script>
 </body>

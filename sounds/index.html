@@ -1,15 +1,14 @@
 <!DOCTYPE html>
+
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Фоновые звуки для работы и сна | Империя Сервисов</title>
-    <meta name="description" content="Бесплатный конструктор фоновых шумов: дождь, кафе, лес, белый шум. Помогает сосредоточиться или уснуть.">
-    
-    <link rel="stylesheet" href="../style.css">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎧</text></svg>">
-    
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Фоновые звуки для работы и сна | Империя Сервисов</title>
+<meta content="Бесплатный конструктор фоновых шумов: дождь, кафе, лес, белый шум. Помогает сосредоточиться или уснуть." name="description"/>
+<link href="../style.css" rel="stylesheet"/>
+<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🎧&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
+<style>
         /* === UI SOUND MIXER === */
         .sound-grid {
             display: grid;
@@ -103,31 +102,24 @@
     </style>
 </head>
 <body>
-
 <div class="container" style="max-width: 900px;">
-    <div style="width: 100%;">
-        
-        <div style="text-align: center;">
-            <h1>🎧 Звуковой Микшер</h1>
-            <p>Создай свою атмосферу. Кликни, чтобы добавить звук.</p>
-        </div>
-
-        <!-- Сетка звуков -->
-        <div class="sound-grid" id="grid">
-            <!-- JS сгенерирует карточки -->
-        </div>
-
-        <!-- Общее управление -->
-        <div class="master-controls">
-            <button class="icon-btn" onclick="toggleMuteAll()" title="Выключить/Включить всё" id="btnMute">🔇</button>
-            <button class="icon-btn" onclick="stopAll()" title="Сбросить всё">⏹</button>
-        </div>
-        
-        <div class="status-text" id="status">Все звуки выключены</div>
-
-    </div>
+<div style="width: 100%;">
+<div style="text-align: center;">
+<h1 data-i18n="sounds.Звуковой_Микшер">🎧 Звуковой Микшер</h1>
+<p data-i18n="sounds.Создай_свою_атмосферу_Кликни_чтобы_добавить_звук">Создай свою атмосферу. Кликни, чтобы добавить звук.</p>
 </div>
-
+<!-- Сетка звуков -->
+<div class="sound-grid" id="grid">
+<!-- JS сгенерирует карточки -->
+</div>
+<!-- Общее управление -->
+<div class="master-controls">
+<button class="icon-btn" id="btnMute" onclick="toggleMuteAll()" title="Выключить/Включить всё">🔇</button>
+<button class="icon-btn" onclick="stopAll()" title="Сбросить всё">⏹</button>
+</div>
+<div class="status-text" id="status" data-i18n="sounds.Все_звуки_выключены">Все звуки выключены</div>
+</div>
+</div>
 <script src="../main.js"></script>
 <script src="script.js"></script>
 </body>

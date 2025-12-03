@@ -1,23 +1,19 @@
 <!DOCTYPE html>
+
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>Кликер Денежный Принтер</title>
-    <meta name="description" content="Игра Idle Tycoon">
-    
-    <meta property="og:title" content="Кликер Денежный Принтер">
-    <meta property="og:description" content="Игра Idle Tycoon">
-    <meta property="og:type" content="website">
-    <link rel="stylesheet" href="../style.css">
-    
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧰</text></svg>">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/themes/odometer-theme-default.min.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/odometer.min.js"></script>
-
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Кликер Денежный Принтер</title>
+<meta content="Игра Idle Tycoon" name="description"/>
+<meta content="Кликер Денежный Принтер" property="og:title"/>
+<meta content="Игра Idle Tycoon" property="og:description"/>
+<meta content="website" property="og:type"/>
+<link href="../style.css" rel="stylesheet"/>
+<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🧰&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/themes/odometer-theme-default.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/odometer.min.js"></script>
+<style>
         @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;600&display=swap');
 
         :root {
@@ -200,109 +196,92 @@
         }
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-50px) scale(1.5); } }
     </style>
-</head>
+</link></head>
 <body>
-
 <div class="container">
-    <div class="calculator">
-        <div class="header-panel">
-            <div class="money-label">Корпоративный счет</div>
-            <div id="money" class="odometer">0</div>
-            <div class="cps-display">Прибыль: $<span id="cps">0.00</span> / сек</div>
-        </div>
-        
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('click')">🖱️ Кликер</button>
-            <button class="tab-btn" onclick="switchTab('office')">🗂️ Офис</button>
-            <button class="tab-btn" onclick="switchTab('shop')">🛒 Маркет</button>
-            <button class="tab-btn" onclick="switchTab('top')">🏆 Рейтинг</button>
-        </div>
-
-        <div id="tab-click" class="screen active">
-            <div id="ad-banner-top" class="ad-slot" style="margin-bottom: 10px;"></div>
-            <button id="mainBtn" onclick="userClick(event)">💸</button>
-            <p style="text-align:center; color:#999; margin-top:20px; font-size:12px">Жми кнопку, чтобы генерировать кэшфлоу.</p>
-        </div>
-
-        <!-- ОФИСНАЯ ИГРА -->
-        <div id="tab-office" class="screen">
-            <div class="office-desk" id="desk-area">
-                <!-- Подсказки зон -->
-                <div class="drop-hint left">🗑️<br>В ШРЕДЕР</div>
-                <div class="drop-hint right">✅<br>ПРИНЯТЬ</div>
-
-                <!-- ЭКРАН СБ -->
-                <div class="security-screen">
-                    <div style="opacity:0.7">КОД ДОСТУПА</div>
-                    <span class="sec-code" id="security-code">...</span>
-                </div>
-
-                <!-- ПОСЕТИТЕЛЬ -->
-                <div class="visitor-panel">
-                    <div class="visitor-avatar" id="vis-face">?</div>
-                    <div class="ref-info">
-                        <div style="font-size:9px; opacity:0.6; text-transform:uppercase; color:#fff">Посетитель</div>
-                        <div style="font-weight:bold; font-size:16px" id="vis-name">...</div>
-                        <div style="font-size:11px; color:#ddd" id="vis-dept">...</div>
-                    </div>
-                </div>
-
-                <!-- ДОКУМЕНТ -->
-                <div class="paper-doc" id="current-doc">
-                    <div class="doc-watermark" id="doc-mark">?</div>
-
-                    <div class="stamp approved" id="stamp-ok">ПРИНЯТО</div>
-                    <div class="stamp rejected" id="stamp-bad">ОТКАЗ</div>
-                    
-                    <!-- Обернули контент в div для блюра -->
-                    <div class="doc-content-blur">
-                        <div class="doc-header">ПРОПУСК №<span id="doc-id">000</span></div>
-                    </div>
-                    
-                    <div class="doc-photo" id="doc-photo">?</div>
-                    
-                    <div class="doc-content-blur">
-                        <div class="doc-row">
-                            <div class="doc-label">ФИО:</div>
-                            <div class="doc-value" id="doc-name">...</div>
-                        </div>
-                        <div class="doc-row">
-                            <div class="doc-label">ОТДЕЛ:</div>
-                            <div class="doc-value" id="doc-dept">...</div>
-                        </div>
-                        <div class="doc-row">
-                            <div class="doc-label">ДЕЙСТВИТЕЛЕН ДО:</div>
-                            <div class="doc-value" id="doc-date">...</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Кнопки управления -->
-                <div class="office-controls">
-                    <button class="office-btn btn-shred" onclick="OfficeGame.decide(false)">✖ В Шредер</button>
-                    <button class="office-btn btn-uv" id="uv-btn" onclick="OfficeGame.toggleUV()">🔦</button>
-                    <button class="office-btn btn-approve" onclick="OfficeGame.decide(true)">✔ Пропустить</button>
-                </div>
-            </div>
-            
-            <div style="text-align:center; color:#777; font-size:11px; margin-top:10px; background:#fff; padding:8px; border-radius:5px;">
-                <strong>Инструкция:</strong> 1. Сверь данные (Выкл. свет). 2. Сверь метку (Вкл. свет). <br>
-                <b>Внимание:</b> При включенном фонаре текст не читается!
-            </div>
-        </div>
-
-        <div id="tab-shop" class="screen">
-            <div class="shop-list" id="shopContainer"></div>
-            <button onclick="resetGame()" style="margin-top:20px; background:#dc3545; font-size:12px; opacity:0.8">⚠ Сброс прогресса</button>
-        </div>
-        <div id="tab-top" class="screen"><h3 style="margin-top:0">Список Forbes</h3><div id="leaderboard"></div></div>
-    </div>
-    
-    <div class="sidebar"><div id="ad-sidebar" class="ad-slot"></div></div>
+<div class="calculator">
+<div class="header-panel">
+<div class="money-label">Корпоративный счет</div>
+<div class="odometer" id="money">0</div>
+<div class="cps-display">Прибыль: $<span id="cps">0.00</span> / сек</div>
 </div>
-
+<div class="tabs">
+<button class="tab-btn active" data-i18n="clicker.Кликер" onclick="switchTab('click')">🖱️ Кликер</button>
+<button class="tab-btn" data-i18n="clicker.Офис" onclick="switchTab('office')">🗂️ Офис</button>
+<button class="tab-btn" data-i18n="clicker.Маркет" onclick="switchTab('shop')">🛒 Маркет</button>
+<button class="tab-btn" data-i18n="clicker.Рейтинг" onclick="switchTab('top')">🏆 Рейтинг</button>
+</div>
+<div class="screen active" id="tab-click">
+<div class="ad-slot" id="ad-banner-top" style="margin-bottom: 10px;"></div>
+<button id="mainBtn" onclick="userClick(event)">💸</button>
+<p data-i18n="clicker.Жми_кнопку_чтобы_генерировать_кэшфлоу" style="text-align:center; color:#999; margin-top:20px; font-size:12px">Жми кнопку, чтобы генерировать кэшфлоу.</p>
+</div>
+<!-- ОФИСНАЯ ИГРА -->
+<div class="screen" id="tab-office">
+<div class="office-desk" id="desk-area">
+<!-- Подсказки зон -->
+<div class="drop-hint left">🗑️<br/>В ШРЕДЕР</div>
+<div class="drop-hint right">✅<br/>ПРИНЯТЬ</div>
+<!-- ЭКРАН СБ -->
+<div class="security-screen">
+<div style="opacity:0.7">КОД ДОСТУПА</div>
+<span class="sec-code" id="security-code">...</span>
+</div>
+<!-- ПОСЕТИТЕЛЬ -->
+<div class="visitor-panel">
+<div class="visitor-avatar" id="vis-face">?</div>
+<div class="ref-info">
+<div style="font-size:9px; opacity:0.6; text-transform:uppercase; color:#fff">Посетитель</div>
+<div id="vis-name" style="font-weight:bold; font-size:16px">...</div>
+<div id="vis-dept" style="font-size:11px; color:#ddd">...</div>
+</div>
+</div>
+<!-- ДОКУМЕНТ -->
+<div class="paper-doc" id="current-doc">
+<div class="doc-watermark" id="doc-mark">?</div>
+<div class="stamp approved" id="stamp-ok">ПРИНЯТО</div>
+<div class="stamp rejected" id="stamp-bad">ОТКАЗ</div>
+<!-- Обернули контент в div для блюра -->
+<div class="doc-content-blur">
+<div class="doc-header">ПРОПУСК №<span id="doc-id">000</span></div>
+</div>
+<div class="doc-photo" id="doc-photo">?</div>
+<div class="doc-content-blur">
+<div class="doc-row">
+<div class="doc-label">ФИО:</div>
+<div class="doc-value" id="doc-name">...</div>
+</div>
+<div class="doc-row">
+<div class="doc-label">ОТДЕЛ:</div>
+<div class="doc-value" id="doc-dept">...</div>
+</div>
+<div class="doc-row">
+<div class="doc-label">ДЕЙСТВИТЕЛЕН ДО:</div>
+<div class="doc-value" id="doc-date">...</div>
+</div>
+</div>
+</div>
+<!-- Кнопки управления -->
+<div class="office-controls">
+<button class="office-btn btn-shred" data-i18n="clicker.В_Шредер" onclick="OfficeGame.decide(false)">✖ В Шредер</button>
+<button class="office-btn btn-uv" id="uv-btn" onclick="OfficeGame.toggleUV()">🔦</button>
+<button class="office-btn btn-approve" data-i18n="clicker.Пропустить" onclick="OfficeGame.decide(true)">✔ Пропустить</button>
+</div>
+</div>
+<div style="text-align:center; color:#777; font-size:11px; margin-top:10px; background:#fff; padding:8px; border-radius:5px;">
+<strong>Инструкция:</strong> 1. Сверь данные (Выкл. свет). 2. Сверь метку (Вкл. свет). <br/>
+<b>Внимание:</b> При включенном фонаре текст не читается!
+            </div>
+</div>
+<div class="screen" id="tab-shop">
+<div class="shop-list" id="shopContainer"></div>
+<button data-i18n="clicker.Сброс_прогресса" onclick="resetGame()" style="margin-top:20px; background:#dc3545; font-size:12px; opacity:0.8">⚠ Сброс прогресса</button>
+</div>
+<div class="screen" id="tab-top"><h3 data-i18n="clicker.Список_Forbes" style="margin-top:0">Список Forbes</h3><div id="leaderboard"></div></div>
+</div>
+<div class="sidebar"><div class="ad-slot" id="ad-sidebar"></div></div>
+</div>
 <script src="../main.js"></script>
 <script src="script.js"></script>
-
 </body>
 </html>

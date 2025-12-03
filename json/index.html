@@ -1,19 +1,17 @@
 <!DOCTYPE html>
+
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>JSON Форматтер и Валидатор</title>
-    <meta name="description" content="Красивый вид JSON">
-    
-    <meta property="og:title" content="JSON Форматтер и Валидатор">
-    <meta property="og:description" content="Красивый вид JSON">
-    <meta property="og:type" content="website">
-    <link rel="stylesheet" href="../style.css">
-    
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧰</text></svg>">
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>JSON Форматтер и Валидатор</title>
+<meta content="Красивый вид JSON" name="description"/>
+<meta content="JSON Форматтер и Валидатор" property="og:title"/>
+<meta content="Красивый вид JSON" property="og:description"/>
+<meta content="website" property="og:type"/>
+<link href="../style.css" rel="stylesheet"/>
+<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🧰&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
+<style>
         textarea {
             font-family: 'Consolas', 'Monaco', monospace;
             font-size: 14px;
@@ -48,28 +46,22 @@
     </style>
 </head>
 <body>
-
 <div class="container">
-    <div class="calculator"> <h1>{ } JSON Форматтер</h1>
-        <p>Валидация, красивый вывод (Prettify) и сжатие (Minify).</p>
-
-        <div class="toolbar">
-            <button id="btnBeautify" class="btn-small">✨ Красиво (Format)</button>
-            <button id="btnMinify" class="btn-small btn-secondary">📦 Сжать (Minify)</button>
-            <button id="btnFix" class="btn-small btn-secondary" title="Заменить ' на кавычки">🔧 Исправить кавычки</button>
-            <button id="btnCopy" class="btn-small" style="margin-left:auto; background:#333;">📋 Копия</button>
-        </div>
-
-        <textarea id="jsonInput" placeholder='Вставьте грязный JSON сюда... Например: {"id":1, "name": "Test"}'></textarea>
-        
-        <div id="status" class="status-bar"></div>
-    </div>
-
-    <div class="sidebar">
-        <div id="ad-sidebar" class="ad-slot"></div>
-    </div>
+<div class="calculator"> <h1 data-i18n="json.JSON_Форматтер">{ } JSON Форматтер</h1>
+<p data-i18n="json.Валидация_красивый_вывод_Prettify_и_сжатие_Minify">Валидация, красивый вывод (Prettify) и сжатие (Minify).</p>
+<div class="toolbar">
+<button class="btn-small" data-i18n="json.Красиво_Format" id="btnBeautify">✨ Красиво (Format)</button>
+<button class="btn-small btn-secondary" data-i18n="json.Сжать_Minify" id="btnMinify">📦 Сжать (Minify)</button>
+<button class="btn-small btn-secondary" data-i18n="json.Исправить_кавычки" id="btnFix" title="Заменить ' на кавычки">🔧 Исправить кавычки</button>
+<button class="btn-small" data-i18n="json.Копия" id="btnCopy" style="margin-left:auto; background:#333;">📋 Копия</button>
 </div>
-
+<textarea id="jsonInput" placeholder='Вставьте грязный JSON сюда... Например: {"id":1, "name": "Test"}'></textarea>
+<div class="status-bar" id="status"></div>
+</div>
+<div class="sidebar">
+<div class="ad-slot" id="ad-sidebar"></div>
+</div>
+</div>
 <script src="../main.js"></script>
 <script src="script.js"></script>
 </body>

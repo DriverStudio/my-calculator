@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Сжатие изображений | Squash & Wash</title>
-    <link rel="stylesheet" href="../style.css"> <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Сжатие изображений | Squash &amp; Wash</title>
+<link href="../style.css" rel="stylesheet"/> <style>
         /* Локальные стили для Drag & Drop зоны */
         .drop-zone {
             border: 3px dashed #e1e4e8;
@@ -59,50 +60,43 @@
     </style>
 </head>
 <body>
-
 <div class="container">
-    <div style="width: 100%;">
-        <h1>🖼️ Squash & Wash</h1>
-        <p style="margin-bottom: 30px; opacity: 0.7;">Безопасное сжатие фото. Файлы не покидают ваш браузер.</p>
-
-        <div class="drop-zone" id="dropZone">
-            <div style="font-size: 50px; margin-bottom: 10px;">☁️</div>
-            <h3>Перетащите картинку сюда</h3>
-            <p>или кликните для выбора (JPG, PNG, WEBP)</p>
-            <input type="file" id="fileInput" accept="image/*" style="display: none;">
-        </div>
-
-        <div class="input-group" style="margin-top: 30px; max-width: 400px; margin-left: auto; margin-right: auto;">
-            <label>Качество сжатия: <span id="qualityVal">80%</span></label>
-            <input type="range" id="qualityRange" min="10" max="100" value="80">
-            
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <button class="btn-secondary" onclick="setFormat('image/jpeg')">JPEG</button>
-                <button class="btn-secondary" onclick="setFormat('image/webp')">WEBP</button>
-            </div>
-            <p style="text-align: center; font-size: 12px; margin-top: 5px; opacity: 0.6;">Текущий формат: <b id="formatLabel">JPEG</b></p>
-        </div>
-
-        <div class="preview-box" id="previewBox">
-            <div class="img-card">
-                <h4>До</h4>
-                <img id="imgOriginal">
-                <div class="stat-badge" id="sizeOriginal">0 KB</div>
-            </div>
-            <div class="img-card">
-                <h4>После</h4>
-                <img id="imgResult">
-                <div class="stat-badge success" id="sizeResult">0 KB</div>
-                <div class="stat-badge success" id="sizeSavings">-0%</div>
-                <a id="downloadLink" download="compressed.jpg">
-                    <button style="margin-top: 15px;">Скачать</button>
-                </a>
-            </div>
-        </div>
-
-    </div>
+<div style="width: 100%;">
+<h1>🖼️ Squash &amp; Wash</h1>
+<p data-i18n="image.Безопасное_сжатие_фото_Файлы_не_покидают_ваш_браузер" style="margin-bottom: 30px; opacity: 0.7;">Безопасное сжатие фото. Файлы не покидают ваш браузер.</p>
+<div class="drop-zone" id="dropZone">
+<div style="font-size: 50px; margin-bottom: 10px;">☁️</div>
+<h3 data-i18n="image.Перетащите_картинку_сюда">Перетащите картинку сюда</h3>
+<p data-i18n="image.или_кликните_для_выбора_JPG_PNG_WEBP">или кликните для выбора (JPG, PNG, WEBP)</p>
+<input accept="image/*" id="fileInput" style="display: none;" type="file"/>
 </div>
-
+<div class="input-group" style="margin-top: 30px; max-width: 400px; margin-left: auto; margin-right: auto;">
+<label>Качество сжатия: <span id="qualityVal">80%</span></label>
+<input id="qualityRange" max="100" min="10" type="range" value="80"/>
+<div style="display: flex; gap: 10px; margin-top: 15px;">
+<button class="btn-secondary" onclick="setFormat('image/jpeg')">JPEG</button>
+<button class="btn-secondary" onclick="setFormat('image/webp')">WEBP</button>
+</div>
+<p style="text-align: center; font-size: 12px; margin-top: 5px; opacity: 0.6;">Текущий формат: <b id="formatLabel">JPEG</b></p>
+</div>
+<div class="preview-box" id="previewBox">
+<div class="img-card">
+<h4>До</h4>
+<img id="imgOriginal"/>
+<div class="stat-badge" id="sizeOriginal">0 KB</div>
+</div>
+<div class="img-card">
+<h4>После</h4>
+<img id="imgResult"/>
+<div class="stat-badge success" id="sizeResult">0 KB</div>
+<div class="stat-badge success" id="sizeSavings">-0%</div>
+<a download="compressed.jpg" id="downloadLink">
+<button data-i18n="image.Скачать" style="margin-top: 15px;">Скачать</button>
+</a>
+</div>
+</div>
+</div>
+</div>
 <script src="../main.js"></script> <script src="script.js"></script>
 </body>
 </html>

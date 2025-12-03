@@ -1,19 +1,17 @@
 <!DOCTYPE html>
+
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>Анализ текста онлайн</title>
-    <meta name="description" content="Считать символы и слова">
-    
-    <meta property="og:title" content="Анализ текста онлайн">
-    <meta property="og:description" content="Считать символы и слова">
-    <meta property="og:type" content="website">
-    <link rel="stylesheet" href="../style.css">
-    
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧰</text></svg>">
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Анализ текста онлайн</title>
+<meta content="Считать символы и слова" name="description"/>
+<meta content="Анализ текста онлайн" property="og:title"/>
+<meta content="Считать символы и слова" property="og:description"/>
+<meta content="website" property="og:type"/>
+<link href="../style.css" rel="stylesheet"/>
+<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🧰&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
+<style>
         /* Сетка для статистики */
         .stats-grid {
             display: grid;
@@ -42,44 +40,38 @@
     </style>
 </head>
 <body>
-
 <div class="container">
-    <div class="calculator">
-        <h1>📝 Анализ текста</h1>
-        <p>Считает количество символов, слов и строк.</p>
-
-        <div class="stats-grid">
-            <div class="stat-box">
-                <div id="countChars" class="stat-val">0</div>
-                <div class="stat-label">Символов</div>
-            </div>
-            <div class="stat-box">
-                <div id="countWords" class="stat-val">0</div>
-                <div class="stat-label">Слов</div>
-            </div>
-            <div class="stat-box">
-                <div id="countNoSpace" class="stat-val">0</div>
-                <div class="stat-label">Без пробелов</div>
-            </div>
-            <div class="stat-box">
-                <div id="countLines" class="stat-val">0</div>
-                <div class="stat-label">Строк</div>
-            </div>
-        </div>
-
-        <div class="input-group">
-            <textarea id="inputText" placeholder="Вставьте ваш текст сюда..."></textarea>
-        </div>
-
-        <button id="btnClean" class="btn-secondary">🧹 Удалить лишние пробелы</button>
-        <button id="btnCopy" style="margin-top: 10px;">📋 Скопировать текст</button>
-    </div>
-
-    <div class="sidebar">
-        <div id="ad-sidebar" class="ad-slot"></div>
-    </div>
+<div class="calculator">
+<h1 data-i18n="text.Анализ_текста">📝 Анализ текста</h1>
+<p data-i18n="text.Считает_количество_символов_слов_и_строк">Считает количество символов, слов и строк.</p>
+<div class="stats-grid">
+<div class="stat-box">
+<div class="stat-val" id="countChars">0</div>
+<div class="stat-label">Символов</div>
 </div>
-
+<div class="stat-box">
+<div class="stat-val" id="countWords">0</div>
+<div class="stat-label">Слов</div>
+</div>
+<div class="stat-box">
+<div class="stat-val" id="countNoSpace">0</div>
+<div class="stat-label">Без пробелов</div>
+</div>
+<div class="stat-box">
+<div class="stat-val" id="countLines">0</div>
+<div class="stat-label">Строк</div>
+</div>
+</div>
+<div class="input-group">
+<textarea id="inputText" placeholder="Вставьте ваш текст сюда..."></textarea>
+</div>
+<button class="btn-secondary" data-i18n="text.Удалить_лишние_пробелы" id="btnClean">🧹 Удалить лишние пробелы</button>
+<button data-i18n="text.Скопировать_текст" id="btnCopy" style="margin-top: 10px;">📋 Скопировать текст</button>
+</div>
+<div class="sidebar">
+<div class="ad-slot" id="ad-sidebar"></div>
+</div>
+</div>
 <script src="../main.js"></script>
 <script src="script.js"></script>
 </body>

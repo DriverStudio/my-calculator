@@ -1,55 +1,43 @@
 <!DOCTYPE html>
+
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>Калькулятор 1ПМ</title>
-    <meta name="description" content="Одноповторный максимум в жиме">
-    
-    <meta property="og:title" content="Калькулятор 1ПМ">
-    <meta property="og:description" content="Одноповторный максимум в жиме">
-    <meta property="og:type" content="website">
-    <link rel="stylesheet" href="../style.css">
-    
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧰</text></svg>">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Калькулятор 1ПМ</title>
+<meta content="Одноповторный максимум в жиме" name="description"/>
+<meta content="Калькулятор 1ПМ" property="og:title"/>
+<meta content="Одноповторный максимум в жиме" property="og:description"/>
+<meta content="website" property="og:type"/>
+<link href="../style.css" rel="stylesheet"/>
+<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🧰&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
 </head>
 <body>
-
 <div class="container">
-    <div class="calculator">
-        <h1>💪 Калькулятор 1ПМ</h1>
-        <p>Узнай свой разовый максимум (1RM) в жиме или приседе.</p>
-        
-        <div id="ad-banner-top" class="ad-slot"></div>
-
-        <div class="input-group">
-            <label>Вес снаряда (кг)</label>
-            <input type="text" inputmode="decimal" id="input1" placeholder="80">
-        </div>
-        
-        <div class="input-group">
-            <label>Количество повторений (раз)</label>
-            <input type="number" id="input2" placeholder="5">
-        </div>
-
-        <button onclick="calculate()">Узнать максимум</button>
-
-        <div id="resultBox" class="result">
-            <h3>Ваш теоретический максимум:</h3>
-            <h2 id="resultValue" style="color: #28a745;">0 кг</h2>
-            
-            <button id="btnCopy" class="btn-secondary">📋 Скопировать результат</button>
-        </div>
-    </div>
-
-    <div class="sidebar">
-        <div id="ad-sidebar" class="ad-slot"></div>
-    </div>
+<div class="calculator">
+<h1 data-i18n="gym.Калькулятор_1ПМ">💪 Калькулятор 1ПМ</h1>
+<p data-i18n="gym.Узнай_свой_разовый_максимум_1RM_в_жиме_или_приседе">Узнай свой разовый максимум (1RM) в жиме или приседе.</p>
+<div class="ad-slot" id="ad-banner-top"></div>
+<div class="input-group">
+<label data-i18n="gym.Вес_снаряда_кг">Вес снаряда (кг)</label>
+<input id="input1" inputmode="decimal" placeholder="80" type="text"/>
 </div>
-
+<div class="input-group">
+<label data-i18n="gym.Количество_повторений_раз">Количество повторений (раз)</label>
+<input id="input2" placeholder="5" type="number"/>
+</div>
+<button data-i18n="gym.Узнать_максимум" onclick="calculate()">Узнать максимум</button>
+<div class="result" id="resultBox">
+<h3 data-i18n="gym.Ваш_теоретический_максимум">Ваш теоретический максимум:</h3>
+<h2 data-i18n="gym.0_кг" id="resultValue" style="color: #28a745;">0 кг</h2>
+<button class="btn-secondary" data-i18n="gym.Скопировать_результат" id="btnCopy">📋 Скопировать результат</button>
+</div>
+</div>
+<div class="sidebar">
+<div class="ad-slot" id="ad-sidebar"></div>
+</div>
+</div>
 <script src="../main.js"></script>
 <script src="script.js"></script>
-
 </body>
 </html>

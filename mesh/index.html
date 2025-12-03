@@ -1,16 +1,15 @@
 <!DOCTYPE html>
+
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Генератор Mesh Градиентов | Aura Backgrounds</title>
-    <meta name="description" content="Создавай трендовые анимированные Mesh-градиенты на чистом CSS. Идеально для фонов сайтов и UI.">
-    
-    <link rel="stylesheet" href="../style.css">
-    <!-- Иконка радуги -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌈</text></svg>">
-    
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Генератор Mesh Градиентов | Aura Backgrounds</title>
+<meta content="Создавай трендовые анимированные Mesh-градиенты на чистом CSS. Идеально для фонов сайтов и UI." name="description"/>
+<link href="../style.css" rel="stylesheet"/>
+<!-- Иконка радуги -->
+<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🌈&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
+<style>
         /* === UI MESH GENERATOR === */
         .workspace {
             display: flex; gap: 30px; align-items: flex-start; flex-wrap: wrap;
@@ -94,66 +93,53 @@
     </style>
 </head>
 <body>
-
 <div class="container" style="max-width: 1200px;">
-    <div style="width: 100%;">
-        <h1>🌈 Mesh Gradients</h1>
-        <p style="margin-bottom: 30px;">Генератор анимированных атмосферных фонов.</p>
-
-        <div class="workspace">
-            
-            <!-- ПРЕВЬЮ -->
-            <div class="preview-container">
-                <div id="meshTarget" class="mesh-target">
-                    <!-- Сюда JS вставит градиенты -->
-                </div>
-                <div id="noiseLayer" class="noise-overlay"></div>
-            </div>
-
-            <!-- НАСТРОЙКИ -->
-            <div class="controls-panel">
-                
-                <div class="control-group">
-                    <h4>🎨 Цветовые пятна</h4>
-                    <div class="colors-grid" id="colorsContainer">
-                        <!-- JS сгенерирует инпуты -->
-                    </div>
-                    <div style="margin-top: 10px;">
-                        <label style="font-size: 13px; font-weight: bold;">Фон подложки:</label>
-                        <input type="color" id="bgColor" value="#ffffff" style="vertical-align: middle;">
-                    </div>
-                </div>
-
-                <div class="control-group">
-                    <h4>⚙️ Физика</h4>
-                    
-                    <div class="slider-row"><span>Скорость анимации</span> <span id="valSpeed">5s</span></div>
-                    <input type="range" id="inSpeed" min="2" max="60" value="10">
-
-                    <div style="margin-top: 15px;">
-                        <label class="slider-row">
-                            <input type="checkbox" id="inNoise" checked style="width: auto;"> 
+<div style="width: 100%;">
+<h1>🌈 Mesh Gradients</h1>
+<p data-i18n="mesh.Генератор_анимированных_атмосферных_фонов" style="margin-bottom: 30px;">Генератор анимированных атмосферных фонов.</p>
+<div class="workspace">
+<!-- ПРЕВЬЮ -->
+<div class="preview-container">
+<div class="mesh-target" id="meshTarget">
+<!-- Сюда JS вставит градиенты -->
+</div>
+<div class="noise-overlay" id="noiseLayer"></div>
+</div>
+<!-- НАСТРОЙКИ -->
+<div class="controls-panel">
+<div class="control-group">
+<h4>🎨 Цветовые пятна</h4>
+<div class="colors-grid" id="colorsContainer">
+<!-- JS сгенерирует инпуты -->
+</div>
+<div style="margin-top: 10px;">
+<label data-i18n="mesh.Фон_подложки" style="font-size: 13px; font-weight: bold;">Фон подложки:</label>
+<input id="bgColor" style="vertical-align: middle;" type="color" value="#ffffff"/>
+</div>
+</div>
+<div class="control-group">
+<h4>⚙️ Физика</h4>
+<div class="slider-row"><span data-i18n="mesh.Скорость_анимации">Скорость анимации</span> <span id="valSpeed">5s</span></div>
+<input id="inSpeed" max="60" min="2" type="range" value="10"/>
+<div style="margin-top: 15px;">
+<label class="slider-row" data-i18n="mesh.Добавить_Шум_Texture">
+<input checked="" id="inNoise" style="width: auto;" type="checkbox"/> 
                             Добавить "Шум" (Texture)
                         </label>
-                    </div>
-                </div>
-
-                <div class="action-btns">
-                    <button class="btn-secondary" onclick="randomize()">🎲 Random</button>
-                    <button onclick="copyCSS()">📋 Copy CSS</button>
-                </div>
-
-                <div class="control-group">
-                    <h4>CSS Output</h4>
-                    <div class="code-output" id="cssOut"></div>
-                </div>
-
-            </div>
-        </div>
-
-    </div>
 </div>
-
+</div>
+<div class="action-btns">
+<button class="btn-secondary" onclick="randomize()">🎲 Random</button>
+<button onclick="copyCSS()">📋 Copy CSS</button>
+</div>
+<div class="control-group">
+<h4>CSS Output</h4>
+<div class="code-output" id="cssOut"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
 <script src="../main.js"></script>
 <script src="script.js"></script>
 </body>
