@@ -65,14 +65,75 @@ APPS.forEach(app => {
 console.log("📍 Мы находимся в разделе:", currentAppId);
 
 
+// Глобальный объект переводов
+window.I18N = {};
+let currentLang = localStorage.getItem('lang') || 'ru'; // По дефолту RU
+
+// Функция загрузки переводов
+async function initTranslations() {
+    try {
+        // ВОТ ЗДЕСЬ мы физически загружаем файл
+        // pathPrefix нужен, чтобы путь был правильным и с главной (./), и из папок (../)
+        const response = await fetch(pathPrefix + 'translations_all_services.json');
+        
+        // Превращаем ответ в JSON-объект и кладем в глобальную переменную
+        window.I18N = await response.json();
+        
+        console.log(`🌍 Translations loaded via prefix: ${pathPrefix}`);
+        
+        // Сразу после загрузки применяем язык
+        applyLanguage(currentLang);
+    } catch (e) {
+        console.error("Ошибка загрузки переводов:", e);
+    }
+}
+
+// Функция применения языка
+function applyLanguage(lang) {
+    currentLang = lang;
+    localStorage.setItem('lang', lang);
+    document.documentElement.lang = lang;
+
+    // 1. Обновляем кнопку в меню
+    const langBtn = document.getElementById('langBtn');
+    if (langBtn) langBtn.innerText = lang === 'ru' ? 'RU' : 'EN';
+
+    // 2. Если данных еще нет, выходим
+    if (!window.I18N[lang]) return;
+
+    // 3. Ищем все элементы с атрибутом data-i18n="section.key"
+    // Пример: <h1 data-i18n="home.title">...</h1>
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const keyPath = el.getAttribute('data-i18n').split('.');
+        const section = keyPath[0];
+        const key = keyPath[1];
+
+        if (window.I18N[lang][section] && window.I18N[lang][section][key]) {
+            // Если это input (например, плейсхолдер поиска)
+            if (el.tagName === 'INPUT' && el.hasAttribute('placeholder')) {
+                el.placeholder = window.I18N[lang][section][key];
+            } else {
+                el.innerText = window.I18N[lang][section][key];
+            }
+        }
+    });
+
+    // 4. СПЕЦИАЛЬНАЯ ЛОГИКА ДЛЯ ГЛАВНОЙ (Перевод категорий и карточек)
+    // Если существует функция рендера каталога (мы на главной), вызываем её обновление
+    if (typeof renderCatalog === 'function') {
+        renderCatalog(); 
+    }
+}
+
+// Переключатель (вызывается кнопкой)
+function toggleLanguage() {
+    const newLang = currentLang === 'ru' ? 'en' : 'ru';
+    applyLanguage(newLang);
+}
+
+
 // ==========================================
 // МОДУЛЬ 1: ОТРИСОВКА МЕНЮ
-// ==========================================
-// ==========================================
-// МОДУЛЬ 1: ОТРИСОВКА МЕНЮ (Обновленный)
-// ==========================================
-// ==========================================
-// МОДУЛЬ 1: ОТРИСОВКА МЕНЮ (С кнопкой темы)
 // ==========================================
 function initMenu() {
     const navBar = document.createElement('div');
@@ -106,15 +167,33 @@ function initMenu() {
         scrollBox.appendChild(link);
     });
 
-    // --- НОВОЕ: Кнопка темы ---
+    // КОНТЕЙНЕР ДЛЯ КНОПОК СПРАВА
+    const controls = document.createElement('div');
+    controls.style.display = 'flex';
+    controls.style.gap = '10px';
+    controls.style.paddingRight = '20px';
+
+    // 1. Кнопка Темы (старая)
     const themeBtn = document.createElement('div');
     themeBtn.className = 'theme-toggle';
-    themeBtn.id = 'themeBtn'; // ID для поиска
-    themeBtn.innerHTML = '🌙'; // Иконка по умолчанию
-    themeBtn.onclick = toggleTheme; // Обработчик клика
+    themeBtn.id = 'themeBtn'; 
+    themeBtn.innerHTML = '🌙'; 
+    themeBtn.onclick = toggleTheme;
+
+    // 2. НОВАЯ Кнопка Языка
+    const langBtn = document.createElement('div');
+    langBtn.className = 'theme-toggle'; // Используем тот же класс стиля
+    langBtn.id = 'langBtn';
+    langBtn.innerHTML = 'RU'; // Дефолт
+    langBtn.style.fontWeight = 'bold';
+    langBtn.style.fontSize = '14px';
+    langBtn.onclick = toggleLanguage;
+
+    controls.appendChild(langBtn);
+    controls.appendChild(themeBtn);
 
     navBar.appendChild(scrollBox);
-    navBar.appendChild(themeBtn); // Добавляем кнопку в меню
+    navBar.appendChild(controls); // Добавляем контейнер с кнопками
     document.body.prepend(navBar);
 }
 // ==========================================
@@ -185,6 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initMenu();
     initFooter();
     initAds();
+    initTranslations();
     
     const copyBtn = document.getElementById('btnCopy');
     if(copyBtn) copyBtn.onclick = copyResult;
