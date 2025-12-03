@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 — Страница не найдена</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .error-box {
+            text-align: center; padding: 50px 20px;
+        }
+        .error-code { font-size: 100px; font-weight: bold; color: #dc3545; line-height: 1; }
+        .error-text { font-size: 24px; margin: 20px 0; color: #333; }
+        .btn-home {
+            display: inline-block; padding: 15px 30px; background: #333; color: white;
+            text-decoration: none; border-radius: 10px; font-weight: bold; margin-top: 20px;
+            transition: 0.2s;
+        }
+        .btn-home:hover { background: #555; transform: translateY(-3px); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="error-box" style="width: 100%;">
+        <div class="error-code">404</div>
+        <div class="error-text">Ой! Такой страницы не существует.</div>
+        <p>Возможно, она была удалена или вы ошиблись в адресе.</p>
+        
+        <a href="./wheel/index.html" style="display:block; margin: 30px auto; width: fit-content;">
+            <div style="font-size: 60px;">🎡</div>
+            <div style="font-size: 14px; color: #007bff;">Испытать удачу?</div>
+        </a>
+
+        <a href="./index.html" class="btn-home">🏠 Вернуться на Главную</a>
+    </div>
+</div>
+
+<script src="main.js"></script>
+
+</body>
+</html>

@@ -167,6 +167,7 @@ function copyResult() {
 // ЗАПУСК
 document.addEventListener('DOMContentLoaded', () => {
     initMenu();
+    initFooter();
     initAds();
     
     const copyBtn = document.getElementById('btnCopy');
@@ -278,3 +279,33 @@ if (GOOGLE_ANALYTICS_ID) {
     gtag('config', GOOGLE_ANALYTICS_ID);
     console.log(`📊 Google Analytics [${GOOGLE_ANALYTICS_ID}] подключен.`);
 }
+
+// ==========================================
+// МОДУЛЬ: ПОДВАЛ (FOOTER)
+// ==========================================
+function initFooter() {
+    const footer = document.createElement('footer');
+    footer.className = 'global-footer';
+    
+    const year = new Date().getFullYear();
+    
+    // Ты можешь поменять "Империя Инструментов" на свое название
+    // pathPrefix у нас уже вычислен в начале файла (./ или ../)
+    const homeLink = pathPrefix + 'index.html';
+
+    footer.innerHTML = `
+        <div>&copy; ${year} <b>DriverStudio</b>. Все права защищены.</div>
+        <div style="margin-top: 10px;">
+            <a href="${homeLink}">Главная</a> • 
+            <a href="https://github.com/твое-имя/репозиторий" target="_blank">GitHub</a>
+        </div>
+        <div style="margin-top: 10px; font-size: 12px; color: #999;">
+            Сделано с 💻 и ☕
+        </div>
+    `;
+
+    // Вставляем в конец body
+    document.body.appendChild(footer);
+}
+
+// !!! НЕ ЗАБУДЬ ДОБАВИТЬ ВЫЗОВ В initApp ИЛИ DOMContentLoaded !!!
