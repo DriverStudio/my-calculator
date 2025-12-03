@@ -89,41 +89,11 @@ async function initTranslations() {
 }
 
 // Функция применения языка
-function applyLanguage(lang) {
-    currentLang = lang;
-    localStorage.setItem('lang', lang);
-    document.documentElement.lang = lang;
-
-    // 1. Обновляем кнопку в меню
-    const langBtn = document.getElementById('langBtn');
-    if (langBtn) langBtn.innerText = lang === 'ru' ? 'RU' : 'EN';
-
-    // 2. Если данных еще нет, выходим
-    if (!window.I18N[lang]) return;
-
-    // 3. Ищем все элементы с атрибутом data-i18n="section.key"
-    // Пример: <h1 data-i18n="home.title">...</h1>
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        const keyPath = el.getAttribute('data-i18n').split('.');
-        const section = keyPath[0];
-        const key = keyPath[1];
-
-        if (window.I18N[lang][section] && window.I18N[lang][section][key]) {
-            // Если это input (например, плейсхолдер поиска)
-            if (el.tagName === 'INPUT' && el.hasAttribute('placeholder')) {
-                el.placeholder = window.I18N[lang][section][key];
-            } else {
-                el.innerText = window.I18N[lang][section][key];
-            }
-        }
-    });
-
-    // 4. СПЕЦИАЛЬНАЯ ЛОГИКА ДЛЯ ГЛАВНОЙ (Перевод категорий и карточек)
-    // Если существует функция рендера каталога (мы на главной), вызываем её обновление
-    if (typeof renderCatalog === 'function') {
-        renderCatalog(); 
-    }
-}
+const langBtn = document.createElement('div');
+    langBtn.className = 'theme-toggle'; 
+    langBtn.id = 'langBtn';  // <--- ВОТ ЭТА СТРОКА КРИТИЧЕСКИ ВАЖНА
+    langBtn.innerHTML = 'RU'; // Начальное значение
+    langBtn.onclick = toggleLanguage;
 
 // Переключатель (вызывается кнопкой)
 function toggleLanguage() {
