@@ -177,6 +177,7 @@ function copyResult() {
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     initAmbientBlobs();
+    initSpotlight()
     initMenu();
     initFooter();
     initAds();
@@ -407,4 +408,42 @@ function initAmbientBlobs() {
     // Вставляем в body
     document.body.prepend(b1);
     document.body.prepend(b2);
+}
+
+// ==========================================
+// 5. ЭФФЕКТ "SPOTLIGHT" (ПОДСВЕТКА КУРСОРА)
+// ==========================================
+function initSpotlight() {
+    const cards = document.querySelectorAll('.tool-card');
+    
+    // Функция обновления координат
+    const handleMove = (e, card) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        card.style.setProperty('--x', `${x}px`);
+        card.style.setProperty('--y', `${y}px`);
+    };
+
+    cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => handleMove(e, card));
+        // При уходе мыши свет погаснет сам (через CSS opacity),
+        // но координаты останутся на краю, что выглядит естественно.
+    });
+
+    // Следим за появлением новых карточек (если они грузятся динамически)
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.addedNodes.length) {
+                document.querySelectorAll('.tool-card').forEach(card => {
+                    // Вешаем обработчик, если еще нет (простая защита от дублей)
+                    card.onmousemove = (e) => handleMove(e, card); 
+                });
+            }
+        });
+    });
+    
+    const grid = document.querySelector('.catalog-grid');
+    if (grid) observer.observe(grid, { childList: true });
 }
