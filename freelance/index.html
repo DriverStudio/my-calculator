@@ -1,59 +1,60 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <title>Калькулятор ставки фрилансера</title>
+    <meta name="description" content="Реальная стоимость часа">
+    
+    <meta property="og:title" content="Калькулятор ставки фрилансера">
+    <meta property="og:description" content="Реальная стоимость часа">
+    <meta property="og:type" content="website">
     <link rel="stylesheet" href="../style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> </head>
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧰</text></svg>">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
 <body>
-
-<div class="container">
-    <div class="calculator">
-        <h1>💸 Рейт фрилансера</h1>
-        <p>Узнай свою реальную стоимость часа.</p>
-        
-        <div id="ad-banner-top" class="ad-slot"></div>
-
-        <div class="input-group">
-            <label>Хочу на руки в месяц (₽)</label>
-            <input type="text" inputmode="decimal" id="input1" placeholder="100 000">
+    <div class="container">
+        <div class="calculator">
+            <h1>💸 Рейт фрилансера</h1>
+            <p>Узнай свою реальную стоимость часа.</p>
+            <div id="ad-banner-top" class="ad-slot"></div>
+            <div class="input-group">
+                <label>Хочу на руки в месяц (₽)</label>
+                <input type="text" inputmode="decimal" id="input1" placeholder="100 000">
+            </div>
+            <div class="input-group">
+                <label>Налоги и комиссии (%)</label>
+                <input type="number" id="input2" value="6" placeholder="6">
+            </div>
+            <div class="input-group">
+                <label>Ежемесячные расходы (софт, связь, реклама) ₽</label>
+                <input type="text" inputmode="decimal" id="input3" placeholder="5 000">
+            </div>
+            <div class="input-group">
+                <label>Оплачиваемых часов в день</label>
+                <input type="number" id="input4" value="5" placeholder="5">
+                <small style="color:#777">Вряд ли вы кодите 8 часов без перерыва</small>
+            </div>
+            <button onclick="calculate()">Рассчитать ставку</button>
+            <div id="resultBox" class="result">
+                <h3>Минимальная ставка в час:</h3>
+                <h2 id="resultValue" style="color: #007bff;">0 ₽</h2>
+            </div>
+            <div id="chartBox" style="margin-top: 30px; height: 300px; display:none;">
+                <canvas id="rateChart"></canvas>
+            </div>
         </div>
-        
-        <div class="input-group">
-            <label>Налоги и комиссии (%)</label>
-            <input type="number" id="input2" value="6" placeholder="6">
-        </div>
-
-        <div class="input-group">
-            <label>Ежемесячные расходы (софт, связь, реклама) ₽</label>
-            <input type="text" inputmode="decimal" id="input3" placeholder="5 000">
-        </div>
-
-        <div class="input-group">
-            <label>Оплачиваемых часов в день</label>
-            <input type="number" id="input4" value="5" placeholder="5">
-            <small style="color:#777">Вряд ли вы кодите 8 часов без перерыва</small>
-        </div>
-
-        <button onclick="calculate()">Рассчитать ставку</button>
-
-        <div id="resultBox" class="result">
-            <h3>Минимальная ставка в час:</h3>
-            <h2 id="resultValue" style="color: #007bff;">0 ₽</h2>
-        </div>
-
-        <div id="chartBox" style="margin-top: 30px; height: 300px; display:none;">
-            <canvas id="rateChart"></canvas>
+        <div class="sidebar">
+            <div id="ad-sidebar" class="ad-slot"></div>
         </div>
     </div>
-
-    <div class="sidebar">
-        <div id="ad-sidebar" class="ad-slot"></div>
-    </div>
-</div>
-
-<script src="../main.js"></script>
-<script src="script.js"></script>
-
+    <script src="../main.js"></script>
+    <script src="script.js"></script>
 </body>
+
 </html>
