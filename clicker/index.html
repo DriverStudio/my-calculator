@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Clicker & Office</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/themes/odometer-theme-default.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/odometer.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;600&display=swap');
+
+        :root {
+            --primary: #28a745;
+            --danger: #dc3545;
+            --paper: #fdfbf7;
+            --desk: #5d4037;
+        }
+
+        .odometer { font-family: 'Fira Code', monospace; font-size: 48px; font-weight: bold; color: var(--primary); }
+        .game-container { display: flex; flex-direction: column; height: 100%; }
+        
+        .header-panel {
+            text-align: center; margin-bottom: 20px;
+            background: #222; color: #0f0; padding: 20px; border-radius: 15px;
+            box-shadow: inset 0 0 20px rgba(0,255,0,0.1); font-family: 'Fira Code', monospace;
+        }
+
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #eee; }
+        .tab-btn {
+            flex: 1; padding: 12px; border: none; background: none; font-weight: bold; color: #999;
+            cursor: pointer; border-bottom: 3px solid transparent; font-family: 'Inter', sans-serif; transition: all 0.2s;
+        }
+        .tab-btn:hover { background: #f8f9fa; }
+        .tab-btn.active { color: #333; border-color: var(--primary); background: #e8f5e9; }
+
+        .screen { display: none; animation: fadeIn 0.3s; }
+        .screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* CLICKER */
+        #mainBtn {
+            width: 100%; height: 150px; background: radial-gradient(circle, #28a745 0%, #1e7e34 100%);
+            border: 8px solid #d4edda; border-radius: 50%; color: white; font-size: 40px; cursor: pointer;
+            box-shadow: 0 10px 30px rgba(40, 167, 69, 0.4), 0 10px 0 #155724; transition: all 0.1s; margin: 20px auto; display: block;
+        }
+        #mainBtn:active { margin-top: 30px; box-shadow: 0 0 0 #155724; transform: scale(0.95); margin-bottom: 0; }
+
+        .shop-list { max-height: 400px; overflow-y: auto; padding-right: 5px; }
+        .upgrade-item {
+            display: flex; justify-content: space-between; align-items: center; background: #fff;
+            border: 1px solid #eee; border-left: 4px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 8px; transition: 0.2s;
+        }
+        .upgrade-item.affordable { border-left-color: var(--primary); cursor: pointer; }
+        .upg-icon { font-size: 24px; margin-right: 15px; width: 30px; text-align: center; }
+        .upg-info h4 { margin: 0; font-size: 15px; }
+        .upg-info p { margin: 2px 0 0; font-size: 11px; color: #888; }
+        .upg-cost { font-weight: bold; color: #555; font-family: 'Fira Code', monospace; }
+
+        .leaderboard-row { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; }
+        .leaderboard-row.me { background: #e8f5e9; font-weight: bold; border-left: 4px solid var(--primary); }
+        .rank { width: 30px; color: #999; }
+
+        /* === OFFICE GAME (UV + BLUR) === */
+        .office-desk {
+            background: var(--desk); padding: 20px; border-radius: 10px;
+            position: relative; height: 500px; 
+            display: flex; flex-direction: column; overflow: hidden;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.5); user-select: none;
+            transition: background 0.3s;
+        }
+
+        /* UV ACTIVE STATE */
+        .office-desk.uv-active {
+            background: #1a1a25; /* Очень темный фон */
+            box-shadow: inset 0 0 100px rgba(120, 0, 255, 0.4);
+        }
+        
+        .office-desk.uv-active .paper-doc {
+            background: #2a2a40; /* Темная бумага */
+            border-color: #444;
+            box-shadow: 0 0 20px rgba(100, 0, 255, 0.2);
+        }
+
+        /* BLUR EFFECTS (Блюр информации при включенном UV) */
+        .office-desk.uv-active .doc-content-blur, 
+        .office-desk.uv-active .doc-photo,
+        .office-desk.uv-active .visitor-panel {
+            filter: blur(5px) grayscale(100%);
+            opacity: 0.3;
+            transition: all 0.3s;
+        }
+
+        /* WATERMARK (Метка становится видна) */
+        .doc-watermark {
+            position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 80px; font-weight: bold; opacity: 0; 
+            color: #00ff00; pointer-events: none; transition: opacity 0.3s;
+            border: 4px dashed #00ff00; border-radius: 50%; width: 120px; height: 120px;
+            display: flex; align-items: center; justify-content: center;
+            z-index: 15; /* Поверх блюра */
+            text-shadow: 0 0 15px #00ff00;
+        }
+        .office-desk.uv-active .doc-watermark { opacity: 1; }
+
+        /* Drop Zones */
+        .drop-hint {
+            position: absolute; top: 0; bottom: 0; width: 100px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 24px; color: white;
+            opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 5;
+        }
+        .drop-hint.left { left: 0; background: linear-gradient(90deg, rgba(220,53,69,0.5), transparent); text-align: left; padding-left: 20px; }
+        .drop-hint.right { right: 0; background: linear-gradient(-90deg, rgba(40,167,69,0.5), transparent); text-align: right; padding-right: 20px; }
+        .office-desk.dragging .drop-hint { opacity: 1; }
+
+        /* SECURITY SCREEN */
+        .security-screen {
+            position: absolute; top: 15px; right: 15px;
+            background: #000; border: 2px solid #555;
+            padding: 5px 10px; border-radius: 4px;
+            color: #0f0; font-family: 'Fira Code', monospace; font-size: 10px;
+            text-align: center; z-index: 5;
+            box-shadow: 0 0 10px rgba(0,255,0,0.2);
+        }
+        .sec-code { font-size: 16px; font-weight: bold; display: block; animation: blink 2s infinite; }
+        @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.7; } }
+
+        /* VISITOR */
+        .visitor-panel {
+            background: rgba(0,0,0,0.3); color: white; padding: 10px; border-radius: 8px; font-size: 12px;
+            display: flex; align-items: center; gap: 15px; border: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 20px; pointer-events: none; margin-right: 80px; transition: 0.3s;
+        }
+        .visitor-avatar { font-size: 40px; background: rgba(255,255,255,0.2); width: 60px; height: 60px; display:flex; align-items:center; justify-content:center; border-radius: 5px; }
+
+        /* DOC STRUCTURE */
+        .paper-doc {
+            background: var(--paper); width: 240px; height: 320px;
+            margin: 0 auto; padding: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            position: relative; cursor: grab; font-family: 'Courier New', Courier, monospace; color: #333;
+            transform-origin: center 80%; transition: transform 0.1s, background 0.3s; z-index: 10;
+        }
+        .paper-doc:active { cursor: grabbing; }
+        .paper-doc.returning { transition: transform 0.3s ease-out; }
+        .paper-doc.slide-in { animation: slideIn 0.4s forwards; }
+        .paper-doc.approved-anim { transition: transform 0.4s ease-in; transform: translate(150%, -20%) rotate(20deg) !important; opacity: 0; }
+        .paper-doc.rejected-anim { transition: transform 0.4s ease-in; transform: translate(-50%, 150%) rotate(-20deg) !important; opacity: 0; }
+
+        @keyframes slideIn { from { transform: translateY(-100%) rotate(5deg); opacity: 0; } to { transform: translateY(0) rotate(-2deg); opacity: 1; } }
+
+        .doc-header { border-bottom: 2px solid #333; margin-bottom: 10px; padding-bottom: 5px; text-align: center; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;}
+        .doc-photo { width: 70px; height: 70px; background: #ddd; border: 1px solid #999; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 35px; transition: 0.3s; }
+        .doc-row { margin-bottom: 6px; font-size: 12px; line-height: 1.4; transition: 0.3s; }
+        .doc-label { font-weight: bold; color: #555; font-size: 9px; text-transform: uppercase; }
+        .doc-value { border-bottom: 1px dotted #999; display: inline-block; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+
+        .stamp {
+            position: absolute; font-size: 20px; font-weight: bold; text-transform: uppercase;
+            border: 3px solid; padding: 5px 10px; transform: rotate(-15deg) scale(2);
+            opacity: 0; pointer-events: none; transition: 0.2s; z-index: 20;
+        }
+        .stamp.approved { color: var(--primary); border-color: var(--primary); top: 50%; right: 20px; }
+        .stamp.rejected { color: var(--danger); border-color: var(--danger); top: 50%; left: 20px; }
+        .stamp.visible { opacity: 0.8; transform: rotate(-15deg) scale(1); }
+
+        /* CONTROLS */
+        .office-controls {
+            position: absolute; bottom: 15px; left: 0; right: 0;
+            display: flex; justify-content: center; gap: 10px; padding: 0 20px;
+            pointer-events: none; z-index: 100;
+        }
+        .office-btn {
+            pointer-events: auto; background: rgba(0,0,0,0.6); color: #fff;
+            border: 1px solid rgba(255,255,255,0.3); padding: 12px 20px; border-radius: 30px;
+            font-weight: bold; font-size: 12px; cursor: pointer; transition: all 0.2s; text-transform: uppercase;
+            backdrop-filter: blur(4px); box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+        .office-btn:hover { background: rgba(0,0,0,0.9); transform: translateY(-2px); }
+        .btn-approve:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-shred:hover { border-color: var(--danger); color: var(--danger); }
+        
+        .btn-uv { background: rgba(80, 0, 180, 0.6); border-color: rgba(150, 100, 255, 0.5); width: 60px; display: flex; align-items: center; justify-content: center; font-size: 18px;}
+        .btn-uv:hover { background: rgba(100, 0, 220, 0.8); box-shadow: 0 0 15px rgba(100, 0, 255, 0.5); }
+        .btn-uv.active { background: #fff; color: #333; box-shadow: 0 0 20px #fff; }
+
+        .float-text {
+            position: absolute; color: var(--primary); font-weight: bold; font-size: 20px;
+            pointer-events: none; animation: floatUp 1s forwards; z-index: 1000; text-shadow: 0 2px 0 #fff;
+        }
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-50px) scale(1.5); } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="calculator">
+        <div class="header-panel">
+            <div class="money-label">Корпоративный счет</div>
+            <div id="money" class="odometer">0</div>
+            <div class="cps-display">Прибыль: $<span id="cps">0.00</span> / сек</div>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('click')">🖱️ Кликер</button>
+            <button class="tab-btn" onclick="switchTab('office')">🗂️ Офис</button>
+            <button class="tab-btn" onclick="switchTab('shop')">🛒 Маркет</button>
+            <button class="tab-btn" onclick="switchTab('top')">🏆 Рейтинг</button>
+        </div>
+
+        <div id="tab-click" class="screen active">
+            <div id="ad-banner-top" class="ad-slot" style="margin-bottom: 10px;"></div>
+            <button id="mainBtn" onclick="userClick(event)">💸</button>
+            <p style="text-align:center; color:#999; margin-top:20px; font-size:12px">Жми кнопку, чтобы генерировать кэшфлоу.</p>
+        </div>
+
+        <!-- ОФИСНАЯ ИГРА -->
+        <div id="tab-office" class="screen">
+            <div class="office-desk" id="desk-area">
+                <!-- Подсказки зон -->
+                <div class="drop-hint left">🗑️<br>В ШРЕДЕР</div>
+                <div class="drop-hint right">✅<br>ПРИНЯТЬ</div>
+
+                <!-- ЭКРАН СБ -->
+                <div class="security-screen">
+                    <div style="opacity:0.7">КОД ДОСТУПА</div>
+                    <span class="sec-code" id="security-code">...</span>
+                </div>
+
+                <!-- ПОСЕТИТЕЛЬ -->
+                <div class="visitor-panel">
+                    <div class="visitor-avatar" id="vis-face">?</div>
+                    <div class="ref-info">
+                        <div style="font-size:9px; opacity:0.6; text-transform:uppercase; color:#fff">Посетитель</div>
+                        <div style="font-weight:bold; font-size:16px" id="vis-name">...</div>
+                        <div style="font-size:11px; color:#ddd" id="vis-dept">...</div>
+                    </div>
+                </div>
+
+                <!-- ДОКУМЕНТ -->
+                <div class="paper-doc" id="current-doc">
+                    <div class="doc-watermark" id="doc-mark">?</div>
+
+                    <div class="stamp approved" id="stamp-ok">ПРИНЯТО</div>
+                    <div class="stamp rejected" id="stamp-bad">ОТКАЗ</div>
+                    
+                    <!-- Обернули контент в div для блюра -->
+                    <div class="doc-content-blur">
+                        <div class="doc-header">ПРОПУСК №<span id="doc-id">000</span></div>
+                    </div>
+                    
+                    <div class="doc-photo" id="doc-photo">?</div>
+                    
+                    <div class="doc-content-blur">
+                        <div class="doc-row">
+                            <div class="doc-label">ФИО:</div>
+                            <div class="doc-value" id="doc-name">...</div>
+                        </div>
+                        <div class="doc-row">
+                            <div class="doc-label">ОТДЕЛ:</div>
+                            <div class="doc-value" id="doc-dept">...</div>
+                        </div>
+                        <div class="doc-row">
+                            <div class="doc-label">ДЕЙСТВИТЕЛЕН ДО:</div>
+                            <div class="doc-value" id="doc-date">...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Кнопки управления -->
+                <div class="office-controls">
+                    <button class="office-btn btn-shred" onclick="OfficeGame.decide(false)">✖ В Шредер</button>
+                    <button class="office-btn btn-uv" id="uv-btn" onclick="OfficeGame.toggleUV()">🔦</button>
+                    <button class="office-btn btn-approve" onclick="OfficeGame.decide(true)">✔ Пропустить</button>
+                </div>
+            </div>
+            
+            <div style="text-align:center; color:#777; font-size:11px; margin-top:10px; background:#fff; padding:8px; border-radius:5px;">
+                <strong>Инструкция:</strong> 1. Сверь данные (Выкл. свет). 2. Сверь метку (Вкл. свет). <br>
+                <b>Внимание:</b> При включенном фонаре текст не читается!
+            </div>
+        </div>
+
+        <div id="tab-shop" class="screen">
+            <div class="shop-list" id="shopContainer"></div>
+            <button onclick="resetGame()" style="margin-top:20px; background:#dc3545; font-size:12px; opacity:0.8">⚠ Сброс прогресса</button>
+        </div>
+        <div id="tab-top" class="screen"><h3 style="margin-top:0">Список Forbes</h3><div id="leaderboard"></div></div>
+    </div>
+    
+    <div class="sidebar"><div id="ad-sidebar" class="ad-slot"></div></div>
+</div>
+
+<script src="../main.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>

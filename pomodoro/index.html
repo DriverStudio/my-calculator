@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Таймер Помодоро</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .timer-box {
+            text-align: center;
+            padding: 40px 0;
+        }
+        .timer-display {
+            font-size: 80px;
+            font-weight: bold;
+            color: #333;
+            font-variant-numeric: tabular-nums; /* Чтобы цифры не скакали */
+            line-height: 1;
+            margin: 20px 0;
+        }
+        .mode-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .mode-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #f1f3f5;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        .mode-btn.active {
+            background: #ffe3e3;
+            color: #e03131;
+            border-color: #e03131;
+            font-weight: bold;
+        }
+        .mode-btn.break-mode {
+            background: #e3fafc;
+            color: #0c8599;
+        }
+        .mode-btn.break-mode.active {
+            border-color: #0c8599;
+            background: #e3fafc;
+        }
+        
+        .controls { display: flex; gap: 15px; justify-content: center; }
+        .btn-round { border-radius: 50px; width: auto; padding: 15px 30px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="calculator">
+        <h1>🍅 Метод Помодоро</h1>
+        <p>Работайте интервалами, чтобы не перегорать.</p>
+
+        <div class="timer-box">
+            <div class="mode-tabs">
+                <div id="modeWork" class="mode-btn active" onclick="setMode('work')">Работа (25:00)</div>
+                <div id="modeBreak" class="mode-btn break-mode" onclick="setMode('break')">Отдых (05:00)</div>
+            </div>
+
+            <div id="timer" class="timer-display">25:00</div>
+
+            <div class="controls">
+                <button id="btnStart" class="btn-round">▶️ Старт</button>
+                <button id="btnReset" class="btn-round btn-secondary">⏹ Сброс</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <div id="ad-sidebar" class="ad-slot"></div>
+        <div style="background: #fff0f6; padding: 15px; border-radius: 10px; font-size: 14px;">
+            <h3>Как это работает?</h3>
+            <ol style="padding-left: 20px; margin: 0;">
+                <li>Ставьте задачу.</li>
+                <li>Работайте 25 минут (до звонка).</li>
+                <li>Сделайте паузу 5 минут.</li>
+                <li>Повторите 4 раза.</li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<script src="../main.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

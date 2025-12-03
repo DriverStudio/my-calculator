@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Метроном онлайн</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .metro-box {
+            text-align: center; padding: 20px;
+        }
+        
+        .bpm-display {
+            font-size: 80px; font-weight: bold; color: #333; margin: 20px 0;
+            font-variant-numeric: tabular-nums;
+        }
+        .bpm-label { font-size: 16px; color: #777; letter-spacing: 2px; text-transform: uppercase; }
+
+        /* Ползунок */
+        input[type=range] {
+            width: 100%; margin: 20px 0; cursor: pointer;
+        }
+
+        /* Визуальный индикатор (Круг мигает) */
+        .beat-indicator {
+            width: 30px; height: 30px; background: #ddd; border-radius: 50%;
+            margin: 0 auto 30px auto; transition: background 0.05s;
+        }
+        .beat-indicator.active { background: #e03131; box-shadow: 0 0 15px #e03131; }
+
+        .controls {
+            display: flex; gap: 10px; justify-content: center; align-items: center;
+        }
+        .btn-circle {
+            width: 50px; height: 50px; border-radius: 50%; padding: 0; font-size: 20px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        #btnPlay {
+            width: 80px; height: 80px; font-size: 30px; border-radius: 40px;
+            background: #28a745; margin: 0 20px;
+        }
+        #btnPlay.playing { background: #dc3545; } /* Красный когда играет */
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="calculator">
+        <h1>🥁 Метроном</h1>
+        <p>Точный ритм для репетиций.</p>
+
+        <div class="metro-box">
+            <div id="indicator" class="beat-indicator"></div>
+            
+            <div class="bpm-label">TEMP (BPM)</div>
+            <div id="bpmValue" class="bpm-display">120</div>
+
+            <input type="range" id="bpmRange" min="40" max="220" value="120">
+
+            <div class="controls">
+                <button class="btn-circle btn-secondary" onclick="changeBpm(-5)">-5</button>
+                <button class="btn-circle btn-secondary" onclick="changeBpm(-1)">-1</button>
+                
+                <button id="btnPlay">▶️</button>
+                
+                <button class="btn-circle btn-secondary" onclick="changeBpm(1)">+1</button>
+                <button class="btn-circle btn-secondary" onclick="changeBpm(5)">+5</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <div id="ad-sidebar" class="ad-slot"></div>
+        <div style="background: #e3fafc; padding: 15px; border-radius: 10px; font-size: 14px;">
+            <h3>🎵 Темпы:</h3>
+            <ul style="padding-left: 20px;">
+                <li>60-80: Adagio (Медленно)</li>
+                <li>100-120: Moderato (Средне)</li>
+                <li>140+: Allegro (Быстро)</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script src="../main.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

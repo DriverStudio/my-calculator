@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ипотечный калькулятор</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<div class="container">
+    <div class="calculator">
+        <h1>🏠 Ипотечный калькулятор</h1>
+        <p>Рассчитайте ежемесячный платеж и переплату банку.</p>
+        
+        <div id="ad-banner-top" class="ad-slot"></div>
+
+        <div class="input-group">
+            <label>Стоимость недвижимости (₽)</label>
+            <input type="number" id="input1" placeholder="5000000">
+        </div>
+        
+        <div class="input-group">
+            <label>Первоначальный взнос (₽)</label>
+            <input type="number" id="input2" placeholder="1000000">
+        </div>
+
+        <div class="input-group">
+            <label>Срок кредита (лет)</label>
+            <input type="number" id="input3" placeholder="20">
+        </div>
+
+        <div class="input-group">
+            <label>Процентная ставка (%)</label>
+            <input type="number" id="input4" placeholder="12.5">
+        </div>
+
+        <button onclick="calculate()">Рассчитать ипотеку</button>
+
+        <div id="resultBox" class="result">
+            <h3>Ежемесячный платеж:</h3>
+            <h2 id="resultValue" style="color: #dc3545;">0 ₽</h2>
+            
+            <button id="btnCopy" class="btn-secondary">📋 Скопировать расчет</button>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <div id="ad-sidebar" class="ad-slot"></div>
+    </div>
+</div>
+
+<script src="../main.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>

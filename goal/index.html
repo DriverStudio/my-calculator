@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор накопления цели</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<div class="container">
+    <div class="calculator">
+        <h1>🎯 Финансовая цель</h1>
+        <p>Узнайте, сколько нужно откладывать, чтобы купить мечту.</p>
+
+        <div class="input-group">
+            <label>Сколько стоит ваша мечта? (₽)</label>
+            <input type="text" id="target" inputmode="numeric" placeholder="Например: 1 000 000">
+        </div>
+
+        <div class="input-group">
+            <label>Сколько уже есть сейчас? (₽)</label>
+            <input type="text" id="current" inputmode="numeric" placeholder="Например: 100 000">
+        </div>
+
+        <div class="input-group">
+            <label>Через сколько месяцев нужно купить?</label>
+            <input type="text" id="months" inputmode="numeric" placeholder="Например: 12">
+        </div>
+
+        <button id="btnCalc">🧮 Рассчитать план</button>
+
+        <div id="resultBox" class="result">
+            <h3>Вам нужно откладывать:</h3>
+            <h2 id="resultValue" style="color: #28a745; font-size: 36px;">0 ₽</h2>
+            <p id="resultDescription"></p>
+        </div>
+        
+        <button id="btnCopy" class="btn-secondary">📋 Скопировать расчет</button>
+    </div>
+
+    <div class="sidebar">
+        <div id="ad-sidebar" class="ad-slot"></div>
+    </div>
+</div>
+
+<script src="../main.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>⚙️ DevTools: Генератор Sitemap</title>
+    <style>
+        body { font-family: sans-serif; padding: 40px; background: #f4f4f9; color: #333; max-width: 800px; margin: 0 auto; }
+        h1 { border-bottom: 2px solid #ccc; padding-bottom: 10px; }
+        .input-group { margin-bottom: 20px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input { width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; }
+        textarea { width: 100%; height: 400px; padding: 10px; font-family: monospace; border: 1px solid #333; border-radius: 5px; background: #222; color: #0f0; }
+        button { background: #28a745; color: white; border: none; padding: 15px 30px; font-size: 18px; cursor: pointer; border-radius: 5px; }
+        button:hover { background: #218838; }
+        .note { background: #fff3cd; padding: 15px; border-radius: 5px; margin-bottom: 20px; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+    <h1>🗺️ Генератор sitemap.xml</h1>
+    
+    <div class="note">
+        Этот инструмент берет список приложений из <b>main.js</b> и создает XML для Google/Yandex.
+    </div>
+
+    <div class="input-group">
+        <label>Твой домен (скопируй из GitHub Pages):</label>
+        <input type="text" id="domain" placeholder="https://ваш-логин.github.io/название-репозитория" value="">
+    </div>
+
+    <button onclick="generateSitemap()">🚀 Сгенерировать код</button>
+
+    <div class="input-group" style="margin-top: 20px;">
+        <label>Результат (Скопируй и сохрани в файл sitemap.xml):</label>
+        <textarea id="output"></textarea>
+    </div>
+
+    <script src="main.js"></script>
+    
+    <script>
+        function generateSitemap() {
+            let baseUrl = document.getElementById('domain').value.trim();
+            
+            // Убираем слеш в конце, если есть, чтобы не дублировать
+            if (baseUrl.endsWith('/')) baseUrl = baseUrl.slice(0, -1);
+
+            if (!baseUrl) {
+                alert("Пожалуйста, укажите домен сайта!");
+                return;
+            }
+
+            const today = new Date().toISOString().split('T')[0]; // Формат YYYY-MM-DD
+
+            let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
+            xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
+
+            // 1. Добавляем ГЛАВНУЮ страницу
+            xml += `  <url>\n`;
+            xml += `    <loc>${baseUrl}/index.html</loc>\n`;
+            xml += `    <lastmod>${today}</lastmod>\n`;
+            xml += `    <changefreq>daily</changefreq>\n`;
+            xml += `    <priority>1.0</priority>\n`;
+            xml += `  </url>\n`;
+
+            // 2. Добавляем ВСЕ СЕРВИСЫ из APPS
+            APPS.forEach(app => {
+                xml += `  <url>\n`;
+                // Ссылка на папку сервиса
+                xml += `    <loc>${baseUrl}/${app.id}/</loc>\n`;
+                xml += `    <lastmod>${today}</lastmod>\n`;
+                xml += `    <changefreq>weekly</changefreq>\n`;
+                xml += `    <priority>0.8</priority>\n`;
+                xml += `  </url>\n`;
+            });
+
+            xml += `</urlset>`;
+
+            document.getElementById('output').value = xml;
+        }
+    </script>
+
+</body>
+</html>

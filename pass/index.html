@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор надежных паролей</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<div class="container">
+    <div class="calculator">
+        <h1>🔐 Генератор паролей</h1>
+        <p>Создайте безопасный пароль для защиты своих аккаунтов.</p>
+
+        <div class="input-group">
+            <label>Длина пароля: <span id="lenValue">12</span></label>
+            <input type="range" id="length" min="4" max="32" value="12" oninput="document.getElementById('lenValue').innerText = this.value">
+        </div>
+
+        <div class="input-group" style="display: flex; gap: 15px; flex-wrap: wrap;">
+            <label><input type="checkbox" id="upper" checked style="width:auto;"> A-Z</label>
+            <label><input type="checkbox" id="lower" checked style="width:auto;"> a-z</label>
+            <label><input type="checkbox" id="numbers" checked style="width:auto;"> 0-9</label>
+            <label><input type="checkbox" id="symbols" style="width:auto;"> @#$</label>
+        </div>
+
+        <button id="btnCalc">🎲 Сгенерировать</button>
+
+        <div id="resultBox" class="result">
+            <h2 id="resultValue" style="font-family: monospace; word-break: break-all; font-size: 24px;"></h2>
+            <div id="resultDescription" style="margin-top:10px; color:#555;">Нажмите кнопку копирования ниже</div>
+        </div>
+
+        <button id="btnCopy" class="btn-secondary">📋 Скопировать результат</button>
+    </div>
+
+    <div class="sidebar">
+        <div id="ad-sidebar" class="ad-slot"></div>
+        <div style="background: #eef; padding: 15px; border-radius: 10px; font-size: 14px;">
+            <h3>ℹ️ Совет:</h3>
+            <p>Хороший пароль должен быть длиннее 10 символов и содержать разные типы знаков. Не используйте даты рождения!</p>
+        </div>
+    </div>
+</div>
+
+<script src="../main.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

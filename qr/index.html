@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор QR-кодов</title>
+    <link rel="stylesheet" href="../style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        /* Специфичные стили для QR */
+        #qrcode {
+            margin: 20px auto;
+            padding: 10px;
+            background: white;
+            display: inline-block; /* Чтобы рамка облегала код */
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        #qrcode img {
+            margin: 0 auto;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="calculator">
+        <h1>📱 Генератор QR-кодов</h1>
+        <p>Превратите ссылку или текст в картинку.</p>
+
+        <div class="input-group">
+            <label>Введите ссылку или текст:</label>
+            <input type="text" id="qrText" placeholder="https://mysite.com" value="https://github.com">
+        </div>
+
+        <button id="btnGen">⚡ Создать QR-код</button>
+
+        <div id="resultBox" class="result" style="text-align: center;">
+            <div id="qrcode"></div>
+            <p style="font-size: 12px; color: #777; margin-top: 10px;">Наведите камеру телефона, чтобы проверить</p>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <div id="ad-sidebar" class="ad-slot"></div>
+        <div style="background: #eef; padding: 15px; border-radius: 10px; font-size: 14px;">
+            <h3>💡 Где использовать?</h3>
+            <ul style="padding-left: 20px; margin: 0;">
+                <li>Ссылка на ваш сайт</li>
+                <li>Пароль от Wi-Fi</li>
+                <li>Визитка (VCard)</li>
+                <li>Telegram канал</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script src="../main.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

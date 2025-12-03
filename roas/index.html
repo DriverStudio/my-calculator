@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор ROAS (Окупаемость рекламы)</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<div class="container">
+    <div class="calculator">
+        <h1>Калькулятор ROAS</h1>
+        <p>Узнайте, насколько эффективно работает ваша реклама.</p>
+        
+        <div id="ad-banner-top" class="ad-slot"></div>
+
+        <div class="input-group">
+            <label>Потрачено на рекламу (₽)</label>
+            <input type="number" id="input1" placeholder="Например: 10000">
+        </div>
+        
+        <div class="input-group">
+            <label>Доход с рекламы (₽)</label>
+            <input type="number" id="input2" placeholder="Например: 50000">
+        </div>
+
+        <button onclick="calculate()">Рассчитать эффективность</button>
+
+        <div id="resultBox" class="result">
+            <h3>Ваш ROAS:</h3>
+            <h2 id="resultValue">0%</h2>
+            
+            <button id="btnCopy" class="btn-secondary">📋 Скопировать отчет</button>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <div id="ad-sidebar" class="ad-slot"></div>
+    </div>
+</div>
+
+<script src="../main.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>

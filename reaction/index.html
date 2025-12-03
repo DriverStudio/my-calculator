@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест на скорость реакции</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        /* Игровое поле */
+        #game-area {
+            width: 100%;
+            height: 300px;
+            background-color: #007bff; /* Синий - старт */
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        /* Состояния */
+        .waiting { background-color: #dc3545 !important; } /* Красный */
+        .ready { background-color: #28a745 !important; }   /* Зеленый */
+        
+        .history {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="calculator">
+        <h1>⚡ Тест на реакцию</h1>
+        <p>Нажмите, когда цвет изменится на <b>ЗЕЛЕНЫЙ</b>.</p>
+
+        <div id="game-area">
+            <div>Нажми, чтобы начать</div>
+            <div style="font-size: 14px; font-weight: normal; margin-top: 10px;">(Кликай сюда)</div>
+        </div>
+
+        <div class="history">
+            <h3>Ваши попытки:</h3>
+            <ul id="resultsList" style="padding-left: 20px;"></ul>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <div id="ad-sidebar" class="ad-slot"></div>
+        <div style="background: #eef; padding: 15px; border-radius: 10px; font-size: 14px;">
+            <h3>🏆 Нормативы:</h3>
+            <p>🚀 Профи: < 200 мс</p>
+            <p>😐 Средний: 250 мс</p>
+            <p>🐢 Сонный: > 350 мс</p>
+        </div>
+    </div>
+</div>
+
+<script src="../main.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

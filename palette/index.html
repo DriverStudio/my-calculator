@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Генератор палитр</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        /* === УПРАВЛЕНИЕ === */
+        .controls-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            background: #fff;
+            padding: 10px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            flex-wrap: wrap; gap: 10px;
+        }
+        .count-controls button, .sort-btn {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            margin: 0 5px;
+            font-size: 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 1px solid #e1e4e8;
+            background: #f8f9fa;
+        }
+        .sort-btn { width: auto; padding: 0 15px; font-size: 16px; }
+        .sort-btn:hover, .count-controls button:hover { background: #e2e6ea; }
+
+        /* === СЕТКА === */
+        .palette-grid {
+            display: flex;
+            height: 60vh;
+            width: 100%;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .color-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: flex 0.3s;
+            min-width: 40px;
+        }
+
+        .col-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            opacity: 0; /* Скрываем интерфейс, пока не наведем */
+            transition: 0.2s;
+        }
+        .color-col:hover .col-content { opacity: 1; }
+        /* На мобилке показываем всегда */
+        @media (max-width: 700px) { .col-content { opacity: 1; } }
+
+        .hex-tag {
+            font-family: monospace; font-weight: bold; font-size: 18px; text-transform: uppercase;
+            cursor: pointer; padding: 5px 10px; border-radius: 5px; transition: 0.2s;
+        }
+        .hex-tag:hover { background: rgba(255,255,255,0.2); transform: scale(1.1); }
+
+        .lock-btn {
+            background: none; border: none; cursor: pointer; font-size: 24px; padding: 0; opacity: 0.5; transition: 0.2s;
+        }
+        .lock-btn:hover { opacity: 1; transform: scale(1.2); }
+        .lock-btn.locked { opacity: 1; transform: scale(1.2); }
+
+        /* Адаптив для текста */
+        .text-dark .hex-tag, .text-dark .lock-btn { color: #000; }
+        .text-light .hex-tag, .text-light .lock-btn { color: #fff; }
+
+        @media (max-width: 700px) {
+            .palette-grid { flex-direction: column; height: auto; }
+            .color-col { height: 80px; flex-direction: row; justify-content: space-between; padding: 0 20px; }
+            .col-content { flex-direction: row-reverse; width: 100%; justify-content: space-between; opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" style="max-width: 100%; width: 98%;">
+    <div style="width: 100%;">
+        
+        <div class="controls-bar">
+            <div>
+                <h1>🎨 Pro Palette</h1>
+                <p style="font-size: 12px; margin:0; color:#777;">Пробел — генерация. <span id="modeName">Режим: Авто</span></p>
+            </div>
+            
+            <div style="display: flex; gap: 10px;">
+                <button class="sort-btn" onclick="sortColors()">📶 Сортировать</button>
+                
+                <div class="count-controls" style="display: flex; align-items: center;">
+                    <button class="btn-secondary" onclick="changeCount(-1)">-</button>
+                    <span style="margin: 0 5px; font-weight: bold; color:#555;" id="countVal">5</span>
+                    <button onclick="changeCount(1)">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="palette-grid" id="grid"></div>
+
+        <button id="btnGen" style="display: block; width: 100%; margin-top: 20px; padding: 15px;">🔄 Сгенерировать (Пробел)</button>
+    </div>
+</div>
+
+<script src="../main.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Полезные инструменты | Главная</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        /* Сетка остается прежней */
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+            width: 100%;
+        }
+
+        .tool-card {
+            background: #fff;
+            border: 1px solid #e9ecef;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+            border-color: #28a745;
+        }
+
+        .tool-icon { font-size: 40px; margin-bottom: 5px; }
+        .tool-name { font-weight: bold; font-size: 18px; }
+        .tool-desc { font-size: 13px; color: #777; }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div style="width: 100%;">
+        <h1 style="margin-bottom: 10px;">🧰 Империя Инструментов</h1>
+        <p style="margin-bottom: 30px; color: #666;">Коллекция из 21 полезного сервиса для работы и жизни.</p>
+        
+        <input type="text" id="searchInput" class="search-box" placeholder="🔍 Найти инструмент (например: ндс, пароль)...">
+
+        <div id="ad-banner-top" class="ad-slot"></div>
+
+        <div id="catalog-root"></div>
+        
+        <div id="noResults" style="display:none; text-align:center; padding: 40px; color:#777;">
+            🤷‍♂️ Ничего не найдено.
+        </div>
+    </div>
+</div>
+
+<script src="main.js"></script>
+
+<script>
+    const root = document.getElementById('catalog-root');
+    const searchInput = document.getElementById('searchInput');
+    const noResults = document.getElementById('noResults');
+
+    // СЛОВАРЬ НАЗВАНИЙ КАТЕГОРИЙ
+    const CATEGORIES = {
+        'finance': '💰 Финансы',
+        'health':  '💊 Здоровье',
+        'work':    '💻 Работа & IT',
+        'tools':   '🛠 Утилиты',
+        'fun':     '🎮 Развлечения'
+    };
+
+    // 1. РЕНДЕР (ОТРИСОВКА)
+    // Получаем уникальные категории из APPS
+    const uniqueCats = [...new Set(APPS.map(app => app.category))];
+
+    uniqueCats.forEach(catKey => {
+        // Создаем контейнер секции
+        const section = document.createElement('div');
+        section.className = 'category-section';
+        section.id = `cat-${catKey}`;
+
+        // Заголовок секции
+        const title = document.createElement('div');
+        title.className = 'category-title';
+        title.innerText = CATEGORIES[catKey] || 'Разное';
+        section.appendChild(title);
+
+        // Сетка для карточек
+        const grid = document.createElement('div');
+        grid.className = 'catalog-grid';
+
+        // Фильтруем приложения для этой категории
+        const catApps = APPS.filter(app => app.category === catKey);
+
+        catApps.forEach(app => {
+            const card = document.createElement('a');
+            card.className = 'tool-card';
+            card.href = `./${app.id}/index.html`;
+            card.setAttribute('data-keywords', `${app.name} ${app.id}`.toLowerCase());
+
+            card.innerHTML = `
+                <div class="tool-icon">${app.icon}</div>
+                <div class="tool-name">${app.name}</div>
+                <div class="tool-desc">Открыть →</div>
+            `;
+            grid.appendChild(card);
+        });
+
+        section.appendChild(grid);
+        root.appendChild(section);
+    });
+
+    // 2. ЖИВОЙ ПОИСК (УМНЫЙ)
+    searchInput.addEventListener('input', function() {
+        const query = this.value.toLowerCase().trim();
+        const cards = document.querySelectorAll('.tool-card');
+        const sections = document.querySelectorAll('.category-section');
+        let totalVisible = 0;
+
+        // Шаг 1: Скрываем/показываем карточки
+        cards.forEach(card => {
+            const keywords = card.getAttribute('data-keywords');
+            if (query === '' || keywords.includes(query)) {
+                card.classList.remove('hidden');
+            } else {
+                card.classList.add('hidden');
+            }
+        });
+
+        // Шаг 2: Скрываем пустые заголовки категорий
+        sections.forEach(section => {
+            // Ищем видимые карточки внутри этой секции
+            const visibleCardsInSection = section.querySelectorAll('.tool-card:not(.hidden)');
+            
+            if (visibleCardsInSection.length > 0) {
+                section.classList.remove('hidden');
+                totalVisible++;
+            } else {
+                section.classList.add('hidden');
+            }
+        });
+
+        // Шаг 3: Если совсем ничего нет
+        noResults.style.display = totalVisible === 0 ? 'block' : 'none';
+    });
+</script>
+
+</body>
+</html>

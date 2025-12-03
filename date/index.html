@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор дней между датами</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<div class="container">
+    <div class="calculator">
+        <h1>📅 Сколько дней между датами?</h1>
+        <p>Посчитайте точное количество дней до события или от него.</p>
+
+        <div class="input-group">
+            <label>Начальная дата:</label>
+            <input type="date" id="date1">
+        </div>
+
+        <div class="input-group">
+            <label>Конечная дата:</label>
+            <input type="date" id="date2">
+        </div>
+
+        <button id="btnCalc">⏳ Посчитать разницу</button>
+
+        <div id="resultBox" class="result">
+            <h3>Разница составляет:</h3>
+            <h2 id="resultValue" style="color: #007bff; font-size: 36px;">0 дней</h2>
+            <p id="resultDescription" style="margin-top: 10px;"></p>
+        </div>
+        
+        <button id="btnCopy" class="btn-secondary">📋 Скопировать</button>
+    </div>
+
+    <div class="sidebar">
+        <div id="ad-sidebar" class="ad-slot"></div>
+        <div style="background: #fff3cd; padding: 15px; border-radius: 10px; font-size: 14px;">
+            <h3>🎉 Примеры:</h3>
+            <p>Сколько дней осталось до Нового года? Сколько дней я живу? Сколько прошло с начала проекта?</p>
+        </div>
+    </div>
+</div>
+
+<script src="../main.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
