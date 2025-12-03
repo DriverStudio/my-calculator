@@ -233,3 +233,48 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     document.body.appendChild(script);
 })();
+
+
+// ==========================================
+// МОДУЛЬ: АНАЛИТИКА (Яндекс + Google)
+// ==========================================
+
+// 1. ВСТАВЬ СЮДА СВОИ ID (если какого-то нет, оставь пустым '')
+const YANDEX_METRICA_ID = 105629640; // ID
+const GOOGLE_ANALYTICS_ID = '';       // Например 'G-XXXXXXXX'
+
+// ------------------------------------------
+// Дальше магию не трогаем
+// ------------------------------------------
+
+// АВТО-ЗАГРУЗКА ЯНДЕКС.МЕТРИКИ
+
+if (YANDEX_METRICA_ID) {
+    (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+    m[i].l=1*new Date();
+    for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+    k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+    (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+    ym(YANDEX_METRICA_ID, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true,
+        webvisor:true 
+    });
+    console.log(`📊 Yandex Metrica [${YANDEX_METRICA_ID}] подключена.`);
+}
+
+// АВТО-ЗАГРУЗКА GOOGLE ANALYTICS 4
+if (GOOGLE_ANALYTICS_ID) {
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ANALYTICS_ID}`;
+    document.head.appendChild(script);
+
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', GOOGLE_ANALYTICS_ID);
+    console.log(`📊 Google Analytics [${GOOGLE_ANALYTICS_ID}] подключен.`);
+}
