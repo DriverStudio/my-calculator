@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>CSS Architect | Конструктор UI компонентов</title>
+    <meta name="description" content="Визуальный генератор CSS для кнопок, инпутов, карточек и других UI элементов. Настрой дизайн и скачай готовый код.">
+    
+    <link rel="stylesheet" href="../style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏗️</text></svg>">
+    
+    <style>
+        /* === UI ARCHITECT STYLES === */
+        body { overflow: hidden; /* Чтобы скроллились только колонки */ }
+        
+        .architect-layout {
+            display: grid;
+            grid-template-columns: 250px 350px 1fr;
+            height: calc(100vh - 80px); /* Вычитаем высоту хедера */
+            width: 100%;
+            max-width: 1600px;
+            margin: 0 auto;
+            gap: 1px;
+            background: var(--border-color); /* Линии сетки */
+        }
+
+        /* КОЛОНКА 1: ВЫБОР ВИДЖЕТА */
+        .col-sidebar {
+            background: var(--bg-card);
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .widget-btn {
+            display: flex; align-items: center; gap: 10px;
+            width: 100%; padding: 12px; margin-bottom: 8px;
+            background: var(--bg-body); border: 1px solid var(--border-color);
+            border-radius: 8px; cursor: pointer; color: var(--text-main);
+            transition: 0.2s;
+        }
+        .widget-btn:hover { border-color: var(--accent); transform: translateX(5px); }
+        .widget-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+        /* КОЛОНКА 2: НАСТРОЙКИ */
+        .col-settings {
+            background: var(--bg-card);
+            padding: 20px;
+            overflow-y: auto;
+            border-right: 1px solid var(--border-color);
+        }
+        .setting-group { margin-bottom: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; }
+        .setting-group:last-child { border: none; }
+        .group-title { font-weight: bold; margin-bottom: 15px; color: var(--text-main); font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Элементы управления */
+        .control-row { margin-bottom: 12px; }
+        .control-label { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px; color: var(--text-sec); }
+        
+        input[type="color"] { width: 100%; height: 35px; border: none; cursor: pointer; background: none; }
+        input[type="range"] { width: 100%; }
+        select { width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-body); color: var(--text-main); }
+
+        /* КОЛОНКА 3: ПРЕВЬЮ */
+        .col-preview {
+            background: var(--bg-body);
+            display: flex; flex-direction: column;
+            padding: 20px;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        /* Сцена */
+        .stage-area {
+            flex: 1;
+            display: flex; justify-content: center; align-items: center;
+            background-image: radial-gradient(var(--border-color) 1px, transparent 1px);
+            background-size: 20px 20px; /* Клетчатый фон */
+            border-radius: 12px;
+            margin-bottom: 20px;
+            min-height: 300px;
+        }
+
+        /* Блок кода */
+        .code-panel {
+            background: #1e1e1e;
+            border-radius: 12px;
+            padding: 15px;
+            position: relative;
+            max-height: 250px;
+            display: flex; flex-direction: column;
+        }
+        .code-header { display: flex; justify-content: space-between; margin-bottom: 10px; color: #888; font-size: 12px; }
+        .code-content { color: #a9b7c6; font-family: monospace; white-space: pre; overflow: auto; flex: 1; font-size: 13px; }
+
+        /* ИСТОРИЯ */
+        .history-list { margin-top: 20px; }
+        .history-item { 
+            font-size: 12px; padding: 8px; border-radius: 6px; 
+            background: var(--bg-body); margin-bottom: 5px; cursor: pointer; 
+            display: flex; justify-content: space-between;
+        }
+        .history-item:hover { background: var(--border-color); }
+
+        /* Мобилка */
+        @media (max-width: 900px) {
+            .architect-layout { grid-template-columns: 1fr; height: auto; display: flex; flex-direction: column; }
+            body { overflow: auto; }
+            .col-sidebar, .col-settings, .col-preview { height: auto; overflow: visible; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="architect-layout">
+    
+    <div class="col-sidebar">
+        <h3>🏗️ Виджеты</h3>
+        <div id="widgetList">
+            </div>
+
+        <div style="margin-top: 40px;">
+            <h3>💾 История</h3>
+            <div id="historyList" class="history-list">
+                <div style="color: var(--text-muted); font-size: 12px;">Пока пусто...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-settings">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3 id="settingsTitle">Настройки</h3>
+            <button class="btn-secondary" style="width: auto; padding: 5px 10px; font-size: 12px;" onclick="resetToDefault()">Сброс</button>
+        </div>
+        <div id="controlsArea">
+            </div>
+    </div>
+
+    <div class="col-preview">
+        <div class="stage-area" id="stage">
+            <div id="previewElement">Preview</div>
+        </div>
+
+        <div class="code-panel">
+            <div class="code-header">
+                <span>CSS OUTPUT</span>
+                <div style="display: flex; gap: 10px;">
+                    <span style="cursor: pointer; color: var(--accent);" onclick="saveToHistory()">💾 Сохранить</span>
+                    <span style="cursor: pointer; color: var(--accent);" onclick="copyCSS()">📋 Копировать</span>
+                    <span style="cursor: pointer; color: var(--accent);" onclick="downloadCSS()">⬇️ Скачать</span>
+                </div>
+            </div>
+            <div class="code-content" id="cssOutput">/* Code will appear here */</div>
+        </div>
+    </div>
+
+</div>
+
+<script src="../main.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

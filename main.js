@@ -3,14 +3,14 @@
 // Категории: finance, health, work, tools, fun
 const APPS = [
     // === 💰 ДЕНЬГИ ===
-    { id: 'roas',       name: 'Реклама (ROAS)', icon: '💰', category: 'finance' },
-    { id: 'crypto',     name: 'Сложный %',      icon: '📈', category: 'finance' },
-    { id: 'mortgage',   name: 'Ипотека',        icon: '🏠', category: 'finance' },
-    { id: 'nds',        name: 'НДС 20%',        icon: '📊', category: 'finance' },
-    { id: 'goal',       name: 'Копилка',        icon: '🎯', category: 'finance' },
+    { id: 'roas',       name: 'Реклама (ROAS)', icon: '💰',      category: 'finance' },
+    { id: 'crypto',     name: 'Сложный %',      icon: '📈',      category: 'finance' },
+    { id: 'mortgage',   name: 'Ипотека',        icon: '🏠',      category: 'finance' },
+    { id: 'nds',        name: 'НДС 20%',        icon: '📊',      category: 'finance' },
+    { id: 'goal',       name: 'Копилка',        icon: '🎯',      category: 'finance' },
     
     // === 💊 ЗДОРОВЬЕ ===
-    { id: 'bmi',        name: 'Вес (BMI)',      icon: '⚖️', category: 'health' },
+    { id: 'bmi',        name: 'Вес (BMI)',      icon: '⚖️',     category: 'health' },
     { id: 'calories',   name: 'Калории',        icon: '🥦', category: 'health' },
     { id: 'gym',        name: 'Жим (1ПМ)',      icon: '💪', category: 'health' },
     { id: 'breathe',    name: 'Релакс',         icon: '🧘', category: 'health' },
@@ -23,12 +23,14 @@ const APPS = [
     { id: 'translit',   name: 'Транслит',       icon: '🔤', category: 'work' },
     { id: 'palette',    name: 'Палитры',        icon: '🎨', category: 'work' },
     { id: 'json',       name: 'JSON Редактор',  icon: 'hb', category: 'work' }, // иконка { } не везде есть, используем текст или похожую
+    { id: 'glass',      name: 'Glass UI',       icon: '💎', category: 'work' },
 
     // === 🧰 УТИЛИТЫ ===
     { id: 'pass',       name: 'Пароли',         icon: '🔐', category: 'tools' },
     { id: 'qr',         name: 'QR Код',         icon: '📱', category: 'tools' },
     { id: 'date',       name: 'Дней до...',     icon: '📅', category: 'tools' },
     { id: 'metronome',  name: 'Метроном',       icon: '🥁', category: 'tools' },
+    { id: 'blob',       name: 'Liquid Blob',    icon: '💧', category: 'tools' },
 
     // === 🎮 РАЗВЛЕЧЕНИЯ ===
     { id: 'clicker',    name: 'Принтер $',      icon: '🖨️', category: 'fun' },
@@ -65,32 +67,32 @@ console.log("📍 Мы находимся в разделе:", currentAppId);
 // ==========================================
 // МОДУЛЬ 1: ОТРИСОВКА МЕНЮ (Обновленный)
 // ==========================================
+// ==========================================
+// МОДУЛЬ 1: ОТРИСОВКА МЕНЮ (С кнопкой темы)
+// ==========================================
 function initMenu() {
     const navBar = document.createElement('div');
     navBar.className = 'nav-bar';
     
+    // Контейнер для скролла
     const scrollBox = document.createElement('div');
     scrollBox.className = 'nav-scroll';
-
-    // --- ФИКС СКРОЛЛА ---
-    // Превращаем кручение колесика ВНИЗ в прокрутку ВБОК
+    // Крутим колесиком горизонтально
     scrollBox.addEventListener('wheel', (evt) => {
-        // Если контент не влезает (есть что скроллить)
         if (scrollBox.scrollWidth > scrollBox.clientWidth) {
-            evt.preventDefault(); // Запрещаем скролл всей страницы
-            scrollBox.scrollLeft += evt.deltaY; // Крутим меню вбок
+            evt.preventDefault();
+            scrollBox.scrollLeft += evt.deltaY;
         }
     });
-    // --------------------
 
-    // 1. Ссылка на ГЛАВНУЮ
+    // Ссылка Домой
     const homeLink = document.createElement('a');
     homeLink.className = `nav-link ${currentAppId === 'home' ? 'active' : ''}`;
     homeLink.href = pathPrefix + 'index.html'; 
-    homeLink.innerHTML = '🏠 Каталог';
+    homeLink.innerHTML = '🏠 Все';
     scrollBox.appendChild(homeLink);
 
-    // 2. Ссылки на КАЛЬКУЛЯТОРЫ
+    // Ссылки приложений
     APPS.forEach(app => {
         const link = document.createElement('a');
         const isActive = app.id === currentAppId;
@@ -100,10 +102,17 @@ function initMenu() {
         scrollBox.appendChild(link);
     });
 
+    // --- НОВОЕ: Кнопка темы ---
+    const themeBtn = document.createElement('div');
+    themeBtn.className = 'theme-toggle';
+    themeBtn.id = 'themeBtn'; // ID для поиска
+    themeBtn.innerHTML = '🌙'; // Иконка по умолчанию
+    themeBtn.onclick = toggleTheme; // Обработчик клика
+
     navBar.appendChild(scrollBox);
+    navBar.appendChild(themeBtn); // Добавляем кнопку в меню
     document.body.prepend(navBar);
 }
-
 // ==========================================
 // МОДУЛЬ 2: ЗАГРУЗКА РЕКЛАМЫ
 // ==========================================
@@ -166,6 +175,8 @@ function copyResult() {
 
 // ЗАПУСК
 document.addEventListener('DOMContentLoaded', () => {
+    initTheme();
+    initAmbientBlobs();
     initMenu();
     initFooter();
     initAds();
@@ -308,4 +319,92 @@ function initFooter() {
     document.body.appendChild(footer);
 }
 
-// !!! НЕ ЗАБУДЬ ДОБАВИТЬ ВЫЗОВ В initApp ИЛИ DOMContentLoaded !!!
+// ==========================================
+// НОВОЕ: ЛОГИКА ТЕМЫ И ЗВЕЗД
+// ==========================================
+
+// Глобальная функция переключения (чтобы initMenu её видел)
+function toggleTheme() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    applyTheme(!isDark);
+}
+
+function applyTheme(isDark) {
+    const icon = document.getElementById('themeBtn');
+    if (isDark) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+        if(icon) icon.innerText = '☀️';
+        createStarBackground(); // Создаем звезды, если их еще нет
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem('theme', 'light');
+        if(icon) icon.innerText = '🌙';
+    }
+}
+
+// Инициализация при загрузке
+function initTheme() {
+    const saved = localStorage.getItem('theme');
+    const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    // Если сохранено dark ИЛИ (не сохранено ничего И в системе dark)
+    const shouldBeDark = saved === 'dark' || (!saved && sysDark);
+    applyTheme(shouldBeDark);
+}
+
+// Генерация звезд (CSS Box-Shadow)
+function createStarBackground() {
+    if (document.getElementById('stars-bg')) return; // Не создаем дубликаты
+
+    const container = document.createElement('div');
+    container.id = 'stars-bg';
+    container.className = 'stars-container';
+    
+    // 3 слоя для глубины
+    [1, 2, 3].forEach(i => {
+        const layer = document.createElement('div');
+        layer.className = 'star-layer';
+        layer.id = `star-layer-${i}`;
+        
+        let shadows = [];
+        // Генерируем 100-300 звезд на слой
+        for (let s = 0; s < 100 * i; s++) {
+            const x = Math.floor(Math.random() * 100);
+            const y = Math.floor(Math.random() * 100);
+            const size = Math.random() * 2; 
+            const alpha = Math.random();
+            shadows.push(`${x}vw ${y}vh 0 ${size}px rgba(255,255,255,${alpha})`);
+        }
+        layer.style.boxShadow = shadows.join(',');
+        container.appendChild(layer);
+    });
+
+    document.body.prepend(container);
+
+    // Параллакс эффект при скролле
+    window.addEventListener('scroll', () => {
+        const y = window.scrollY;
+        const l1 = document.getElementById('star-layer-1');
+        const l2 = document.getElementById('star-layer-2');
+        const l3 = document.getElementById('star-layer-3');
+        if(l1) l1.style.transform = `translateY(${y * 0.5}px)`;
+        if(l2) l2.style.transform = `translateY(${y * 0.3}px)`;
+        if(l3) l3.style.transform = `translateY(${y * 0.1}px)`;
+    });
+}
+
+// Генерация фоновых пятен (Aurora Effect)
+function initAmbientBlobs() {
+    // Проверка, чтобы не создавать дубликаты
+    if (document.querySelector('.ambient-blob')) return;
+
+    const b1 = document.createElement('div');
+    b1.className = 'ambient-blob blob-1';
+    
+    const b2 = document.createElement('div');
+    b2.className = 'ambient-blob blob-2';
+
+    // Вставляем в body
+    document.body.prepend(b1);
+    document.body.prepend(b2);
+}

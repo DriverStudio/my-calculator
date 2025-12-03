@@ -32,15 +32,10 @@ function calculate() {
     // Детальное описание
     let desc = document.getElementById('resultDescription');
     if (!desc) {
-        desc = document.createElement('p');
-        desc.id = 'resultDescription';
-        desc.style.textAlign = 'left';
-        desc.style.background = '#f8f9fa';
-        desc.style.padding = '15px';
-        desc.style.borderRadius = '10px';
-        desc.style.marginTop = '15px';
-        desc.style.border = '1px solid #e9ecef';
-        resVal.after(desc);
+    desc = document.createElement('p');
+    desc.id = 'resultDescription';
+    desc.className = 'result-desc'; // <--- Вся магия теперь здесь
+    resVal.after(desc);
     }
 
     desc.innerHTML = `

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Liquid Blob Generator | Жидкие формы CSS</title>
+    <meta name="description" content="Генератор органических форм (Blobs) и анимаций для веб-дизайна. Создай уникальную CSS фигуру за пару кликов.">
+    
+    <link rel="stylesheet" href="../style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💧</text></svg>">
+    
+    <style>
+        /* === BLOB STYLES === */
+        .workspace {
+            display: flex; flex-direction: column; align-items: center; gap: 30px;
+            padding: 20px 0;
+        }
+
+        /* Область с кляксой */
+        .blob-stage {
+            position: relative;
+            width: 350px; height: 350px;
+            display: flex; justify-content: center; align-items: center;
+        }
+        
+        /* Сама фигура */
+        .the-blob {
+            width: 300px; height: 300px;
+            background: linear-gradient(135deg, #FF9A9E 0%, #FECFEF 100%);
+            box-shadow: 0 10px 30px -10px rgba(255, 154, 158, 0.5);
+            transition: all 0.5s ease; /* Плавность при изменении слайдеров */
+            cursor: pointer;
+        }
+        
+        /* Рамка-манипулятор (визуальный контейнер) */
+        .blob-frame {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; /* Чтобы клики проходили сквозь */
+            border: 2px dashed var(--border-color);
+            border-radius: 50%;
+            opacity: 0.3;
+        }
+
+        /* Контролы (слайдеры по 4 сторонам) */
+        .range-wrapper {
+            position: absolute;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 5px;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 10px var(--shadow);
+            z-index: 10;
+        }
+        
+        input[type=range] { width: 120px; cursor: grab; }
+
+        /* Позиционирование слайдеров вокруг квадрата */
+        .rw-top { top: -20px; left: 50%; transform: translateX(-50%); }
+        .rw-bottom { bottom: -20px; left: 50%; transform: translateX(-50%); }
+        .rw-left { top: 50%; left: -50px; transform: translateY(-50%) rotate(-90deg); }
+        .rw-right { top: 50%; right: -50px; transform: translateY(-50%) rotate(-90deg); }
+
+        /* Панель настроек снизу */
+        .controls-panel {
+            background: var(--bg-card);
+            padding: 25px; border-radius: 20px;
+            border: 1px solid var(--border-color);
+            width: 100%; max-width: 600px;
+            display: flex; flex-direction: column; gap: 20px;
+            box-shadow: 0 10px 40px var(--shadow);
+        }
+
+        .option-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        
+        .color-picker-wrap {
+            display: flex; gap: 10px; align-items: center;
+        }
+        .gradient-btn {
+            width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid transparent;
+        }
+        .gradient-btn.active { border-color: var(--text-main); transform: scale(1.1); }
+
+        /* Код */
+        .code-box {
+            background: #1e1e1e; color: #a9b7c6;
+            padding: 15px; border-radius: 10px;
+            font-family: monospace; font-size: 13px;
+            width: 100%; word-break: break-all;
+            position: relative; cursor: pointer;
+            border: 1px solid #333;
+        }
+        .code-box:hover { border-color: var(--accent); }
+        .copy-hint { position: absolute; top: 10px; right: 10px; font-size: 10px; color: #777; }
+
+        /* Адаптив */
+        @media(max-width: 600px) {
+            .blob-stage { transform: scale(0.8); margin: 20px 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div style="width: 100%; text-align: center;">
+        
+        <h1>💧 Liquid Blob</h1>
+        <p>Создавай органические формы и анимации.</p>
+
+        <div class="workspace">
+            
+            <div class="blob-stage">
+                <div class="blob-frame"></div>
+                
+                <div class="range-wrapper rw-top"><input type="range" id="r1" min="0" max="100" value="50"></div>
+                <div class="range-wrapper rw-right"><input type="range" id="r2" min="0" max="100" value="50"></div>
+                <div class="range-wrapper rw-bottom"><input type="range" id="r3" min="0" max="100" value="50"></div>
+                <div class="range-wrapper rw-left"><input type="range" id="r4" min="0" max="100" value="50"></div>
+
+                <div class="the-blob" id="blob"></div>
+            </div>
+
+            <div class="controls-panel">
+                
+                <div class="option-row">
+                    <strong>🎨 Цвет / Градиент:</strong>
+                    <div class="color-picker-wrap" id="gradients">
+                        </div>
+                </div>
+
+                <div class="option-row" style="justify-content: center;">
+                    <button id="btnRandom" class="btn-secondary" style="width: auto;">🎲 Случайная форма</button>
+                    <button id="btnAnimate" style="width: auto;">🎬 Оживить (Animate)</button>
+                </div>
+
+                <div>
+                    <strong>CSS Output:</strong>
+                    <div class="code-box" onclick="copyCSS()">
+                        <div class="copy-hint">Click to Copy</div>
+                        <span id="outputCode">border-radius: ...</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="../main.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
