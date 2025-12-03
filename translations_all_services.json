@@ -1,8 +1,8 @@
 {
     "ru": {
         "home": {
-            "title": "🧰 Империя Инструментов",
-            "subtitle": "Коллекция из 25 полезного сервиса для работы и жизни.",
+            "title": "💎 PRISMA",
+            "subtitle": "Коллекция из 30 полезного сервиса для работы и жизни.",
             "search_placeholder": "🔍 Найти инструмент (например: ндс, пароль)...",
             "no_results": "🤷‍♂️ Ничего не найдено.",
             "open_btn": "Открыть →"
@@ -483,8 +483,8 @@
     },
     "en": {
         "home": {
-            "title": "🧰 Tool Empire",
-            "subtitle": "A collection of 25 useful services for work and life.",
+            "title": "💎 PRISMA",
+            "subtitle": "A collection of 30 useful services for work and life.",
             "search_placeholder": "🔍 Find a tool (e.g., tax, password)...",
             "no_results": "🤷‍♂️ Nothing found.",
             "open_btn": "Open →"
