@@ -1,8 +1,8 @@
 /* captcha.js - Движок мини-игр */
 
 const CAPTCHA_CONFIG = {
-    minTime: 10 * 1000, // Минимум 60 секунд
-    maxTime: 11 * 1000 // Максимум 3 минуты
+    minTime: 60 * 1000, // Минимум 60 секунд
+    maxTime: 180 * 1000 // Максимум 3 минуты
 };
 
 let captchaTimer = null;
