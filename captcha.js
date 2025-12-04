@@ -5,10 +5,44 @@ const CAPTCHA_CONFIG = {
     maxTime: 180 * 1000 // Максимум 3 минуты
 };
 
+// === 🛡️ БЕЛЫЙ СПИСОК (Сервисы БЕЗ капчи) ===
+const CAPTCHA_WHITELIST = [
+    'ambient',   // Фокус Видео (чтобы не отвлекать от просмотра)
+    'sounds',    // Фокус Звуки
+    'breathe',   // Релакс / Дыхание
+    'pomodoro',  // Таймер работы
+    'metronome', // Метроном (нужна точность)
+    'typer',      // Хакер тайпер (сбивает поток)
+    'json',
+    'metronom',
+    'qr',
+    'reaction',
+    'sign'
+];
+
 let captchaTimer = null;
 
-// Запуск таймера (вызывается при старте)
+// Запуск таймера (вызывается при старте из main.js)
 function initCaptchaSystem() {
+    // 1. ПРОВЕРКА БЕЛОГО СПИСКА
+    // Пытаемся определить ID текущего приложения
+    let appId = 'home';
+    
+    // Если переменная currentAppId есть в глобальной области (из main.js)
+    if (typeof currentAppId !== 'undefined') {
+        appId = currentAppId;
+    } else {
+        // Фоллбэк: пытаемся найти ID в URL
+        const found = CAPTCHA_WHITELIST.find(id => window.location.href.includes(`/${id}/`));
+        if (found) appId = found;
+    }
+
+    if (CAPTCHA_WHITELIST.includes(appId)) {
+        console.log(`🛡️ Сервис "${appId}" в белом списке. Капча отключена.`);
+        return; // ПРЕКРАЩАЕМ ЗАГРУЗКУ КАПЧИ
+    }
+
+    // 2. Если сервис не в белом списке — запускаем
     scheduleNextCaptcha();
 
     // Создаем HTML модалки один раз
@@ -40,6 +74,9 @@ function showRandomGame() {
     const area = document.getElementById('captchaArea');
     const title = document.getElementById('captchaTitle');
 
+    // Если вдруг модалки нет (какая-то ошибка инициализации)
+    if (!modal) return;
+
     modal.style.display = 'flex';
     area.innerHTML = ''; // Очистка
 
@@ -54,11 +91,8 @@ function showRandomGame() {
         playCoinDrop,
         playSwitches,
         playBuildBridge,
-        // ============================
-        // 🎮 НОВЫЕ ИГРЫ
         playSortItems,
         playQuickSequence
-        // ============================
     ];
 
     // Выбираем случайную
@@ -71,12 +105,10 @@ function onSuccess() {
     const title = document.getElementById('captchaTitle');
 
     title.innerText = "✅ Отлично!";
-    // Use class toggle so CSS controls visuals (avoids inline style overrides)
     title.classList.add('captcha-success');
 
     setTimeout(() => {
         modal.style.display = 'none';
-        // Remove success class to restore CSS-managed color
         title.classList.remove('captcha-success');
         scheduleNextCaptcha(); // Планируем следующую
     }, 800);
@@ -137,6 +169,8 @@ function playRocketLaunch(container, titleLabel, callback) {
     const handleClick = () => {
         const cursor = document.getElementById('cursor');
         const target = document.getElementById('targetZone');
+        
+        if(!cursor || !target) return;
 
         const cRect = cursor.getBoundingClientRect();
         const tRect = target.getBoundingClientRect();
@@ -240,6 +274,7 @@ function playBonfire(container, titleLabel, callback) {
     }, 100); // Каждые 100мс
 
     function updateVisuals() {
+        if(!bar) return;
         bar.style.width = heat + '%';
         // Меняем размер смайлика от температуры
         const scale = 1 + (heat / 200);
