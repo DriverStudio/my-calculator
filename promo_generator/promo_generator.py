@@ -22,6 +22,8 @@ def wrap_text(text, font, max_width, draw):
     if not text: return lines
     
     words = text.split()
+    if not words: return lines
+
     current_line = words[0]
     
     for word in words[1:]:
@@ -254,36 +256,40 @@ class PromoGeneratorApp(ctk.CTk):
             margin_bottom = 80
             max_text_width = width - (margin_left * 2)
 
-            # 1. Подготовка описания
-            desc_text = safe_desc[:90] + "..." if len(safe_desc) > 90 else safe_desc
+            # 1. Подготовка описания (С ПЕРЕНОСАМИ)
+            # Раньше тут была жесткая обрезка, теперь wrap_text
+            desc_lines = wrap_text(safe_desc, font_desc, max_text_width, draw_txt)
             
-            # Вычисляем высоту описания
+            # Вычисляем высоту строки описания
+            desc_line_height = 0
             if hasattr(font_desc, 'getbbox'):
-                desc_bbox = draw_txt.textbbox((0, 0), desc_text, font=font_desc)
-                desc_h = desc_bbox[3] - desc_bbox[1]
+                bbox = draw_txt.textbbox((0, 0), "A", font=font_desc)
+                desc_line_height = (bbox[3] - bbox[1]) * 1.4 # Межстрочный интервал 1.4
             else:
-                desc_h = 20
+                desc_line_height = 40
+
+            total_desc_h = desc_line_height * len(desc_lines)
 
             # 2. Подготовка заголовка (Перенос строк!)
             title_lines = wrap_text(safe_title, font_title, max_text_width, draw_txt)
             
             # Вычисляем общую высоту блока заголовка
-            line_height = 0
+            title_line_height = 0
             if hasattr(font_title, 'getbbox'):
                 # Берем высоту буквы "A" как эталон строки
                 bbox = draw_txt.textbbox((0, 0), "A", font=font_title)
-                line_height = (bbox[3] - bbox[1]) * 1.3 # 1.3 - межстрочный интервал
+                title_line_height = (bbox[3] - bbox[1]) * 1.3 # 1.3 - межстрочный интервал
             else:
-                line_height = 50
+                title_line_height = 50
 
-            total_title_h = line_height * len(title_lines)
+            total_title_h = title_line_height * len(title_lines)
 
             # === КООРДИНАТЫ ===
             # Считаем снизу вверх
-            y_desc_start = height - margin_bottom - desc_h
+            y_desc_start = height - margin_bottom - total_desc_h
             y_title_start = y_desc_start - total_title_h - 20 # 20px отступ заголовка от описания
 
-            # === РИСОВАНИЕ С ТЕНЬЮ (Фишка 1) ===
+            # === РИСОВАНИЕ С ТЕНЬЮ ===
             shadow_offset = 4
             shadow_color = (0, 0, 0, 180) # Полупрозрачный черный
 
@@ -294,17 +300,20 @@ class PromoGeneratorApp(ctk.CTk):
                 draw_txt.text((margin_left + shadow_offset, current_y + shadow_offset), line, font=font_title, fill=shadow_color)
                 # Сам текст
                 draw_txt.text((margin_left, current_y), line, font=font_title, fill="#ffffff")
-                current_y += line_height
+                current_y += title_line_height
 
-            # Рисуем описание (с легкой тенью)
-            draw_txt.text((margin_left + 2, y_desc_start + 2), desc_text, font=font_desc, fill=shadow_color)
-            draw_txt.text((margin_left, y_desc_start), desc_text, font=font_desc, fill="#cbd5e1") # Светло-серый
+            # Рисуем описание построчно (ТЕПЕРЬ ЦИКЛ)
+            current_desc_y = y_desc_start
+            for line in desc_lines:
+                draw_txt.text((margin_left + 2, current_desc_y + 2), line, font=font_desc, fill=shadow_color)
+                draw_txt.text((margin_left, current_desc_y), line, font=font_desc, fill="#cbd5e1") # Светло-серый
+                current_desc_y += desc_line_height
 
-            # === АКЦЕНТНАЯ ПОЛОСКА (Фишка 2) ===
-            # Рисуем вертикальную зеленую линию слева от текста
+            # === АКЦЕНТНАЯ ПОЛОСКА ===
+            # Рисуем вертикальную зеленую линию слева от текста (растягивается на всё)
             bar_x = margin_left - 30
             bar_top = y_title_start + 5
-            bar_bottom = y_desc_start + desc_h
+            bar_bottom = y_desc_start + total_desc_h 
             
             # Рисуем линию
             draw_txt.rectangle(

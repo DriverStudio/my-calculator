@@ -1,8 +1,8 @@
 /* captcha.js - Движок мини-игр */
 
 const CAPTCHA_CONFIG = {
-    minTime: 60 * 1000, // Минимум 60 секунд
-    maxTime: 180 * 1000 // Максимум 3 минуты
+    minTime: 10 * 1000, // Минимум 60 секунд
+    maxTime: 11 * 1000 // Максимум 3 минуты
 };
 
 let captchaTimer = null;
@@ -71,11 +71,13 @@ function onSuccess() {
     const title = document.getElementById('captchaTitle');
 
     title.innerText = "✅ Отлично!";
-    title.style.color = "#28a745";
+    // Use class toggle so CSS controls visuals (avoids inline style overrides)
+    title.classList.add('captcha-success');
 
     setTimeout(() => {
         modal.style.display = 'none';
-        title.style.color = "#333"; // Сброс цвета
+        // Remove success class to restore CSS-managed color
+        title.classList.remove('captcha-success');
         scheduleNextCaptcha(); // Планируем следующую
     }, 800);
 }
