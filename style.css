@@ -951,7 +951,9 @@ button.btn-secondary {
 }
 
 /* --- ВНИМАНИЕ: Я убрал отсюда .tool-card, чтобы не ломать Premium UI --- */
-[data-theme="dark"] .ad-slot,
+[data-theme="dark"] .ad-slot{
+    background: #334155;
+},
 [data-theme="dark"] .search-box {
     background-color: #1e293b;
     border-color: #334155;
@@ -1100,6 +1102,32 @@ button.btn-secondary {
 [data-theme="dark"] .example ul {
     padding-left: 20px;
     margin: 0;
+}
+
+/* Настройка изображений внутри рекламных слотов */
+.ad-slot img {
+    width: 100%;       /* Растягиваем по ширине (как в JS) */
+    height: auto;      /* Высота авто */
+    object-fit: cover; /* Если картинка обрезается, она заполнит пространство красиво */
+}
+
+/* Ограничение высоты для верхнего баннера */
+#ad-banner-top img {
+    max-height: 250px; /* Больше этой высоты баннер не растянется */
+}
+
+/* Ограничение для сайдбара (на десктопе) */
+@media (min-width: 701px) {
+    #ad-sidebar img {
+        max-height: 600px; /* Сайдбар может быть высоким */
+    }
+}
+
+/* Адаптация для мобильных (когда сайдбар падает вниз) */
+@media (max-width: 700px) {
+    #ad-sidebar img {
+        max-height: 250px; /* На телефоне сайдбар не должен быть слишком высоким */
+    }
 }
 
 /* === ИСПРАВЛЕНИЕ ДЛЯ BOXES (LIVED DAYS) === */

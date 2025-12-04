@@ -2,7 +2,7 @@
     "ru": {
         "home": {
             "title": "💎 PRISMA",
-            "subtitle": "Коллекция из 30 полезного сервиса для работы и жизни.",
+            "subtitle": "Коллекция из 30+ полезных сервисов для работы и жизни.",
             "search_placeholder": "🔍 Найти инструмент (например: ндс, пароль)...",
             "no_results": "🤷‍♂️ Ничего не найдено.",
             "open_btn": "Открыть →"
@@ -484,7 +484,7 @@
     "en": {
         "home": {
             "title": "💎 PRISMA",
-            "subtitle": "A collection of 30 useful services for work and life.",
+            "subtitle": "A collection of 30+ useful services for work and everyday life.",
             "search_placeholder": "🔍 Find a tool (e.g., tax, password)...",
             "no_results": "🤷‍♂️ Nothing found.",
             "open_btn": "Open →"
