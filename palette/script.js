@@ -1,6 +1,6 @@
 const grid = document.getElementById('grid');
 const countLabel = document.getElementById('countVal');
-const modeLabel = document.getElementById('modeName');
+const modeSelect = document.getElementById('modeSelect');
 
 // СОСТОЯНИЕ
 let colors = []; 
@@ -12,6 +12,12 @@ const MIN_COLORS = 2;
 // 1. МАТЕМАТИКА ЦВЕТА (HSL to HEX)
 // ==========================================
 function hslToHex(h, s, l) {
+    // Нормализация значений
+    if (s > 100) s = 100; if (s < 0) s = 0;
+    if (l > 100) l = 100; if (l < 0) l = 0;
+    h = h % 360; 
+    if (h < 0) h += 360;
+
     l /= 100;
     const a = s * Math.min(l, 1 - l) / 100;
     const f = n => {
@@ -38,43 +44,103 @@ function getTextClass(hex) {
 // ==========================================
 // 2. ГЕНЕРАТОР ГАРМОНИИ
 // ==========================================
-function generateNewColor(strategy, index, total) {
-    // strategy: 'pastel', 'vibrant', 'dark', 'analogous'
-    
+/**
+ * @param {string} strategy - режим генерации
+ * @param {number} index - индекс текущего цвета в массиве (0..N)
+ * @param {number} total - всего цветов
+ * @param {number} baseHue - базовый оттенок (0-360), общий для всей палитры
+ */
+function generateNewColor(strategy, index, total, baseHue) {
     let h, s, l;
 
+    // Вспомогательная функция для random
+    const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
     switch (strategy) {
-        case 'pastel': // Высокая яркость, низкая/средняя насыщенность
-            h = Math.floor(Math.random() * 360);
-            s = Math.floor(Math.random() * 40) + 60; // 60-100%
-            l = Math.floor(Math.random() * 15) + 80; // 80-95%
+        case 'pastel': 
+            h = rand(0, 360);
+            s = rand(60, 90); 
+            l = rand(80, 95); 
             break;
         
-        case 'dark': // Низкая яркость
-            h = Math.floor(Math.random() * 360);
-            s = Math.floor(Math.random() * 50) + 30;
-            l = Math.floor(Math.random() * 20) + 10; // 10-30%
+        case 'dark': 
+            h = rand(0, 360);
+            s = rand(30, 70);
+            l = rand(10, 25); 
             break;
 
-        case 'vibrant': // Высокая насыщенность
-            h = Math.floor(Math.random() * 360);
-            s = Math.floor(Math.random() * 20) + 80; // 80-100%
-            l = Math.floor(Math.random() * 30) + 45; // 45-75%
+        case 'light': 
+            h = rand(0, 360);
+            s = rand(30, 60);
+            l = rand(90, 98); 
+            break;
+
+        case 'vibrant': 
+            h = rand(0, 360);
+            s = rand(85, 100); 
+            l = rand(45, 65); 
+            break;
+
+        case 'neon': 
+            h = rand(0, 360);
+            s = 100; 
+            l = 50; 
             break;
             
-        case 'analogous': // Цвета рядом друг с другом
-            // Базовый цвет зависит от индекса, чтобы создать радугу
-            const baseHue = Math.floor(Math.random() * 360);
-            const step = 30; // Шаг оттенка
-            h = (baseHue + (index * step)) % 360;
-            s = Math.floor(Math.random() * 30) + 50; 
-            l = Math.floor(Math.random() * 40) + 30;
+        case 'monochrome': 
+            // Один Hue, разные S и L
+            h = baseHue; 
+            s = rand(30, 90);
+            // Распределяем яркость равномерно, чтобы цвета не сливались
+            const stepM = 80 / (total || 1);
+            l = 10 + (index * stepM) + rand(-5, 5); 
             break;
 
-        default: // Случайный, но сбалансированный
-            h = Math.floor(Math.random() * 360);
-            s = Math.floor(Math.random() * 50) + 50; // Не слишком серые
-            l = Math.floor(Math.random() * 60) + 20; // Не черные и не белые
+        case 'analogous': 
+            // Цвета рядом друг с другом (веер 30-60 градусов)
+            const angleA = 40; 
+            // Смещение: -angle/2 ... +angle/2
+            const offsetA = (index / (total-1 || 1)) * angleA - (angleA/2);
+            h = baseHue + offsetA + rand(-5, 5);
+            s = rand(60, 90); 
+            l = rand(40, 70);
+            break;
+        
+        case 'triad': 
+            // 3 точки на круге (0, 120, 240)
+            const triadStep = Math.floor(index % 3) * 120;
+            h = baseHue + triadStep + rand(-10, 10);
+            s = rand(60, 90);
+            l = rand(40, 70);
+            break;
+
+        case 'warm': 
+            // Красный, оранжевый, желтый (Hue 330..60)
+            // Делаем трюк с модулем, чтобы пройти через 0
+            const warmBase = rand(-30, 60); 
+            h = warmBase;
+            s = rand(60, 90);
+            l = rand(40, 80);
+            break;
+        
+        case 'cold': 
+            // Синий, голубой, фиолетовый (Hue 170..270)
+            h = rand(170, 270);
+            s = rand(50, 90);
+            l = rand(30, 80);
+            break;
+
+        case 'vintage': 
+            // Сниженная насыщенность, теплые или блеклые тона
+            h = rand(0, 360);
+            s = rand(10, 50);
+            l = rand(40, 70);
+            break;
+
+        default: // 'random' и прочее
+            h = rand(0, 360);
+            s = rand(40, 95); 
+            l = rand(30, 80);
             break;
     }
 
@@ -87,35 +153,48 @@ function generateNewColor(strategy, index, total) {
 
 function initColors() {
     colors = [];
-    for(let i=0; i<currentColorCount; i++) {
-        colors.push({ hex: generateNewColor('default', i, currentColorCount), isLocked: false });
-    }
-    render();
+    generatePalette(); // Используем основную функцию для старта
 }
 
 function generatePalette() {
-    // Выбираем случайную стратегию для этого нажатия
-    const strategies = ['pastel', 'vibrant', 'dark', 'analogous', 'default'];
-    const strategy = strategies[Math.floor(Math.random() * strategies.length)];
+    let strategy = modeSelect.value;
     
-    // Переводим название для юзера
-    const names = {
-        'pastel': 'Пастель', 'vibrant': 'Яркий', 'dark': 'Темный', 
-        'analogous': 'Аналоговый', 'default': 'Случайный'
-    };
-    modeLabel.innerText = `Режим: ${names[strategy]}`;
+    // Список стратегий для рандома
+    const strategies = ['pastel', 'vibrant', 'dark', 'monochrome', 'analogous', 'triad', 'warm', 'cold', 'vintage'];
+    
+    if (strategy === 'random') {
+        strategy = strategies[Math.floor(Math.random() * strategies.length)];
+        // Можно визуально показать в консоли, какой режим выпал, или обновить селект (по желанию)
+        // console.log("Auto mode picked:", strategy); 
+    }
 
-    // Генерируем только незаблокированные
+    // Генерируем БАЗОВЫЙ ОТТЕНОК для этого нажатия
+    // Это важно для режимов Monochromatic, Analogous, Triad,
+    // чтобы они выглядели как единая палитра.
+    const baseHue = Math.floor(Math.random() * 360);
+
+    // Если массив пуст (первый запуск), заполняем заглушками
+    if (colors.length < currentColorCount) {
+        for(let i=0; i<currentColorCount; i++) {
+            colors.push({ hex: '#000000', isLocked: false });
+        }
+    } else {
+        // Если уменьшали и увеличивали количество, массив может быть не той длины
+        while(colors.length < currentColorCount) colors.push({ hex: '#000000', isLocked: false });
+        while(colors.length > currentColorCount) colors.pop();
+    }
+
+    // Применяем цвета
     colors.forEach((col, index) => {
         if (!col.isLocked) {
-            col.hex = generateNewColor(strategy, index, currentColorCount);
+            col.hex = generateNewColor(strategy, index, currentColorCount, baseHue);
         }
     });
+    
     render();
 }
 
 function sortColors() {
-    // Сортировка по яркости (Luminance)
     colors.sort((a, b) => getLuminanceVal(a.hex) - getLuminanceVal(b.hex));
     render();
 }
@@ -153,9 +232,17 @@ window.changeCount = (delta) => {
     const newCount = currentColorCount + delta;
     if (newCount >= MIN_COLORS && newCount <= MAX_COLORS) {
         currentColorCount = newCount;
+        
+        // При добавлении сразу генерируем цвет, соответствующий текущей палитре
+        // Но так как мы не знаем текущий baseHue предыдущей генерации, 
+        // просто генерируем случайный совместимый или 'default'.
+        // Для простоты — перегенерируем незалоченные или добавляем рандом.
         if (delta > 0) {
-            // Добавляем новый (используем текущий режим для гармонии или дефолт)
-            colors.push({ hex: generateNewColor('default', 0, 0), isLocked: false });
+            const tempHue = Math.floor(Math.random() * 360);
+            colors.push({ 
+                hex: generateNewColor(modeSelect.value === 'random' ? 'default' : modeSelect.value, colors.length, newCount, tempHue), 
+                isLocked: false 
+            });
         } else {
             colors.pop();
         }
@@ -173,11 +260,16 @@ window.copyColor = (hex) => {
 
 document.getElementById('btnGen').addEventListener('click', generatePalette);
 document.addEventListener('keydown', (e) => {
-    if (e.code === 'Space') { e.preventDefault(); generatePalette(); }
+    // Генерируем только если фокус не на селекте (иначе пробел открывает селект)
+    if (e.code === 'Space' && document.activeElement !== modeSelect) { 
+        e.preventDefault(); 
+        generatePalette(); 
+    }
 });
 
-// Сортировка доступна глобально
+// Экспорт функций
 window.sortColors = sortColors;
+window.generatePalette = generatePalette;
 
 // Старт
 initColors();

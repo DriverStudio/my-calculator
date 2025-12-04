@@ -1,48 +1,59 @@
 <!DOCTYPE html>
 
 <html lang="ru">
+
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Генератор надежных паролей</title>
-<meta content="Создать сложный пароль" name="description"/>
-<meta content="Генератор надежных паролей" property="og:title"/>
-<meta content="Создать сложный пароль" property="og:description"/>
-<meta content="website" property="og:type"/>
-<link href="../style.css" rel="stylesheet"/>
-<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🧰&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Генератор надежных паролей</title>
+    <meta content="Создать сложный пароль" name="description" />
+    <meta content="Генератор надежных паролей" property="og:title" />
+    <meta content="Создать сложный пароль" property="og:description" />
+    <meta content="website" property="og:type" />
+    <link href="../style.css" rel="stylesheet" />
+    <link
+        href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🧰&lt;/text&gt;&lt;/svg&gt;"
+        rel="icon" />
 </head>
+
 <body>
-<div class="container">
-<div class="calculator">
-<h1 data-i18n="pass.Генератор_паролей">🔐 Генератор паролей</h1>
-<p data-i18n="pass.Создайте_безопасный_пароль_для_защиты_своих_аккаунтов">Создайте безопасный пароль для защиты своих аккаунтов.</p>
-<div class="input-group">
-<label>Длина пароля: <span id="lenValue">12</span></label>
-<input id="length" max="32" min="4" oninput="document.getElementById('lenValue').innerText = this.value" type="range" value="12"/>
-</div>
-<div class="input-group" style="display: flex; gap: 15px; flex-wrap: wrap;">
-<label><input checked="" id="upper" style="width:auto;" type="checkbox"/> A-Z</label>
-<label><input checked="" id="lower" style="width:auto;" type="checkbox"/> a-z</label>
-<label><input checked="" id="numbers" style="width:auto;" type="checkbox"/> 0-9</label>
-<label><input id="symbols" style="width:auto;" type="checkbox"/> @#$</label>
-</div>
-<button data-i18n="pass.Сгенерировать" id="btnCalc">🎲 Сгенерировать</button>
-<div class="result" id="resultBox">
-<h2 id="resultValue" style="font-family: monospace; word-break: break-all; font-size: 24px;"></h2>
-<div id="resultDescription" style="margin-top:10px; color:#555;">Нажмите кнопку копирования ниже</div>
-</div>
-<button class="btn-secondary" data-i18n="pass.Скопировать_результат" id="btnCopy">📋 Скопировать результат</button>
-</div>
-<div class="sidebar">
-<div class="ad-slot" id="ad-sidebar"></div>
-<div style="background: #eef; padding: 15px; border-radius: 10px; font-size: 14px;">
-<h3 data-i18n="pass.ℹ_Совет">ℹ️ Совет:</h3>
-<p data-i18n="pass.Хороший_пароль_должен_быть_длиннее_10_символов_и_содержать_разные_типы_знаков_Не_используйте_даты_рождения">Хороший пароль должен быть длиннее 10 символов и содержать разные типы знаков. Не используйте даты рождения!</p>
-</div>
-</div>
-</div>
-<script src="../main.js"></script>
-<script src="script.js"></script>
+    <div class="container">
+        <div class="calculator">
+            <h1 data-i18n="pass.Генератор_паролей">🔐 Генератор паролей</h1>
+            <p data-i18n="pass.Создайте_безопасный_пароль_для_защиты_своих_аккаунтов">Создайте безопасный пароль для
+                защиты своих аккаунтов.</p>
+            <div class="input-group">
+                <label>Длина пароля: <span id="lenValue">12</span></label>
+                <input id="length" max="32" min="4" oninput="document.getElementById('lenValue').innerText = this.value"
+                    type="range" value="12" />
+            </div>
+            <div class="input-group" style="display: flex; gap: 15px; flex-wrap: wrap;">
+                <label><input checked="" id="upper" style="width:auto;" type="checkbox" /> A-Z</label>
+                <label><input checked="" id="lower" style="width:auto;" type="checkbox" /> a-z</label>
+                <label><input checked="" id="numbers" style="width:auto;" type="checkbox" /> 0-9</label>
+                <label><input id="symbols" style="width:auto;" type="checkbox" /> @#$</label>
+            </div>
+            <button data-i18n="pass.Сгенерировать" id="btnCalc">🎲 Сгенерировать</button>
+            <div class="result" id="resultBox">
+                <h2 id="resultValue" style="font-family: monospace; word-break: break-all; font-size: 24px;"></h2>
+                <div id="resultDescription" style="margin-top:10px; color:#555;">Нажмите кнопку копирования ниже</div>
+            </div>
+            <button class="btn-secondary" data-i18n="pass.Скопировать_результат" id="btnCopy">📋 Скопировать
+                результат</button>
+        </div>
+        <div class="sidebar">
+            <div class="ad-slot" id="ad-sidebar"></div>
+            <div class="note">
+                <h3 data-i18n="pass.ℹ_Совет">ℹ️ Совет:</h3>
+                <p
+                    data-i18n="pass.Хороший_пароль_должен_быть_длиннее_10_символов_и_содержать_разные_типы_знаков_Не_используйте_даты_рождения">
+                    Хороший пароль должен быть длиннее 10 символов и содержать разные типы знаков. Не используйте даты
+                    рождения!</p>
+            </div>
+        </div>
+    </div>
+    <script src="../main.js"></script>
+    <script src="script.js"></script>
 </body>
+
 </html>

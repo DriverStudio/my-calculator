@@ -383,3 +383,22 @@ function initFooter() {
     `;
     document.body.appendChild(footer);
 }
+
+// Функция для безопасного получения числа из инпута
+function getNumber(id) {
+    const el = document.getElementById(id);
+    if (!el) return 0;
+    
+    // 1. Берем значение
+    let val = el.value;
+    
+    // 2. Удаляем пробелы (от форматирования 10 000 -> 10000)
+    val = val.replace(/\s/g, '');
+    
+    // 3. Заменяем запятую на точку (если юзер ввел 10,5)
+    val = val.replace(',', '.');
+    
+    // 4. Превращаем в число. Если пусто или мусор — возвращаем 0
+    const num = parseFloat(val);
+    return isNaN(num) ? 0 : num;
+}

@@ -1,62 +1,71 @@
 <!DOCTYPE html>
 
 <html lang="ru">
+
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Генератор QR-кодов онлайн</title>
-<meta content="Ссылка в картинку" name="description"/>
-<meta content="Генератор QR-кодов онлайн" property="og:title"/>
-<meta content="Ссылка в картинку" property="og:description"/>
-<meta content="website" property="og:type"/>
-<link href="../style.css" rel="stylesheet"/>
-<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🧰&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<style>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Генератор QR-кодов онлайн</title>
+    <meta content="Ссылка в картинку" name="description" />
+    <meta content="Генератор QR-кодов онлайн" property="og:title" />
+    <meta content="Ссылка в картинку" property="og:description" />
+    <meta content="website" property="og:type" />
+    <link href="../style.css" rel="stylesheet" />
+    <link
+        href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🧰&lt;/text&gt;&lt;/svg&gt;"
+        rel="icon" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
         /* Специфичные стили для QR */
         #qrcode {
             margin: 20px auto;
             padding: 10px;
             background: white;
-            display: inline-block; /* Чтобы рамка облегала код */
+            display: inline-block;
+            /* Чтобы рамка облегала код */
             border: 1px solid #ddd;
             border-radius: 8px;
         }
+
         #qrcode img {
             margin: 0 auto;
             display: block;
         }
     </style>
 </head>
+
 <body>
-<div class="container">
-<div class="calculator">
-<h1 data-i18n="qr.Генератор_QR_кодов">📱 Генератор QR-кодов</h1>
-<p data-i18n="qr.Превратите_ссылку_или_текст_в_картинку">Превратите ссылку или текст в картинку.</p>
-<div class="input-group">
-<label data-i18n="qr.Введите_ссылку_или_текст">Введите ссылку или текст:</label>
-<input id="qrText" placeholder="https://mysite.com" type="text" value="https://github.com"/>
-</div>
-<button data-i18n="qr.Создать_QR_код" id="btnGen">⚡ Создать QR-код</button>
-<div class="result" id="resultBox" style="text-align: center;">
-<div id="qrcode"></div>
-<p data-i18n="qr.Наведите_камеру_телефона_чтобы_проверить" style="font-size: 12px; color: #777; margin-top: 10px;">Наведите камеру телефона, чтобы проверить</p>
-</div>
-</div>
-<div class="sidebar">
-<div class="ad-slot" id="ad-sidebar"></div>
-<div style="background: #eef; padding: 15px; border-radius: 10px; font-size: 14px;">
-<h3 data-i18n="qr.Где_использовать">💡 Где использовать?</h3>
-<ul style="padding-left: 20px; margin: 0;">
-<li>Ссылка на ваш сайт</li>
-<li>Пароль от Wi-Fi</li>
-<li>Визитка (VCard)</li>
-<li>Telegram канал</li>
-</ul>
-</div>
-</div>
-</div>
-<script src="../main.js"></script>
-<script src="script.js"></script>
+    <div class="container">
+        <div class="calculator">
+            <h1 data-i18n="qr.Генератор_QR_кодов">📱 Генератор QR-кодов</h1>
+            <p data-i18n="qr.Превратите_ссылку_или_текст_в_картинку">Превратите ссылку или текст в картинку.</p>
+            <div class="input-group">
+                <label data-i18n="qr.Введите_ссылку_или_текст">Введите ссылку или текст:</label>
+                <input id="qrText" placeholder="https://mysite.com" type="text" value="https://github.com" />
+            </div>
+            <button data-i18n="qr.Создать_QR_код" id="btnGen">⚡ Создать QR-код</button>
+            <div class="result" id="resultBox" style="text-align: center;">
+                <div id="qrcode"></div>
+                <p data-i18n="qr.Наведите_камеру_телефона_чтобы_проверить"
+                    style="font-size: 12px; color: #777; margin-top: 10px;">Наведите камеру телефона, чтобы проверить
+                </p>
+            </div>
+        </div>
+        <div class="sidebar">
+            <div class="ad-slot" id="ad-sidebar"></div>
+            <div class="note">
+                <h3 data-i18n="qr.Где_использовать">💡 Где использовать?</h3>
+                <ul>
+                    <li>Ссылка на ваш сайт</li>
+                    <li>Пароль от Wi-Fi</li>
+                    <li>Визитка (VCard)</li>
+                    <li>Telegram канал</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script src="../main.js"></script>
+    <script src="script.js"></script>
 </body>
+
 </html>

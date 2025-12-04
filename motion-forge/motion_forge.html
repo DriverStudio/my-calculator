@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRISMA | Motion Forge</title>
+    <style>
+        /* --- 1. VARIABLES & THEME --- */
+        :root {
+            --bg-color: #0f111a;
+            --panel-bg: rgba(255, 255, 255, 0.03);
+            --panel-border: rgba(255, 255, 255, 0.08);
+            --accent-primary: #8b5cf6; /* Purple */
+            --accent-secondary: #10b981; /* Green */
+            --accent-warning: #f59e0b;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --grid-line: rgba(255, 255, 255, 0.05);
+            
+            --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --spacer-sm: 8px;
+            --spacer-md: 16px;
+        }
+
+        * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            margin: 0;
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.08), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.08), transparent 25%);
+            color: var(--text-main);
+            font-family: var(--font-ui);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            user-select: none;
+        }
+
+        /* --- 2. LAYOUT GRID --- */
+        .app-container {
+            display: grid;
+            grid-template-columns: 260px 1fr 280px;
+            grid-template-rows: 50px 1fr 240px;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* Top Bar */
+        .header {
+            grid-column: 1 / -1;
+            background: rgba(15, 17, 26, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--panel-border);
+            display: flex;
+            align-items: center;
+            padding: 0 var(--spacer-md);
+            justify-content: space-between;
+            z-index: 10;
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo span { color: var(--accent-secondary); }
+
+        .toolbar { display: flex; gap: 16px; align-items: center; }
+        
+        .global-settings {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-muted);
+            border-right: 1px solid var(--panel-border);
+            padding-right: 16px;
+        }
+        
+        /* Panels */
+        .panel {
+            background: var(--panel-bg);
+            border-right: 1px solid var(--panel-border);
+            display: flex;
+            flex-direction: column;
+        }
+        .panel-right { border-right: none; border-left: 1px solid var(--panel-border); }
+        .panel-bottom {
+            grid-column: 1 / -1;
+            border-top: 1px solid var(--panel-border);
+            border-right: none;
+            background: #0d0f16;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            padding: 0 var(--spacer-md);
+            height: 40px;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--panel-border);
+            background: rgba(255,255,255,0.02);
+            justify-content: space-between;
+        }
+
+        /* --- 3. UI COMPONENTS --- */
+        /* Buttons */
+        .btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--panel-border);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn:hover { background: rgba(255,255,255,0.1); border-color: var(--text-muted); }
+        .btn-primary { background: var(--accent-primary); border-color: var(--accent-primary); color: white; }
+        .btn-primary:hover { background: #7c3aed; }
+        .btn-active { background: var(--accent-secondary); border-color: var(--accent-secondary); color: #000; font-weight: bold; }
+        .btn-icon { padding: 6px; }
+        .btn-ghost { background: transparent; border: none; opacity: 0.6; }
+        .btn-ghost:hover { opacity: 1; background: rgba(255,255,255,0.05); }
+
+        /* Small KF add button */
+        .btn-kf-add {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-muted);
+            width: 18px; height: 18px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-right: 6px;
+        }
+        .btn-kf-add:hover { border-color: var(--accent-secondary); color: var(--accent-secondary); }
+
+        /* Inputs */
+        .input-group {
+            padding: 8px var(--spacer-md);
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+        .input-group label { color: var(--text-muted); }
+        
+        input[type="number"], input[type="text"], input[type="color"] {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--panel-border);
+            color: var(--text-main);
+            padding: 4px 8px;
+            border-radius: 4px;
+            width: 100%;
+            font-family: monospace;
+            font-size: 11px;
+        }
+        
+        .header-input {
+            width: 80px !important;
+            background: rgba(0,0,0,0.2) !important;
+        }
+
+        /* Inline Timeline Input */
+        .timeline-input {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: var(--accent-secondary);
+            font-family: monospace;
+            font-size: 10px;
+            width: 50px;
+            text-align: right;
+            padding: 0 4px;
+            margin-left: auto;
+            margin-right: 10px;
+        }
+        .timeline-input:focus {
+            background: rgba(255,255,255,0.1);
+            border-bottom-color: var(--accent-secondary);
+        }
+
+        input[type="color"] { padding: 0; height: 24px; cursor: pointer; }
+
+        /* Layers List */
+        .layer-list { flex: 1; overflow-y: auto; }
+        .layer-item {
+            padding: 8px var(--spacer-md);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            border-bottom: 1px solid rgba(255,255,255,0.02);
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+        .layer-item:hover { background: rgba(255,255,255,0.03); }
+        .layer-item.active { background: rgba(139, 92, 246, 0.15); border-left: 2px solid var(--accent-primary); }
+        .layer-item.hidden { opacity: 0.5; }
+        .layer-vis-btn { 
+            cursor: pointer; 
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+        }
+        .layer-vis-btn:hover { color: white; }
+
+        /* Viewport (Center) */
+        .viewport-area {
+            background: #050508;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: 
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 20px 20px;
+            z-index: 1;
+        }
+        
+        #canvas-stage {
+            width: 800px;
+            height: 600px;
+            background: white;
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            overflow: hidden; /* Clip content */
+            transform-origin: center center;
+        }
+        
+        /* Rendered Elements */
+        .mf-layer {
+            position: absolute;
+            transform-origin: center center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            cursor: default;
+        }
+
+        /* --- 4. GIZMO & TRANSFORM CONTROLS --- */
+        #gizmo-overlay {
+            position: absolute;
+            top: 0; left: 0; 
+            width: 0; height: 0;
+            pointer-events: none;
+            z-index: 100;
+            display: none; 
+        }
+        #gizmo-overlay.visible { display: block; }
+
+        .gizmo-box {
+            position: absolute;
+            border: 1px solid var(--accent-primary);
+            box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.3);
+            pointer-events: all;
+            cursor: move;
+        }
+
+        .resize-handle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: white;
+            border: 1px solid var(--accent-primary);
+            border-radius: 2px;
+            pointer-events: all;
+            z-index: 101;
+        }
+        .rh-nw { top: -5px; left: -5px; cursor: nw-resize; }
+        .rh-ne { top: -5px; right: -5px; cursor: ne-resize; }
+        .rh-sw { bottom: -5px; left: -5px; cursor: sw-resize; }
+        .rh-se { bottom: -5px; right: -5px; cursor: se-resize; }
+
+
+        /* --- 5. TIMELINE LAYOUT --- */
+        .timeline-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .track-labels-col {
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 240px; 
+            background: #0d0f16;
+            border-right: 1px solid var(--panel-border);
+            z-index: 20;
+            overflow: hidden; 
+            pointer-events: all; 
+        }
+        .labels-header-shim {
+            height: 25px; 
+            border-bottom: 1px solid var(--panel-border);
+            background: #1a1d26;
+            width: 100%;
+        }
+
+        .timeline-scroll-area {
+            flex: 1;
+            overflow: auto;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            margin-left: 240px; 
+            border-left: 1px solid var(--panel-border);
+        }
+
+        .timeline-ruler {
+            height: 24px;
+            background: #1a1d26;
+            border-bottom: 1px solid var(--panel-border);
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            cursor: ew-resize;
+            min-width: 100%; 
+        }
+        
+        .ruler-marker {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            border-left: 1px solid rgba(255,255,255,0.1);
+            font-size: 9px;
+            color: var(--text-muted);
+            padding-left: 4px;
+            line-height: 24px;
+            pointer-events: none;
+        }
+        .ruler-marker.sub { border-left: 1px solid rgba(255,255,255,0.05); height: 50%; bottom: 0; top: auto; }
+
+        /* Playhead */
+        .playhead {
+            position: absolute;
+            top: 0; 
+            bottom: 0; 
+            width: 1px;
+            background: #ef4444;
+            z-index: 50;
+            pointer-events: none;
+            height: 2000px;
+        }
+        .playhead-knob {
+            position: absolute;
+            top: 0; left: -5px;
+            width: 11px; height: 10px;
+            background: #ef4444;
+            border-radius: 0 0 2px 2px;
+            z-index: 51;
+        }
+
+        .timeline-tracks {
+            flex: 1;
+            position: relative;
+            min-width: 100%;
+            padding-bottom: 50px;
+        }
+        
+        .timeline-grid {
+            position: absolute;
+            top: 0; left: 0; bottom: 0;
+            pointer-events: none;
+            background-image: linear-gradient(90deg, var(--panel-border) 1px, transparent 1px);
+            background-size: 100px 100%;
+            width: 100%;
+        }
+
+        /* TRACK STYLING */
+        .track {
+            height: 30px;
+            margin-bottom: 1px;
+            background: rgba(255,255,255,0.02);
+            position: relative;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.02);
+        }
+        .track.sub-track {
+            background: rgba(0,0,0,0.2);
+            height: 26px;
+        }
+        
+        .track-label-shim {
+            height: 30px;
+            margin-bottom: 1px;
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+            font-size: 11px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--panel-border);
+            background: #0d0f16;
+            pointer-events: all;
+            user-select: none;
+            white-space: nowrap;
+        }
+        .track-label-shim.sub-track {
+            height: 26px;
+            padding-left: 28px;
+            color: #888;
+            font-size: 10px;
+            background: #08090c;
+        }
+        .track-label-shim:hover { background: rgba(255,255,255,0.05); }
+        .track-label-shim.selected { background: rgba(139, 92, 246, 0.1); border-left: 2px solid var(--accent-primary); }
+
+        .expand-arrow {
+            width: 16px; height: 16px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            margin-right: 4px;
+            font-size: 9px;
+            transform: rotate(0deg);
+            transition: transform 0.1s;
+        }
+        .expand-arrow.expanded { transform: rotate(90deg); }
+
+        .track-content {
+            flex: 1;
+            position: relative;
+            height: 100%;
+            margin-left: 0;
+        }
+
+        .keyframe {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            transform: rotate(45deg);
+            top: 11px; 
+            cursor: pointer;
+            border: 1px solid #fff;
+            background: var(--accent-primary);
+            z-index: 3;
+            transition: border-color 0.1s, transform 0.1s;
+        }
+        .sub-track .keyframe { top: 9px; width: 6px; height: 6px; } 
+        
+        .keyframe:hover { border-color: var(--accent-warning); z-index: 4; transform: rotate(45deg) scale(1.3); }
+        .keyframe.selected { background: var(--accent-warning); border-color: var(--accent-warning); z-index: 5; }
+        .keyframe.dragging { cursor: grabbing; box-shadow: 0 0 5px rgba(255,255,255,0.5); }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- HEADER -->
+        <header class="header">
+            <div class="logo">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                MOTION FORGE <span>ALPHA v0.9</span>
+            </div>
+            
+            <div class="toolbar">
+                <div class="global-settings">
+                    <span title="Duration">⏱️</span>
+                    <input type="number" id="inp-duration" class="header-input" value="3000" step="100">
+                    <span>ms</span>
+                </div>
+
+                <button class="btn" id="btn-play">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                    Play (Space)
+                </button>
+                <button class="btn btn-primary" id="btn-export">Export Code</button>
+            </div>
+        </header>
+
+        <!-- LEFT SIDEBAR: LAYERS -->
+        <aside class="panel">
+            <div class="panel-header">
+                <span>Layers</span>
+                <button class="btn btn-icon" id="btn-add-layer" style="margin-left: auto; height: 24px;">+</button>
+            </div>
+            <div class="layer-list" id="layer-list-container">
+                <!-- JS will populate this -->
+            </div>
+        </aside>
+
+        <!-- CENTER: VIEWPORT -->
+        <main class="viewport-area" id="viewport-root">
+            <div id="canvas-stage">
+                <!-- Layers Rendered Here -->
+            </div>
+            
+            <!-- GIZMO -->
+            <div id="gizmo-overlay">
+                <div class="gizmo-box" id="gizmo-box">
+                    <div class="resize-handle rh-nw" data-handle="nw"></div>
+                    <div class="resize-handle rh-ne" data-handle="ne"></div>
+                    <div class="resize-handle rh-sw" data-handle="sw"></div>
+                    <div class="resize-handle rh-se" data-handle="se"></div>
+                </div>
+            </div>
+        </main>
+
+        <!-- RIGHT SIDEBAR: PROPERTIES -->
+        <aside class="panel panel-right">
+            <div class="panel-header">
+                Properties
+            </div>
+            <div id="properties-container">
+                <div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 12px;">
+                    Select a layer
+                </div>
+            </div>
+        </aside>
+
+        <!-- BOTTOM: TIMELINE -->
+        <footer class="panel panel-bottom">
+            <div class="panel-header">
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <button class="btn btn-icon" id="btn-add-kf" title="Add Keyframe at current time">
+                        <span style="color:var(--accent-secondary); font-size:14px;">◇+</span> All Props
+                    </button>
+                    <span style="font-size:10px; color:#666;">(Select key & press Del to remove)</span>
+                </div>
+                <span class="badge" id="time-display">0ms</span>
+            </div>
+            
+            <div class="timeline-wrapper">
+                <!-- Fixed Labels Column -->
+                <div class="track-labels-col" id="track-labels-col">
+                    <div class="labels-header-shim"></div>
+                    <div id="labels-content"></div>
+                </div>
+
+                <!-- Scrollable Area -->
+                <div class="timeline-scroll-area" id="timeline-scroll-area">
+                    <div class="timeline-ruler" id="timeline-ruler">
+                        <div class="playhead" id="playhead">
+                            <div class="playhead-knob"></div>
+                        </div>
+                        <div id="ruler-markers-container"></div>
+                    </div>
+                    
+                    <div class="timeline-tracks" id="timeline-tracks">
+                        <div class="timeline-grid" id="timeline-grid"></div>
+                        <!-- Keyframe tracks injected here -->
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- APPLICATION LOGIC -->
+    <script>
+        /* --- 1. UTILS --- */
+        const uuid = () => 'layer_' + Math.random().toString(36).substr(2, 9);
+        const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
+        const lerp = (start, end, t) => start * (1 - t) + end * t;
+        const PX_PER_SEC = 100; // 100px = 1000ms
+
+        /* --- 2. STATE MANAGER --- */
+        const State = {
+            data: {
+                meta: { width: 800, height: 600, duration: 3000 },
+                currentTime: 0,
+                isPlaying: false,
+                selection: null, 
+                selectedKeyframe: null, 
+                layers: [
+                    {
+                        id: 'layer_demo_1',
+                        name: 'Red Box',
+                        type: 'div',
+                        visible: true,
+                        expanded: true, 
+                        styles: {
+                            x: 100, y: 100, width: 100, height: 100,
+                            backgroundColor: '#ef4444', borderRadius: 12, rotate: 0, opacity: 1
+                        },
+                        keyframes: [
+                            { offset: 0, x: 100, rotate: 0 },
+                            { offset: 1, x: 400, rotate: 180 }
+                        ]
+                    }
+                ]
+            },
+            listeners: [],
+
+            get() { return this.data; },
+            subscribe(fn) { this.listeners.push(fn); },
+            notify(source = null) { this.listeners.forEach(fn => fn(this.data, source)); },
+
+            // --- Actions ---
+            addLayer() {
+                const id = uuid();
+                this.data.layers.push({
+                    id,
+                    name: `Layer ${this.data.layers.length + 1}`,
+                    type: 'div',
+                    visible: true,
+                    expanded: true,
+                    styles: {
+                        x: 350, y: 250, width: 100, height: 100,
+                        backgroundColor: '#8b5cf6', borderRadius: 0, rotate: 0, opacity: 1
+                    },
+                    keyframes: []
+                });
+                this.selectLayer(id);
+                this.notify(); // Rebuild
+            },
+
+            selectLayer(id) {
+                this.data.selection = id;
+                this.data.selectedKeyframe = null; 
+                this.notify('selection'); // Minor update
+            },
+            
+            selectKeyframe(layerId, index, prop = null) {
+                this.data.selection = layerId;
+                this.data.selectedKeyframe = { layerId, index, prop };
+                this.notify('selection');
+            },
+
+            toggleVisibility(id) {
+                const layer = this.data.layers.find(l => l.id === id);
+                if (layer) {
+                    layer.visible = !layer.visible;
+                    this.notify();
+                }
+            },
+            
+            toggleExpand(id) {
+                const layer = this.data.layers.find(l => l.id === id);
+                if (layer) {
+                    layer.expanded = !layer.expanded;
+                    this.notify(); // Rebuild tracks
+                }
+            },
+
+            togglePlay() {
+                this.data.isPlaying = !this.data.isPlaying;
+                this.notify('playback');
+            },
+
+            setDuration(ms) {
+                ms = parseInt(ms);
+                if (ms > 0) {
+                    this.data.meta.duration = ms;
+                    this.notify(); // Rebuild ruler
+                }
+            },
+
+            updateLayerStyle(id, prop, value) {
+                const layer = this.data.layers.find(l => l.id === id);
+                if (!layer) return;
+
+                if(['x','y','width','height','rotate','opacity'].includes(prop)) {
+                    value = parseFloat(value);
+                }
+                
+                layer.styles[prop] = value;
+
+                // Auto-Key logic
+                const offset = this.data.currentTime / this.data.meta.duration;
+                const tolerance = 10 / this.data.meta.duration; 
+                
+                const existingKf = layer.keyframes.find(k => Math.abs(k.offset - offset) < tolerance);
+                let structureChanged = false;
+                
+                if (existingKf) {
+                    existingKf[prop] = value;
+                } else {
+                    const kf = { offset: parseFloat(offset.toFixed(4)) };
+                    ['x','y','width','height','rotate','opacity','backgroundColor','borderRadius'].forEach(p => {
+                        kf[p] = layer.styles[p];
+                    });
+                    kf[prop] = value; 
+                    layer.keyframes.push(kf);
+                    layer.keyframes.sort((a,b) => a.offset - b.offset);
+                    structureChanged = true;
+                }
+
+                // Optimization: If structure changed (new key), full rebuild. Else just prop update.
+                this.notify(structureChanged ? null : 'props'); 
+            },
+            
+            addKeyframeForProperty(layerId, prop) {
+                const layer = this.data.layers.find(l => l.id === layerId);
+                if (!layer) return;
+
+                const offset = this.data.currentTime / this.data.meta.duration;
+                const tolerance = 10 / this.data.meta.duration;
+                
+                let kf = layer.keyframes.find(k => Math.abs(k.offset - offset) < tolerance);
+                
+                if (!kf) {
+                    kf = { offset: parseFloat(offset.toFixed(4)) };
+                    ['x','y','width','height','rotate','opacity','backgroundColor','borderRadius'].forEach(p => {
+                        kf[p] = layer.styles[p];
+                    });
+                    layer.keyframes.push(kf);
+                    layer.keyframes.sort((a,b) => a.offset - b.offset);
+                }
+                
+                kf[prop] = layer.styles[prop]; // Ensure val is set
+                
+                this.notify(); // Rebuild to show keyframe
+            },
+
+            updateKeyframeTime(layerId, kfIndex, newOffset) {
+                const layer = this.data.layers.find(l => l.id === layerId);
+                if(layer && layer.keyframes[kfIndex]) {
+                    layer.keyframes[kfIndex].offset = clamp(newOffset, 0, 1);
+                    layer.keyframes.sort((a,b) => a.offset - b.offset);
+                    this.interpolateAllLayers(); 
+                    this.notify(); // Rebuild keys
+                }
+            },
+            
+            deleteSelectedKeyframe() {
+                const sel = this.data.selectedKeyframe;
+                if (!sel) return;
+                
+                const layer = this.data.layers.find(l => l.id === sel.layerId);
+                if (!layer || !layer.keyframes[sel.index]) return;
+                
+                const kf = layer.keyframes[sel.index];
+                
+                if (sel.prop) {
+                    delete kf[sel.prop];
+                    // Check if keyframe is empty of animatable props
+                    const animatable = ['x', 'y', 'width', 'height', 'rotate', 'opacity', 'backgroundColor', 'borderRadius'];
+                    const hasProps = animatable.some(p => kf[p] !== undefined);
+                    if (!hasProps) {
+                        layer.keyframes.splice(sel.index, 1);
+                    }
+                } else {
+                    layer.keyframes.splice(sel.index, 1);
+                }
+                
+                this.data.selectedKeyframe = null;
+                this.interpolateAllLayers();
+                this.notify(); // Rebuild
+            },
+
+            setTime(ms) {
+                if (ms > this.data.meta.duration) {
+                    if (this.data.isPlaying) ms = 0;
+                    else ms = this.data.meta.duration;
+                }
+                
+                // Snap Logic (Only when not playing)
+                if (!this.data.isPlaying && this.data.selection) {
+                    const layer = this.data.layers.find(l => l.id === this.data.selection);
+                    if (layer) {
+                        const snapDist = 15;
+                        const currentPx = (ms / 1000) * PX_PER_SEC;
+                        for (let k of layer.keyframes) {
+                            const kPx = (k.offset * this.data.meta.duration / 1000) * PX_PER_SEC;
+                            if (Math.abs(currentPx - kPx) < snapDist) {
+                                ms = k.offset * this.data.meta.duration;
+                                break;
+                            }
+                        }
+                    }
+                }
+                
+                this.data.currentTime = clamp(ms, 0, this.data.meta.duration);
+                this.interpolateAllLayers();
+                this.notify('time'); // OPTIMIZATION: 'time' source skips heavy DOM rebuild
+            },
+
+            addKeyframe() {
+                if (!this.data.selection) return;
+                const layer = this.data.layers.find(l => l.id === this.data.selection);
+                const offset = this.data.currentTime / this.data.meta.duration;
+                
+                const kf = { offset: parseFloat(offset.toFixed(4)) };
+                ['x','y','width','height','rotate','opacity','backgroundColor','borderRadius'].forEach(p => {
+                    kf[p] = layer.styles[p];
+                });
+
+                const existingIdx = layer.keyframes.findIndex(k => Math.abs(k.offset - offset) < 0.001);
+                if (existingIdx >= 0) {
+                    layer.keyframes[existingIdx] = kf;
+                } else {
+                    layer.keyframes.push(kf);
+                    layer.keyframes.sort((a,b) => a.offset - b.offset);
+                }
+                this.notify();
+            },
+
+            interpolateAllLayers() {
+                const t = this.data.currentTime;
+                const dur = this.data.meta.duration;
+                const progress = t / dur;
+
+                this.data.layers.forEach(layer => {
+                    if (layer.keyframes.length < 2) return;
+
+                    const props = ['x', 'y', 'width', 'height', 'rotate', 'opacity'];
+                    let startK = layer.keyframes[0];
+                    let endK = layer.keyframes[layer.keyframes.length-1];
+
+                    if (progress <= startK.offset) {
+                         props.forEach(p => { if (startK[p] !== undefined) layer.styles[p] = startK[p]; });
+                         return;
+                    }
+                    if (progress >= endK.offset) {
+                        props.forEach(p => { if (endK[p] !== undefined) layer.styles[p] = endK[p]; });
+                        return;
+                    }
+
+                    for (let i = 0; i < layer.keyframes.length - 1; i++) {
+                        if (progress >= layer.keyframes[i].offset && progress < layer.keyframes[i+1].offset) {
+                            startK = layer.keyframes[i];
+                            endK = layer.keyframes[i+1];
+                            break;
+                        }
+                    }
+
+                    const range = endK.offset - startK.offset;
+                    const localT = (range === 0) ? 0 : (progress - startK.offset) / range;
+                    
+                    props.forEach(p => {
+                        if (startK[p] !== undefined && endK[p] !== undefined) {
+                            layer.styles[p] = lerp(startK[p], endK[p], localT);
+                        }
+                    });
+                });
+            }
+        };
+
+        /* --- 3. RENDERER & INTERACTION --- */
+        class EditorEngine {
+            constructor() {
+                this.stage = document.getElementById('canvas-stage');
+                this.gizmoOverlay = document.getElementById('gizmo-overlay');
+                this.gizmoBox = document.getElementById('gizmo-box');
+                this.layersMap = new Map();
+                
+                this.isDragging = false;
+                this.isResizing = false;
+                this.dragStart = { x:0, y:0 };
+                this.initialProps = {}; 
+                this.activeHandle = null;
+
+                this.bindEvents();
+            }
+
+            bindEvents() {
+                this.gizmoBox.addEventListener('mousedown', (e) => {
+                    if (e.target.classList.contains('resize-handle')) return;
+                    this.startDrag(e, 'move');
+                });
+
+                document.querySelectorAll('.resize-handle').forEach(h => {
+                    h.addEventListener('mousedown', (e) => this.startDrag(e, 'resize', h.dataset.handle));
+                });
+
+                window.addEventListener('mousemove', (e) => this.onMouseMove(e));
+                window.addEventListener('mouseup', () => this.onMouseUp());
+                
+                this.stage.addEventListener('mousedown', (e) => {
+                    if(e.target === this.stage) State.selectLayer(null);
+                });
+            }
+
+            startDrag(e, mode, handle = null) {
+                const state = State.get();
+                if (!state.selection) return;
+
+                e.stopPropagation();
+                this.isDragging = mode === 'move';
+                this.isResizing = mode === 'resize';
+                this.activeHandle = handle;
+                this.dragStart = { x: e.clientX, y: e.clientY };
+                
+                const layer = state.layers.find(l => l.id === state.selection);
+                this.initialProps = { ...layer.styles };
+                
+                if(state.isPlaying) State.togglePlay();
+            }
+
+            onMouseMove(e) {
+                if (!this.isDragging && !this.isResizing) return;
+                const state = State.get();
+                const layerId = state.selection;
+                if (!layerId) return;
+
+                const dx = e.clientX - this.dragStart.x;
+                const dy = e.clientY - this.dragStart.y;
+
+                if (this.isDragging) {
+                    State.updateLayerStyle(layerId, 'x', this.initialProps.x + dx);
+                    State.updateLayerStyle(layerId, 'y', this.initialProps.y + dy);
+                } 
+                else if (this.isResizing) {
+                    let newW = this.initialProps.width;
+                    let newH = this.initialProps.height;
+                    let newX = this.initialProps.x;
+                    let newY = this.initialProps.y;
+
+                    if (this.activeHandle.includes('e')) newW = this.initialProps.width + dx;
+                    if (this.activeHandle.includes('s')) newH = this.initialProps.height + dy;
+                    if (this.activeHandle.includes('w')) {
+                        newW = this.initialProps.width - dx;
+                        newX = this.initialProps.x + dx;
+                    }
+                    if (this.activeHandle.includes('n')) {
+                        newH = this.initialProps.height - dy;
+                        newY = this.initialProps.y + dy;
+                    }
+
+                    if(newW < 10) newW = 10;
+                    if(newH < 10) newH = 10;
+
+                    State.updateLayerStyle(layerId, 'width', newW);
+                    State.updateLayerStyle(layerId, 'height', newH);
+                    State.updateLayerStyle(layerId, 'x', newX);
+                    State.updateLayerStyle(layerId, 'y', newY);
+                }
+            }
+
+            onMouseUp() {
+                this.isDragging = false;
+                this.isResizing = false;
+            }
+
+            render(state) {
+                state.layers.forEach(layerData => {
+                    let el = this.layersMap.get(layerData.id);
+                    if (!el) {
+                        el = document.createElement('div');
+                        el.id = layerData.id;
+                        el.className = 'mf-layer';
+                        el.addEventListener('mousedown', (e) => {
+                            e.stopPropagation();
+                            State.selectLayer(layerData.id);
+                        });
+                        this.stage.appendChild(el);
+                        this.layersMap.set(layerData.id, el);
+                    }
+
+                    if (!layerData.visible) {
+                        el.style.display = 'none';
+                        return;
+                    } else {
+                        el.style.display = 'flex';
+                    }
+
+                    const s = layerData.styles;
+                    el.style.width = `${s.width}px`;
+                    el.style.height = `${s.height}px`;
+                    el.style.backgroundColor = s.backgroundColor;
+                    el.style.borderRadius = `${s.borderRadius}px`;
+                    el.style.opacity = s.opacity;
+                    el.style.transform = `translate(${s.x}px, ${s.y}px) rotate(${s.rotate}deg)`;
+                });
+
+                const selectedLayer = state.layers.find(l => l.id === state.selection);
+                
+                if (selectedLayer && selectedLayer.visible) {
+                    this.gizmoOverlay.classList.add('visible');
+                    if (this.gizmoOverlay.parentElement !== this.stage) {
+                        this.stage.appendChild(this.gizmoOverlay);
+                    }
+                    const s = selectedLayer.styles;
+                    this.gizmoBox.style.width = `${s.width}px`;
+                    this.gizmoBox.style.height = `${s.height}px`;
+                    this.gizmoBox.style.transform = `translate(${s.x}px, ${s.y}px) rotate(${s.rotate}deg)`;
+                } else {
+                    this.gizmoOverlay.classList.remove('visible');
+                }
+            }
+        }
+
+        /* --- 4. TIMELINE CONTROLLER --- */
+        const Timeline = {
+            ruler: document.getElementById('timeline-ruler'),
+            playhead: document.getElementById('playhead'),
+            scrollArea: document.getElementById('timeline-scroll-area'),
+            tracksContainer: document.getElementById('timeline-tracks'),
+            trackLabelsCol: document.getElementById('labels-content'),
+            trackLabelsWrapper: document.getElementById('track-labels-col'),
+            timeDisplay: document.getElementById('time-display'),
+            markersContainer: document.getElementById('ruler-markers-container'),
+            
+            draggingKf: null, 
+
+            init() {
+                let isScrubbing = false;
+                
+                this.scrollArea.addEventListener('scroll', () => {
+                    this.trackLabelsWrapper.scrollTop = this.scrollArea.scrollTop;
+                });
+
+                const updateTimeFromMouse = (e) => {
+                    const scrollAreaRect = this.scrollArea.getBoundingClientRect();
+                    const offsetX = e.clientX - scrollAreaRect.left + this.scrollArea.scrollLeft;
+                    const ms = (offsetX / PX_PER_SEC) * 1000;
+                    State.setTime(ms);
+                };
+
+                this.ruler.addEventListener('mousedown', (e) => {
+                    isScrubbing = true;
+                    updateTimeFromMouse(e);
+                });
+                
+                window.addEventListener('mousemove', (e) => {
+                    if(isScrubbing) updateTimeFromMouse(e);
+                    
+                    if(this.draggingKf) {
+                        e.preventDefault();
+                        const scrollAreaRect = this.scrollArea.getBoundingClientRect();
+                        const offsetX = e.clientX - scrollAreaRect.left + this.scrollArea.scrollLeft;
+                        const ms = (offsetX / PX_PER_SEC) * 1000;
+                        const duration = State.get().meta.duration;
+                        const newOffset = ms / duration;
+                        State.updateKeyframeTime(this.draggingKf.layerId, this.draggingKf.index, newOffset);
+                    }
+                });
+                
+                window.addEventListener('mouseup', () => {
+                    isScrubbing = false;
+                    this.draggingKf = null;
+                });
+
+                const durInput = document.getElementById('inp-duration');
+                durInput.addEventListener('change', (e) => State.setDuration(e.target.value));
+
+                document.getElementById('btn-add-kf').addEventListener('click', () => State.addKeyframe());
+            },
+
+            // --- DOM DIFF HELPERS ---
+            getOrCreateRow(container, id, className, contentFn) {
+                let el = document.getElementById(id);
+                if (!el) {
+                    el = document.createElement('div');
+                    el.id = id;
+                    el.className = className;
+                    contentFn(el);
+                    container.appendChild(el);
+                } else {
+                    if (el.className !== className) el.className = className;
+                }
+                return el;
+            },
+
+            render(state, source) {
+                const totalWidth = (state.meta.duration / 1000) * PX_PER_SEC;
+                
+                // 1. Always update Timeline visual properties (fast)
+                this.ruler.style.width = `${totalWidth}px`;
+                this.tracksContainer.style.width = `${totalWidth}px`;
+                document.getElementById('timeline-grid').style.backgroundSize = `${PX_PER_SEC}px 100%`;
+
+                const pos = (state.currentTime / 1000) * PX_PER_SEC;
+                this.playhead.style.transform = `translateX(${pos}px)`;
+                this.timeDisplay.textContent = Math.round(state.currentTime) + 'ms';
+
+                // OPTIMIZATION: If just Playing or Scrubbing, STOP HERE.
+                // Do not rebuild DOM tracks.
+                if (source === 'time') return;
+
+                // Ruler Markers (Simple)
+                this.markersContainer.innerHTML = '';
+                const seconds = Math.ceil(state.meta.duration / 1000);
+                for(let i=0; i<=seconds; i++) {
+                    const m = document.createElement('div');
+                    m.className = 'ruler-marker';
+                    m.style.left = `${i * PX_PER_SEC}px`;
+                    m.textContent = `${i}s`;
+                    this.markersContainer.appendChild(m);
+                    if (i < seconds) {
+                        const sm = document.createElement('div');
+                        sm.className = 'ruler-marker sub';
+                        sm.style.left = `${(i + 0.5) * PX_PER_SEC}px`;
+                        this.markersContainer.appendChild(sm);
+                    }
+                }
+
+                // --- BUILD TRACKS (DIFFING) ---
+                const activeIds = new Set();
+
+                state.layers.forEach(layer => {
+                    const labelId = `tl-label-${layer.id}`;
+                    const trackId = `tl-track-${layer.id}`;
+                    activeIds.add(labelId);
+                    activeIds.add(trackId);
+
+                    const isSel = state.selection === layer.id;
+                    const labelClass = `track-label-shim ${isSel ? 'selected' : ''}`;
+
+                    // Label
+                    const labelEl = this.getOrCreateRow(this.trackLabelsCol, labelId, labelClass, (el) => {
+                        el.innerHTML = ''; 
+                        const arrow = document.createElement('div');
+                        arrow.className = `expand-arrow ${layer.expanded ? 'expanded' : ''}`;
+                        arrow.innerText = '▶';
+                        arrow.onclick = (e) => { e.stopPropagation(); State.toggleExpand(layer.id); };
+                        el.appendChild(arrow);
+                        const span = document.createElement('span');
+                        span.innerText = layer.name;
+                        el.appendChild(span);
+                        el.onclick = () => State.selectLayer(layer.id);
+                    });
+                    const arrow = labelEl.querySelector('.expand-arrow');
+                    if (arrow) arrow.className = `expand-arrow ${layer.expanded ? 'expanded' : ''}`;
+
+                    // Track
+                    const trackEl = this.getOrCreateRow(this.tracksContainer, trackId, 'track', (el) => {});
+                    // Simplification: Rebuild keys on structural change (fast enough for editing)
+                    // We could diff keys too but 'props' source updates style inputs only if we want
+                    // For now, full rebuild of keys is fine as long as it doesn't happen during 'time' or 'props' loop if unnecessary
+                    trackEl.innerHTML = ''; 
+                    const contentDiv = document.createElement('div');
+                    contentDiv.className = 'track-content';
+                    layer.keyframes.forEach((kf, idx) => {
+                        const kfEl = document.createElement('div');
+                        kfEl.className = 'keyframe';
+                        kfEl.style.left = `${kf.offset * totalWidth}px`;
+                        const s = state.selectedKeyframe;
+                        if(s && s.layerId === layer.id && s.index === idx && !s.prop) kfEl.classList.add('selected');
+
+                        kfEl.addEventListener('mousedown', (e) => {
+                            e.stopPropagation(); e.preventDefault();
+                            this.draggingKf = { layerId: layer.id, index: idx };
+                            State.selectKeyframe(layer.id, idx, null);
+                        });
+                        contentDiv.appendChild(kfEl);
+                    });
+                    trackEl.appendChild(contentDiv);
+
+                    // Sub Tracks
+                    if (layer.expanded) {
+                        const props = [
+                            { name: 'X', key: 'x' }, { name: 'Y', key: 'y' },
+                            { name: 'W', key: 'width' }, { name: 'H', key: 'height' },
+                            { name: 'Rotate', key: 'rotate' }, { name: 'Opacity', key: 'opacity' }
+                        ];
+
+                        props.forEach(p => {
+                            const subId = `tl-sub-${layer.id}-${p.key}`;
+                            const subTrackId = `tl-subtr-${layer.id}-${p.key}`;
+                            activeIds.add(subId);
+                            activeIds.add(subTrackId);
+
+                            // Sub Label
+                            this.getOrCreateRow(this.trackLabelsCol, subId, 'track-label-shim sub-track', (el) => {
+                                el.onclick = (e) => { e.stopPropagation(); State.selectLayer(layer.id); };
+                                
+                                const btn = document.createElement('button');
+                                btn.className = 'btn-kf-add';
+                                btn.innerText = '◇';
+                                btn.title = 'Add Keyframe';
+                                btn.onclick = (e) => { e.stopPropagation(); State.addKeyframeForProperty(layer.id, p.key); };
+                                el.appendChild(btn);
+
+                                const txt = document.createElement('span');
+                                txt.style.flex = 1;
+                                txt.innerText = p.name;
+                                el.appendChild(txt);
+
+                                const inp = document.createElement('input');
+                                inp.type = 'number';
+                                inp.className = 'timeline-input';
+                                inp.dataset.key = p.key; 
+                                inp.addEventListener('click', e => e.stopPropagation());
+                                inp.addEventListener('input', (e) => State.updateLayerStyle(layer.id, p.key, e.target.value));
+                                el.appendChild(inp);
+                            });
+
+                            // Update Input Value (Non-destructive)
+                            const row = document.getElementById(subId);
+                            const inp = row.querySelector('input');
+                            if (inp && document.activeElement !== inp) {
+                                let val = layer.styles[p.key];
+                                if (typeof val === 'number') val = parseFloat(val.toFixed(1));
+                                inp.value = val;
+                            }
+
+                            // Sub Track Keys
+                            const subTrEl = this.getOrCreateRow(this.tracksContainer, subTrackId, 'track sub-track', (el) => {});
+                            subTrEl.innerHTML = '';
+                            const subContent = document.createElement('div');
+                            subContent.className = 'track-content';
+                            layer.keyframes.forEach((kf, idx) => {
+                                if (kf[p.key] === undefined) return;
+                                const kfEl = document.createElement('div');
+                                kfEl.className = 'keyframe';
+                                kfEl.style.left = `${kf.offset * totalWidth}px`;
+                                
+                                const s = state.selectedKeyframe;
+                                if(s && s.layerId === layer.id && s.index === idx && s.prop === p.key) kfEl.classList.add('selected');
+
+                                kfEl.addEventListener('mousedown', (e) => {
+                                    e.stopPropagation(); e.preventDefault();
+                                    this.draggingKf = { layerId: layer.id, index: idx };
+                                    State.selectKeyframe(layer.id, idx, p.key);
+                                });
+                                subContent.appendChild(kfEl);
+                            });
+                            subTrEl.appendChild(subContent);
+                        });
+                    }
+                });
+
+                // Cleanup
+                Array.from(this.trackLabelsCol.children).forEach(el => {
+                    if (el.id && !activeIds.has(el.id)) el.remove();
+                });
+                Array.from(this.tracksContainer.children).forEach(el => {
+                    if (el.id && !activeIds.has(el.id)) el.remove();
+                });
+            }
+        };
+
+        /* --- 5. UI HELPERS (Properties Panel) --- */
+        const UI = {
+            propsContainer: document.getElementById('properties-container'),
+            layerList: document.getElementById('layer-list-container'),
+            playBtn: document.getElementById('btn-play'),
+
+            init() {
+                this.playBtn.addEventListener('click', () => {
+                    State.togglePlay();
+                    if(State.get().isPlaying) loop();
+                });
+
+                window.addEventListener('keydown', (e) => {
+                    if (e.code === 'Space' && e.target.tagName !== 'INPUT') {
+                        e.preventDefault(); 
+                        State.togglePlay();
+                        if(State.get().isPlaying) loop();
+                    }
+                    if ((e.code === 'Delete' || e.code === 'Backspace') && e.target.tagName !== 'INPUT') {
+                        State.deleteSelectedKeyframe();
+                    }
+                });
+            },
+
+            renderProperties(state) {
+                if (!state.selection) {
+                    this.propsContainer.innerHTML = '<div style="padding:20px;text-align:center;color:#666">No selection</div>';
+                    return;
+                }
+                const layer = state.layers.find(l => l.id === state.selection);
+                if (!layer) return;
+
+                const fields = [
+                    { label: 'Transform', type: 'header' },
+                    { label: 'X', prop: 'x' }, { label: 'Y', prop: 'y' },
+                    { label: 'W', prop: 'width' }, { label: 'H', prop: 'height' },
+                    { label: 'Rotate', prop: 'rotate' },
+                    { label: 'Style', type: 'header' },
+                    { label: 'Color', prop: 'backgroundColor', type: 'color' },
+                    { label: 'Radius', prop: 'borderRadius' },
+                    { label: 'Opacity', prop: 'opacity', step: 0.1 }
+                ];
+
+                if (this.propsContainer.innerHTML.includes('No selection')) this.propsContainer.innerHTML = '';
+
+                if (this.propsContainer.children.length === 0) {
+                     fields.forEach(f => {
+                        if (f.type === 'header') {
+                            const d = document.createElement('div');
+                            d.className = 'panel-header';
+                            d.style.cssText = 'background:transparent; border:none; margin:10px 0; padding-left:0;';
+                            d.innerText = f.label;
+                            this.propsContainer.appendChild(d);
+                        } else {
+                            const group = document.createElement('div');
+                            group.className = 'input-group';
+                            group.innerHTML = `<label>${f.label}</label>`;
+                            
+                            const inp = document.createElement('input');
+                            inp.type = f.type || 'number';
+                            if(f.step) inp.step = f.step;
+                            inp.dataset.prop = f.prop;
+                            inp.addEventListener('input', (e) => {
+                                State.updateLayerStyle(layer.id, f.prop, e.target.value);
+                            });
+                            
+                            group.appendChild(inp);
+                            this.propsContainer.appendChild(group);
+                        }
+                     });
+                }
+
+                const inputs = this.propsContainer.querySelectorAll('input');
+                inputs.forEach(inp => {
+                    const prop = inp.dataset.prop;
+                    if (prop && layer.styles[prop] !== undefined) {
+                        if (document.activeElement !== inp) {
+                             let val = layer.styles[prop];
+                             if (typeof val === 'number') val = parseFloat(val.toFixed(2));
+                             inp.value = val;
+                        }
+                    }
+                });
+            },
+            
+            renderLayerList(state) {
+                this.layerList.innerHTML = '';
+                state.layers.forEach(layer => {
+                    const item = document.createElement('div');
+                    item.className = `layer-item ${state.selection === layer.id ? 'active' : ''} ${!layer.visible ? 'hidden' : ''}`;
+                    
+                    const visIcon = layer.visible 
+                        ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`
+                        : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`;
+
+                    item.innerHTML = `
+                        <div class="layer-vis-btn" onclick="event.stopPropagation(); State.toggleVisibility('${layer.id}')">
+                            ${visIcon}
+                        </div>
+                        <span style="margin-left:8px">${layer.name}</span>
+                    `;
+                    item.onclick = () => State.selectLayer(layer.id);
+                    this.layerList.appendChild(item);
+                });
+                
+                this.playBtn.innerHTML = state.isPlaying 
+                    ? `<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pause`
+                    : `<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> Play (Space)`;
+                
+                if (state.isPlaying) this.playBtn.classList.add('btn-active');
+                else this.playBtn.classList.remove('btn-active');
+            }
+        };
+
+        /* --- 6. INITIALIZATION --- */
+        const editor = new EditorEngine();
+        Timeline.init();
+        UI.init();
+        
+        document.getElementById('btn-add-layer').addEventListener('click', () => State.addLayer());
+
+        let lastTime = performance.now();
+        function loop() {
+            if (!State.get().isPlaying) return;
+            const now = performance.now();
+            const dt = now - lastTime;
+            lastTime = now;
+            const nextTime = State.get().currentTime + dt; 
+            State.setTime(nextTime);
+            requestAnimationFrame(loop);
+        }
+        
+        const originalToggle = State.togglePlay;
+        State.togglePlay = function() {
+            lastTime = performance.now();
+            originalToggle.call(State);
+        };
+
+        State.subscribe((state, source) => {
+            editor.render(state);
+            Timeline.render(state, source); 
+            UI.renderProperties(state);
+            UI.renderLayerList(state);
+        });
+
+        State.notify();
+
+    </script>
+</body>
+</html>

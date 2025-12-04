@@ -1,47 +1,55 @@
 <!DOCTYPE html>
 
 <html lang="ru">
+
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Калькулятор дней</title>
-<meta content="Сколько прошло дней между датами" name="description"/>
-<meta content="Калькулятор дней" property="og:title"/>
-<meta content="Сколько прошло дней между датами" property="og:description"/>
-<meta content="website" property="og:type"/>
-<link href="../style.css" rel="stylesheet"/>
-<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🧰&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Калькулятор дней</title>
+    <meta content="Сколько прошло дней между датами" name="description" />
+    <meta content="Калькулятор дней" property="og:title" />
+    <meta content="Сколько прошло дней между датами" property="og:description" />
+    <meta content="website" property="og:type" />
+    <link href="../style.css" rel="stylesheet" />
+    <link
+        href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🧰&lt;/text&gt;&lt;/svg&gt;"
+        rel="icon" />
 </head>
+
 <body>
-<div class="container">
-<div class="calculator">
-<h1 data-i18n="date.Сколько_дней_между_датами">📅 Сколько дней между датами?</h1>
-<p data-i18n="date.Посчитайте_точное_количество_дней_до_события_или_от_него">Посчитайте точное количество дней до события или от него.</p>
-<div class="input-group">
-<label data-i18n="date.Начальная_дата">Начальная дата:</label>
-<input id="date1" type="date"/>
-</div>
-<div class="input-group">
-<label data-i18n="date.Конечная_дата">Конечная дата:</label>
-<input id="date2" type="date"/>
-</div>
-<button data-i18n="date.Посчитать_разницу" id="btnCalc">⏳ Посчитать разницу</button>
-<div class="result" id="resultBox">
-<h3 data-i18n="date.Разница_составляет">Разница составляет:</h3>
-<h2 data-i18n="date.0_дней" id="resultValue" style="color: #007bff; font-size: 36px;">0 дней</h2>
-<p id="resultDescription" style="margin-top: 10px;"></p>
-</div>
-<button class="btn-secondary" data-i18n="date.Скопировать" id="btnCopy">📋 Скопировать</button>
-</div>
-<div class="sidebar">
-<div class="ad-slot" id="ad-sidebar"></div>
-<div style="background: #fff3cd; padding: 15px; border-radius: 10px; font-size: 14px;">
-<h3 data-i18n="date.Примеры">🎉 Примеры:</h3>
-<p data-i18n="date.Сколько_дней_осталось_до_Нового_года_Сколько_дней_я_живу_Сколько_прошло_с_начала_проекта">Сколько дней осталось до Нового года? Сколько дней я живу? Сколько прошло с начала проекта?</p>
-</div>
-</div>
-</div>
-<script src="../main.js"></script>
-<script src="script.js"></script>
+    <div class="container">
+        <div class="calculator">
+            <h1 data-i18n="date.Сколько_дней_между_датами">📅 Сколько дней между датами?</h1>
+            <p data-i18n="date.Посчитайте_точное_количество_дней_до_события_или_от_него">Посчитайте точное количество
+                дней до события или от него.</p>
+            <div class="input-group">
+                <label data-i18n="date.Начальная_дата">Начальная дата:</label>
+                <input id="date1" type="date" />
+            </div>
+            <div class="input-group">
+                <label data-i18n="date.Конечная_дата">Конечная дата:</label>
+                <input id="date2" type="date" />
+            </div>
+            <button data-i18n="date.Посчитать_разницу" id="btnCalc">⏳ Посчитать разницу</button>
+            <div class="result" id="resultBox">
+                <h3 data-i18n="date.Разница_составляет">Разница составляет:</h3>
+                <h2 data-i18n="date.0_дней" id="resultValue" style="color: #007bff; font-size: 36px;">0 дней</h2>
+                <p id="resultDescription" style="margin-top: 10px;"></p>
+            </div>
+            <button class="btn-secondary" data-i18n="date.Скопировать" id="btnCopy">📋 Скопировать</button>
+        </div>
+        <div class="sidebar">
+            <div class="ad-slot" id="ad-sidebar"></div>
+            <div class="example">
+                <h3 data-i18n="date.Примеры">🎉 Примеры:</h3>
+                <p
+                    data-i18n="date.Сколько_дней_осталось_до_Нового_года_Сколько_дней_я_живу_Сколько_прошло_с_начала_проекта">
+                    Сколько дней осталось до Нового года? Сколько дней я живу? Сколько прошло с начала проекта?</p>
+            </div>
+        </div>
+    </div>
+    <script src="../main.js"></script>
+    <script src="script.js"></script>
 </body>
+
 </html>

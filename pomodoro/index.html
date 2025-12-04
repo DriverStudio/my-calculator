@@ -1,35 +1,42 @@
 <!DOCTYPE html>
 
 <html lang="ru">
+
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Таймер Помодоро онлайн</title>
-<meta content="Техника 25 минут" name="description"/>
-<meta content="Таймер Помодоро онлайн" property="og:title"/>
-<meta content="Техника 25 минут" property="og:description"/>
-<meta content="website" property="og:type"/>
-<link href="../style.css" rel="stylesheet"/>
-<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🧰&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
-<style>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Таймер Помодоро онлайн</title>
+    <meta content="Техника 25 минут" name="description" />
+    <meta content="Таймер Помодоро онлайн" property="og:title" />
+    <meta content="Техника 25 минут" property="og:description" />
+    <meta content="website" property="og:type" />
+    <link href="../style.css" rel="stylesheet" />
+    <link
+        href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🧰&lt;/text&gt;&lt;/svg&gt;"
+        rel="icon" />
+    <style>
         .timer-box {
             text-align: center;
             padding: 40px 0;
         }
+
         .timer-display {
             font-size: 80px;
             font-weight: bold;
             color: #333;
-            font-variant-numeric: tabular-nums; /* Чтобы цифры не скакали */
+            font-variant-numeric: tabular-nums;
+            /* Чтобы цифры не скакали */
             line-height: 1;
             margin: 20px 0;
         }
+
         .mode-tabs {
             display: flex;
             justify-content: center;
             gap: 10px;
             margin-bottom: 20px;
         }
+
         .mode-btn {
             padding: 8px 16px;
             border-radius: 20px;
@@ -37,56 +44,71 @@
             cursor: pointer;
             border: 2px solid transparent;
         }
+
         .mode-btn.active {
             background: #ffe3e3;
             color: #e03131;
             border-color: #e03131;
             font-weight: bold;
         }
+
         .mode-btn.break-mode {
             background: #e3fafc;
             color: #0c8599;
         }
+
         .mode-btn.break-mode.active {
             border-color: #0c8599;
             background: #e3fafc;
         }
-        
-        .controls { display: flex; gap: 15px; justify-content: center; }
-        .btn-round { border-radius: 50px; width: auto; padding: 15px 30px; }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .btn-round {
+            border-radius: 50px;
+            width: auto;
+            padding: 15px 30px;
+        }
     </style>
 </head>
+
 <body>
-<div class="container">
-<div class="calculator">
-<h1 data-i18n="pomodoro.Метод_Помодоро">🍅 Метод Помодоро</h1>
-<p data-i18n="pomodoro.Работайте_интервалами_чтобы_не_перегорать">Работайте интервалами, чтобы не перегорать.</p>
-<div class="timer-box">
-<div class="mode-tabs">
-<div class="mode-btn active" id="modeWork" onclick="setMode('work')">Работа (25:00)</div>
-<div class="mode-btn break-mode" id="modeBreak" onclick="setMode('break')">Отдых (05:00)</div>
-</div>
-<div class="timer-display" id="timer">25:00</div>
-<div class="controls">
-<button class="btn-round" data-i18n="pomodoro.Старт" id="btnStart">▶️ Старт</button>
-<button class="btn-round btn-secondary" data-i18n="pomodoro.Сброс" id="btnReset">⏹ Сброс</button>
-</div>
-</div>
-</div>
-<div class="sidebar">
-<div class="ad-slot" id="ad-sidebar"></div>
-<div style="background: #fff0f6; padding: 15px; border-radius: 10px; font-size: 14px;">
-<h3 data-i18n="pomodoro.Как_это_работает">Как это работает?</h3>
-<ol style="padding-left: 20px; margin: 0;">
-<li>Ставьте задачу.</li>
-<li>Работайте 25 минут (до звонка).</li>
-<li>Сделайте паузу 5 минут.</li>
-<li>Повторите 4 раза.</li>
-</ol>
-</div>
-</div>
-</div>
-<script src="../main.js"></script>
-<script src="script.js"></script>
+    <div class="container">
+        <div class="calculator">
+            <h1 data-i18n="pomodoro.Метод_Помодоро">🍅 Метод Помодоро</h1>
+            <p data-i18n="pomodoro.Работайте_интервалами_чтобы_не_перегорать">Работайте интервалами, чтобы не
+                перегорать.</p>
+            <div class="timer-box">
+                <div class="mode-tabs">
+                    <div class="mode-btn active" id="modeWork" onclick="setMode('work')">Работа (25:00)</div>
+                    <div class="mode-btn break-mode" id="modeBreak" onclick="setMode('break')">Отдых (05:00)</div>
+                </div>
+                <div class="timer-display" id="timer">25:00</div>
+                <div class="controls">
+                    <button class="btn-round" data-i18n="pomodoro.Старт" id="btnStart">▶️ Старт</button>
+                    <button class="btn-round btn-secondary" data-i18n="pomodoro.Сброс" id="btnReset">⏹ Сброс</button>
+                </div>
+            </div>
+        </div>
+        <div class="sidebar">
+            <div class="ad-slot" id="ad-sidebar"></div>
+            <div class="note">
+                <h3 data-i18n="pomodoro.Как_это_работает">Как это работает?</h3>
+                <ol style="padding-left: 20px; margin: 0;">
+                    <li>Ставьте задачу.</li>
+                    <li>Работайте 25 минут (до звонка).</li>
+                    <li>Сделайте паузу 5 минут.</li>
+                    <li>Повторите 4 раза.</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    <script src="../main.js"></script>
+    <script src="script.js"></script>
 </body>
+
 </html>

@@ -1,85 +1,130 @@
 <!DOCTYPE html>
 
 <html lang="ru">
+
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Метроном онлайн</title>
-<meta content="Точный ритм (BPM)" name="description"/>
-<meta content="Метроном онлайн" property="og:title"/>
-<meta content="Точный ритм (BPM)" property="og:description"/>
-<meta content="website" property="og:type"/>
-<link href="../style.css" rel="stylesheet"/>
-<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🧰&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
-<style>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Метроном онлайн</title>
+    <meta content="Точный ритм (BPM)" name="description" />
+    <meta content="Метроном онлайн" property="og:title" />
+    <meta content="Точный ритм (BPM)" property="og:description" />
+    <meta content="website" property="og:type" />
+    <link href="../style.css" rel="stylesheet" />
+    <link
+        href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🧰&lt;/text&gt;&lt;/svg&gt;"
+        rel="icon" />
+    <style>
         .metro-box {
-            text-align: center; padding: 20px;
+            text-align: center;
+            padding: 20px;
         }
-        
+
         .bpm-display {
-            font-size: 80px; font-weight: bold; color: #333; margin: 20px 0;
+            font-size: 80px;
+            font-weight: bold;
+            color: #333;
+            margin: 20px 0;
             font-variant-numeric: tabular-nums;
         }
-        .bpm-label { font-size: 16px; color: #777; letter-spacing: 2px; text-transform: uppercase; }
+
+        .bpm-label {
+            font-size: 16px;
+            color: #777;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
 
         /* Ползунок */
         input[type=range] {
-            width: 100%; margin: 20px 0; cursor: pointer;
+            width: 100%;
+            margin: 20px 0;
+            cursor: pointer;
         }
 
         /* Визуальный индикатор (Круг мигает) */
         .beat-indicator {
-            width: 30px; height: 30px; background: #ddd; border-radius: 50%;
-            margin: 0 auto 30px auto; transition: background 0.05s;
+            width: 30px;
+            height: 30px;
+            background: #ddd;
+            border-radius: 50%;
+            margin: 0 auto 30px auto;
+            transition: background 0.05s;
         }
-        .beat-indicator.active { background: #e03131; box-shadow: 0 0 15px #e03131; }
+
+        .beat-indicator.active {
+            background: #e03131;
+            box-shadow: 0 0 15px #e03131;
+        }
 
         .controls {
-            display: flex; gap: 10px; justify-content: center; align-items: center;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
         }
+
         .btn-circle {
-            width: 50px; height: 50px; border-radius: 50%; padding: 0; font-size: 20px;
-            display: flex; align-items: center; justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            padding: 0;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+
         #btnPlay {
-            width: 80px; height: 80px; font-size: 30px; border-radius: 40px;
-            background: #28a745; margin: 0 20px;
+            width: 80px;
+            height: 80px;
+            font-size: 30px;
+            border-radius: 40px;
+            background: #28a745;
+            margin: 0 20px;
         }
-        #btnPlay.playing { background: #dc3545; } /* Красный когда играет */
+
+        #btnPlay.playing {
+            background: #dc3545;
+        }
+
+        /* Красный когда играет */
     </style>
 </head>
+
 <body>
-<div class="container">
-<div class="calculator">
-<h1 data-i18n="metronome.Метроном">🥁 Метроном</h1>
-<p data-i18n="metronome.Точный_ритм_для_репетиций">Точный ритм для репетиций.</p>
-<div class="metro-box">
-<div class="beat-indicator" id="indicator"></div>
-<div class="bpm-label">TEMP (BPM)</div>
-<div class="bpm-display" id="bpmValue">120</div>
-<input id="bpmRange" max="220" min="40" type="range" value="120"/>
-<div class="controls">
-<button class="btn-circle btn-secondary" onclick="changeBpm(-5)">-5</button>
-<button class="btn-circle btn-secondary" onclick="changeBpm(-1)">-1</button>
-<button id="btnPlay">▶️</button>
-<button class="btn-circle btn-secondary" onclick="changeBpm(1)">+1</button>
-<button class="btn-circle btn-secondary" onclick="changeBpm(5)">+5</button>
-</div>
-</div>
-</div>
-<div class="sidebar">
-<div class="ad-slot" id="ad-sidebar"></div>
-<div style="background: #e3fafc; padding: 15px; border-radius: 10px; font-size: 14px;">
-<h3 data-i18n="metronome.Темпы">🎵 Темпы:</h3>
-<ul style="padding-left: 20px;">
-<li>60-80: Adagio (Медленно)</li>
-<li>100-120: Moderato (Средне)</li>
-<li>140+: Allegro (Быстро)</li>
-</ul>
-</div>
-</div>
-</div>
-<script src="../main.js"></script>
-<script src="script.js"></script>
+    <div class="container">
+        <div class="calculator">
+            <h1 data-i18n="metronome.Метроном">🥁 Метроном</h1>
+            <p data-i18n="metronome.Точный_ритм_для_репетиций">Точный ритм для репетиций.</p>
+            <div class="metro-box">
+                <div class="beat-indicator" id="indicator"></div>
+                <div class="bpm-label">TEMP (BPM)</div>
+                <div class="bpm-display" id="bpmValue">120</div>
+                <input id="bpmRange" max="220" min="40" type="range" value="120" />
+                <div class="controls">
+                    <button class="btn-circle btn-secondary" onclick="changeBpm(-5)">-5</button>
+                    <button class="btn-circle btn-secondary" onclick="changeBpm(-1)">-1</button>
+                    <button id="btnPlay">▶️</button>
+                    <button class="btn-circle btn-secondary" onclick="changeBpm(1)">+1</button>
+                    <button class="btn-circle btn-secondary" onclick="changeBpm(5)">+5</button>
+                </div>
+            </div>
+        </div>
+        <div class="sidebar">
+            <div class="ad-slot" id="ad-sidebar"></div>
+            <div class="example">
+                <h3 data-i18n="metronome.Темпы">🎵 Темпы:</h3>
+                <ul style="padding-left: 20px;">
+                    <li>60-80: Adagio (Медленно)</li>
+                    <li>100-120: Moderato (Средне)</li>
+                    <li>140+: Allegro (Быстро)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script src="../main.js"></script>
+    <script src="script.js"></script>
 </body>
+
 </html>

@@ -1,22 +1,26 @@
 <!DOCTYPE html>
 
 <html lang="ru">
+
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Тест на реакцию</title>
-<meta content="Проверь скорость клика" name="description"/>
-<meta content="Тест на реакцию" property="og:title"/>
-<meta content="Проверь скорость клика" property="og:description"/>
-<meta content="website" property="og:type"/>
-<link href="../style.css" rel="stylesheet"/>
-<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🧰&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
-<style>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Тест на реакцию</title>
+    <meta content="Проверь скорость клика" name="description" />
+    <meta content="Тест на реакцию" property="og:title" />
+    <meta content="Проверь скорость клика" property="og:description" />
+    <meta content="website" property="og:type" />
+    <link href="../style.css" rel="stylesheet" />
+    <link
+        href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🧰&lt;/text&gt;&lt;/svg&gt;"
+        rel="icon" />
+    <style>
         /* Игровое поле */
         #game-area {
             width: 100%;
             height: 300px;
-            background-color: #007bff; /* Синий - старт */
+            background-color: #007bff;
+            /* Синий - старт */
             border-radius: 15px;
             display: flex;
             flex-direction: column;
@@ -31,11 +35,19 @@
             text-align: center;
             padding: 20px;
         }
-        
+
         /* Состояния */
-        .waiting { background-color: #dc3545 !important; } /* Красный */
-        .ready { background-color: #28a745 !important; }   /* Зеленый */
-        
+        .waiting {
+            background-color: #dc3545 !important;
+        }
+
+        /* Красный */
+        .ready {
+            background-color: #28a745 !important;
+        }
+
+        /* Зеленый */
+
         .history {
             margin-top: 20px;
             font-size: 14px;
@@ -43,31 +55,33 @@
         }
     </style>
 </head>
+
 <body>
-<div class="container">
-<div class="calculator">
-<h1>⚡ Тест на реакцию</h1>
-<p>Нажмите, когда цвет изменится на <b>ЗЕЛЕНЫЙ</b>.</p>
-<div id="game-area">
-<div>Нажми, чтобы начать</div>
-<div style="font-size: 14px; font-weight: normal; margin-top: 10px;">(Кликай сюда)</div>
-</div>
-<div class="history">
-<h3 data-i18n="reaction.Ваши_попытки">Ваши попытки:</h3>
-<ul id="resultsList" style="padding-left: 20px;"></ul>
-</div>
-</div>
-<div class="sidebar">
-<div class="ad-slot" id="ad-sidebar"></div>
-<div style="background: #eef; padding: 15px; border-radius: 10px; font-size: 14px;">
-<h3 data-i18n="reaction.Нормативы">🏆 Нормативы:</h3>
-<p data-i18n="reaction.Профи_200_мс">🚀 Профи: &lt; 200 мс</p>
-<p data-i18n="reaction.Средний_250_мс">😐 Средний: 250 мс</p>
-<p data-i18n="reaction.Сонный_350_мс">🐢 Сонный: &gt; 350 мс</p>
-</div>
-</div>
-</div>
-<script src="../main.js"></script>
-<script src="script.js"></script>
+    <div class="container">
+        <div class="calculator">
+            <h1>⚡ Тест на реакцию</h1>
+            <p>Нажмите, когда цвет изменится на <b>ЗЕЛЕНЫЙ</b>.</p>
+            <div id="game-area">
+                <div>Нажми, чтобы начать</div>
+                <div style="font-size: 14px; font-weight: normal; margin-top: 10px;">(Кликай сюда)</div>
+            </div>
+            <div class="history">
+                <h3 data-i18n="reaction.Ваши_попытки">Ваши попытки:</h3>
+                <ul id="resultsList" style="padding-left: 20px;"></ul>
+            </div>
+        </div>
+        <div class="sidebar">
+            <div class="ad-slot" id="ad-sidebar"></div>
+            <div class="note">
+                <h3 data-i18n="reaction.Нормативы">🏆 Нормативы:</h3>
+                <p data-i18n="reaction.Профи_200_мс">🚀 Профи: &lt; 200 мс</p>
+                <p data-i18n="reaction.Средний_250_мс">😐 Средний: 250 мс</p>
+                <p data-i18n="reaction.Сонный_350_мс">🐢 Сонный: &gt; 350 мс</p>
+            </div>
+        </div>
+    </div>
+    <script src="../main.js"></script>
+    <script src="script.js"></script>
 </body>
+
 </html>

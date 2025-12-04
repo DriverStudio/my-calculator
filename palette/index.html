@@ -1,16 +1,12 @@
 <!DOCTYPE html>
-
 <html lang="ru">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Генератор цветовых палитр</title>
 <meta content="Подбор цветов для сайта" name="description"/>
-<meta content="Генератор цветовых палитр" property="og:title"/>
-<meta content="Подбор цветов для сайта" property="og:description"/>
-<meta content="website" property="og:type"/>
 <link href="../style.css" rel="stylesheet"/>
-<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🧰&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
+<link href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎨</text></svg>" rel="icon"/>
 <style>
         /* === УПРАВЛЕНИЕ === */
         .controls-bar {
@@ -38,6 +34,18 @@
         .sort-btn { width: auto; padding: 0 15px; font-size: 16px; }
         .sort-btn:hover, .count-controls button:hover { background: #e2e6ea; }
 
+        /* Стили для селекта */
+        .mode-select {
+            padding: 8px 12px;
+            font-size: 14px;
+            border: 1px solid #e1e4e8;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            cursor: pointer;
+            outline: none;
+        }
+        .mode-select:hover { background-color: #e2e6ea; }
+
         /* === СЕТКА === */
         .palette-grid {
             display: flex;
@@ -64,11 +72,10 @@
             flex-direction: column;
             align-items: center;
             gap: 15px;
-            opacity: 0; /* Скрываем интерфейс, пока не наведем */
+            opacity: 0; 
             transition: 0.2s;
         }
         .color-col:hover .col-content { opacity: 1; }
-        /* На мобилке показываем всегда */
         @media (max-width: 700px) { .col-content { opacity: 1; } }
 
         .hex-tag {
@@ -83,7 +90,6 @@
         .lock-btn:hover { opacity: 1; transform: scale(1.2); }
         .lock-btn.locked { opacity: 1; transform: scale(1.2); }
 
-        /* Адаптив для текста */
         .text-dark .hex-tag, .text-dark .lock-btn { color: #000; }
         .text-light .hex-tag, .text-light .lock-btn { color: #fff; }
 
@@ -96,24 +102,43 @@
 </head>
 <body>
 <div class="container" style="max-width: 100%; width: 98%;">
-<div style="width: 100%;">
-<div class="controls-bar">
-<div>
-<h1>🎨 Pro Palette</h1>
-<p style="font-size: 12px; margin:0; color:#777;">Пробел — генерация. <span data-i18n="palette.Режим_Авто" id="modeName">Режим: Авто</span></p>
-</div>
-<div style="display: flex; gap: 10px;">
-<button class="sort-btn" data-i18n="palette.Сортировать" onclick="sortColors()">📶 Сортировать</button>
-<div class="count-controls" style="display: flex; align-items: center;">
-<button class="btn-secondary" onclick="changeCount(-1)">-</button>
-<span id="countVal" style="margin: 0 5px; font-weight: bold; color:#555;">5</span>
-<button onclick="changeCount(1)">+</button>
-</div>
-</div>
-</div>
-<div class="palette-grid" id="grid"></div>
-<button data-i18n="palette.Сгенерировать_Пробел" id="btnGen" style="display: block; width: 100%; margin-top: 20px; padding: 15px;">🔄 Сгенерировать (Пробел)</button>
-</div>
+    <div style="width: 100%;">
+        <div class="controls-bar">
+            <div>
+                <h1 style="margin: 0 0 5px 0;">🎨 Pro Palette</h1>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <label for="modeSelect" style="font-size: 12px; color:#777;">Режим:</label>
+                    <select id="modeSelect" class="mode-select" onchange="generatePalette()">
+                        <option value="random">🎲 Случайный (Авто)</option>
+                        <option value="pastel">🌸 Пастель</option>
+                        <option value="vibrant">⚡ Яркий (Vibrant)</option>
+                        <option value="dark">🌑 Темный</option>
+                        <option value="light">☁️ Светлый</option>
+                        <option value="monochrome">🏳️ Монохром</option>
+                        <option value="analogous">🌈 Аналоговый</option>
+                        <option value="triad">🔺 Триада</option>
+                        <option value="warm">🔥 Теплый</option>
+                        <option value="cold">❄️ Холодный</option>
+                        <option value="neon">💡 Неон</option>
+                        <option value="vintage">📜 Винтаж</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 10px;">
+                <button class="sort-btn" onclick="sortColors()">📶 Сортировать</button>
+                <div class="count-controls" style="display: flex; align-items: center;">
+                    <button class="btn-secondary" onclick="changeCount(-1)">-</button>
+                    <span id="countVal" style="margin: 0 5px; font-weight: bold; color:#555;">5</span>
+                    <button onclick="changeCount(1)">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="palette-grid" id="grid"></div>
+        
+        <button id="btnGen" style="display: block; width: 100%; margin-top: 20px; padding: 15px; cursor: pointer;">🔄 Сгенерировать (Пробел)</button>
+    </div>
 </div>
 <script src="../main.js"></script>
 <script src="script.js"></script>
