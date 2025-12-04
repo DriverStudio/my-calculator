@@ -16,6 +16,7 @@ const APPS = [
     { id: 'breathe',    name: 'Релакс',         icon: '🧘', category: 'health' },
     { id: 'life',       name: 'Жизнь (Memento)',icon: '⏳', category: 'health' },
     { id: 'sounds',     name: 'Фокус и Релакс', icon: '🎧', category: 'health' },
+    { id: 'ambient',    name: 'Фокус Видео',    icon: '🏔️', category: 'health' },
     { id: 'freelance',  name: 'Рейт в час',     icon: '💸', category: 'work' },
     { id: 'pomodoro',   name: 'Фокус Таймер',   icon: '🍅', category: 'work' },
     { id: 'text',       name: 'Анализ текста',  icon: '📝', category: 'work' },
