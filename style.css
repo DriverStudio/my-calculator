@@ -1218,9 +1218,169 @@ body.is-exiting .container {
     transform: translateY(-10px) scale(0.98);
     opacity: 0;
 }
-
 /* Чтобы фон (звезды/блобы) не дергались, мы их не анимируем, 
    анимируем только контент */
+
+/* ==========================================
+   🌀 SIDE PORTALS (Эффект "Веер" - Без перекрытия)
+   ========================================== */
+
+/* 1. Настройка главной карточки */
+.container {
+    position: relative;
+    z-index: 20; /* Главная всегда сверху */
+    background: #fff;
+    transition: transform 0.3s;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15); 
+}
+
+/* 2. Общая обертка портала */
+.portal-container {
+    position: fixed;
+    top: 150px; 
+    height: 60vh;
+    width: 600px;
+    
+    z-index: 1; /* ВСЕГДА ПОЗАДИ (и при hover тоже) */
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    cursor: pointer;
+}
+
+/* === ПОЗИЦИЯ И ПОВОРОТ === */
+
+/* ЛЕВАЯ КАРТОЧКА */
+.portal-left {
+    right: 35%; /* Центр экрана */
+    margin-right: 380px; /* Отодвигаем влево из-под центра */
+}
+
+.portal-left .portal-frame {
+    /* Наклон 15 градусов влево */
+    transform: scale(0.8) rotate(-5deg) translateY(-120px); 
+    transform-origin: bottom right; 
+}
+
+/* ПРАВАЯ КАРТОЧКА */
+.portal-right {
+    left: 35%; /* Центр экрана */
+    margin-left: 380px; /* Отодвигаем вправо из-под центра */
+}
+
+.portal-right .portal-frame {
+    /* Наклон 15 градусов вправо */
+    transform: scale(0.8) rotate(5deg) translateY(-120px);
+    transform-origin: bottom left;
+}
+
+/* === СТИЛЬ СТРАНИЦЫ (IFRAME) === */
+.portal-frame {
+    width: 100%;
+    height: 800px;
+    border: none;
+    
+    /* 1. ФОН: Чтобы не было белого, ставим прозрачный или цвет темы сразу */
+    background: transparent; 
+    
+    border-radius: 25px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    overflow: hidden !important;
+    
+    /* 2. СКРЫВАЕМ ПРИ ЗАГРУЗКЕ */
+    opacity: 0; 
+    
+    /* Эффекты (блюр, чб) */
+    filter: blur(3px) brightness(0.7) grayscale(0.4); 
+    
+    transition: all 0.6s ease; /* Плавное появление */
+    pointer-events: none;
+}
+
+/* 3. КЛАСС ГОТОВНОСТИ (Добавляется JS-ом, когда загрузка завершена) */
+.portal-frame.is-ready {
+    opacity: 0.4; /* Возвращаем нашу полупрозрачность */
+    background: #fff; /* Теперь можно включить белый фон (он уже не мигнет) */
+}
+
+/* Dark Mode Background Fix (когда загрузится) */
+[data-theme="dark"] .portal-frame.is-ready {
+    background: #1e293b;
+    border: 1px solid #444;
+}
+
+
+/* === ЭФФЕКТ ПРИ НАВЕДЕНИИ (HOVER) === */
+
+.portal-left:hover .portal-frame.is-ready {
+    opacity: 1; /* Полная яркость */
+    filter: blur(0px) brightness(1) grayscale(0);
+    transform: scale(0.85) rotate(-10deg) translateY(-120px);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+}
+
+.portal-right:hover .portal-frame.is-ready {
+    opacity: 1; /* Полная яркость */
+    filter: blur(0px) brightness(1) grayscale(0);
+    transform: scale(0.85) rotate(10deg) translateY(-120px);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+}
+
+/* Оверлей */
+.portal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+}
+
+/* Скрываем на узких экранах */
+@media (max-width: 1600px) {
+    .portal-container { display: none !important; }
+}
+
+/* Dark Mode */
+[data-theme="dark"] .portal-frame {
+    background: #1e293b;
+    border: 1px solid #444;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+/* ==========================================
+   🚪 PORTAL EXIT (АНИМАЦИЯ: "РАСКРЫТИЕ")
+   ========================================== */
+
+/* 1. Отключаем мышь для всего контейнера сразу */
+body.is-exiting .portal-container {
+    pointer-events: none !important; /* Курсор перестает "видеть" карточки */
+}
+
+/* Общие настройки анимации ухода */
+body.is-exiting .portal-frame {
+    transition: all 0.4s ease-in;
+    opacity: 0 !important; /* Принудительно исчезаем */
+}
+
+/* ВАЖНО: Добавляем !important к transform, 
+   чтобы перебить стиль :hover, если курсор остался на карточке 
+*/
+
+/* ЛЕВАЯ КАРТОЧКА: Улетает влево */
+body.is-exiting .portal-left .portal-frame {
+    transform: scale(0.7) rotate(-25deg) translateY(-120px) translateX(-300px) !important;
+}
+
+/* ПРАВАЯ КАРТОЧКА: Улетает вправо */
+body.is-exiting .portal-right .portal-frame {
+    transform: scale(0.7) rotate(25deg) translateY(-120px) translateX(300px) !important;
+}
+
+
 
 
 /* === ЗВЕЗДНЫЙ ФОН === */

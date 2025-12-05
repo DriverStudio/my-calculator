@@ -122,7 +122,34 @@ function toggleLanguage() {
 // 3. МЕНЮ И ТЕМА (UI) - FIXED
 // ==========================================
 
-// В main.js
+function initLoader() {
+    // 1. Создаем элементы
+    const loader = document.createElement('div');
+    loader.className = 'page-loader';
+    loader.innerHTML = '<div class="spinner"></div>';
+    
+    // Вставляем в самое начало body
+    document.body.prepend(loader);
+
+    // 2. Функция скрытия (с небольшой задержкой для плавности)
+    const hideLoader = () => {
+        loader.classList.add('hidden');
+        // Полностью удаляем из DOM через полсекунды (когда анимация пройдет), чтобы не мешал
+        setTimeout(() => {
+            if(loader.parentNode) loader.parentNode.removeChild(loader);
+        }, 600);
+    };
+
+    // 3. Слушаем полную загрузку страницы (картинки, стили, скрипты)
+    if (document.readyState === 'complete') {
+        setTimeout(hideLoader, 200); // Если уже загрузилось (кэш)
+    } else {
+        window.addEventListener('load', hideLoader);
+    }
+    
+    // Страховка: если что-то зависло, всё равно убрать лоадер через 3 сек
+    setTimeout(hideLoader, 3000);
+}
 
 function initMenu() {
     const navBar = document.createElement('div');
@@ -352,6 +379,87 @@ function initSpotlight() {
 // ==========================================
 
 // ==========================================
+// 8. SIDE PORTALS (Соседние страницы)
+// ==========================================
+
+function initSidePortals() {
+    // 1. Не запускаем на главной (там каталог) и на мобильных
+    if (currentAppId === 'home' || window.innerWidth < 1100) return;
+
+    // 2. Ищем текущий индекс в массиве APPS
+    const currentIndex = APPS.findIndex(app => app.id === currentAppId);
+    if (currentIndex === -1) return; // Если приложение не найдено в списке
+
+    // 3. Вычисляем соседей (циклично: после последнего идет первый)
+    // Предыдущий
+    const prevIndex = (currentIndex - 1 + APPS.length) % APPS.length;
+    const prevApp = APPS[prevIndex];
+    
+    // Следующий
+    const nextIndex = (currentIndex + 1) % APPS.length;
+    const nextApp = APPS[nextIndex];
+
+    // Функция создания HTML портала
+    // Функция создания HTML портала
+    const createPortal = (app, side) => {
+        const container = document.createElement('div');
+        container.className = `portal-container portal-${side}`;
+        
+        const url = `${pathPrefix}${app.id}/index.html`;
+
+        // 1. Создаем iframe вручную
+        const iframe = document.createElement('iframe');
+        iframe.className = 'portal-frame';
+        iframe.tabIndex = -1;
+        
+        // 2. СЛУШАЕМ ЗАГРУЗКУ
+        iframe.onload = () => {
+            // Как только загрузился — добавляем класс, который плавно покажет его
+            iframe.classList.add('is-ready');
+        };
+        
+        // Задаем src ПОСЛЕ назначения onload
+        iframe.src = url;
+
+        // Оверлей для клика
+        const overlay = document.createElement('div');
+        overlay.className = 'portal-overlay';
+        overlay.title = `Перейти: ${app.name}`;
+        
+        // Сборка
+        container.appendChild(iframe);
+        container.appendChild(overlay);
+
+        // Клик по оверлею = переход
+        overlay.addEventListener('click', () => {
+            document.body.classList.add('is-exiting');
+            setTimeout(() => {
+                window.location.href = url;
+            }, 300);
+        });
+
+        document.body.appendChild(container);
+    };
+
+    // 4. Создаем порталы
+    createPortal(prevApp, 'left');
+    createPortal(nextApp, 'right');
+    
+    // 5. Добавляем управление стрелками клавиатуры
+    document.addEventListener('keydown', (e) => {
+        // Игнорируем, если фокус в инпуте
+        if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+
+        if (e.key === 'ArrowLeft') {
+            document.querySelector('.portal-left .portal-overlay').click();
+        }
+        if (e.key === 'ArrowRight') {
+            document.querySelector('.portal-right .portal-overlay').click();
+        }
+    });
+}
+
+// ==========================================
 // 8. СИСТЕМА ПЕРЕХОДОВ (TRANSITIONS)
 // ==========================================
 
@@ -444,6 +552,23 @@ if (GOOGLE_ANALYTICS_ID) {
 // ==========================================
 
 document.addEventListener('DOMContentLoaded', () => {
+    
+    // === 🛠️ ФИКС ДЛЯ ПОРТАЛОВ (Убираем скролл и лишнее) ===
+    if (window.self !== window.top) {
+        // Мы внутри iframe!
+        
+        // 1. Убираем скроллбары намертво
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
+        
+        // 2. (Опционально) Скрываем меню навигации в миниатюрах, 
+        // чтобы карточка выглядела чище (только контент)
+        const nav = document.querySelector('.nav-bar');
+        if (nav) nav.style.display = 'none';
+        
+        // 3. Отступ сверху тоже убираем, чтобы контент был по центру
+        document.body.style.paddingTop = '0';
+    }
     initTheme();
     initAmbientBlobs();
     initSpotlight();
@@ -455,6 +580,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initInputFormatting();
     initFooter();
     initPageTransitions();
+    initSidePortals();
     
     const copyBtn = document.getElementById('btnCopy');
     if(copyBtn) copyBtn.onclick = copyResult;
