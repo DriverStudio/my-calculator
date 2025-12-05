@@ -14,10 +14,21 @@
 html {
     /* Резервируем место под скроллбар всегда, чтобы макет не скакал влево-вправо */
     scrollbar-gutter: stable;
-    
+
 }
 
-
+.logo-icon {
+    height: 1.5em;
+    /* Высота равна высоте текста (шрифта) */
+    width: auto;
+    /* Ширина подстроится автоматически */
+    vertical-align: middle;
+    /* Выравнивание по центру строки */
+    margin-right: 10px;
+    /* Отступ от иконки до текста "PRISMA" */
+    margin-bottom: 5px;
+    /* Небольшая коррекция по вертикали */
+}
 
 /* === ГЛАВНЫЕ НАСТРОЙКИ СТРАНИЦЫ === */
 body {
@@ -25,7 +36,7 @@ body {
     padding: 0;
     width: 100%;
     /* height: 100%; <--- УДАЛИ ЭТУ СТРОКУ, она часто конфликтует с min-height */
-    
+
     background: #f0f2f5;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #333;
@@ -38,9 +49,9 @@ body {
     align-items: center;
 
     min-height: 100vh;
-    
+
     /* Добавляем, чтобы горизонтальные анимации не вызывали нижний скролл */
-    overflow-x: hidden; 
+    overflow-x: hidden;
 }
 
 /* === МЕНЮ (NAVBAR) === */
@@ -111,6 +122,21 @@ body {
 .sidebar {
     flex: 1;
     min-width: 250px;
+}
+
+/* Стили для селекта */
+.mode-select {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #e1e4e8;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    outline: none;
+}
+
+.mode-select:hover {
+    background-color: #e2e6ea;
 }
 
 /* === ЭЛЕМЕНТЫ ИНТЕРФЕЙСА === */
@@ -319,6 +345,40 @@ button.btn-secondary {
 }
 
 /* === 🌙 DARK MODE SPOTLIGHT === */
+
+/* Стили для селекта */
+[data-theme="dark"] .mode-select {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    background-color: #334155;
+    cursor: pointer;
+    outline: none;
+    color: #e2e8f0;
+}
+
+/* Стили для переключателя режима */
+[data-theme="dark"] select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #334155;
+    border-radius: 10px;
+    font-size: 16px;
+    background: #334155;
+    cursor: pointer;
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] select:hover {
+    background-color: #475569;
+}
+
+[data-theme="dark"] .mode-select:hover {
+    background-color: #475569;
+}
+
+
 [data-theme="dark"] .tool-card {
     color: #e2e8f0;
 
@@ -959,7 +1019,7 @@ button.btn-secondary {
 }
 
 /* --- ВНИМАНИЕ: Я убрал отсюда .tool-card, чтобы не ломать Premium UI --- */
-[data-theme="dark"] .ad-slot{
+[data-theme="dark"] .ad-slot {
     background: #334155;
 }
 
@@ -1115,27 +1175,33 @@ button.btn-secondary {
 
 /* Настройка изображений внутри рекламных слотов */
 .ad-slot img {
-    width: 100%;       /* Растягиваем по ширине (как в JS) */
-    height: auto;      /* Высота авто */
-    object-fit: cover; /* Если картинка обрезается, она заполнит пространство красиво */
+    width: 100%;
+    /* Растягиваем по ширине (как в JS) */
+    height: auto;
+    /* Высота авто */
+    object-fit: cover;
+    /* Если картинка обрезается, она заполнит пространство красиво */
 }
 
 /* Ограничение высоты для верхнего баннера */
 #ad-banner-top img {
-    max-height: 250px; /* Больше этой высоты баннер не растянется */
+    max-height: 250px;
+    /* Больше этой высоты баннер не растянется */
 }
 
 /* Ограничение для сайдбара (на десктопе) */
 @media (min-width: 701px) {
     #ad-sidebar img {
-        max-height: 600px; /* Сайдбар может быть высоким */
+        max-height: 600px;
+        /* Сайдбар может быть высоким */
     }
 }
 
 /* Адаптация для мобильных (когда сайдбар падает вниз) */
 @media (max-width: 700px) {
     #ad-sidebar img {
-        max-height: 250px; /* На телефоне сайдбар не должен быть слишком высоким */
+        max-height: 250px;
+        /* На телефоне сайдбар не должен быть слишком высоким */
     }
 }
 
@@ -1172,8 +1238,9 @@ button.btn-secondary {
     0% {
         opacity: 0;
         /* Было 20px, сделаем 10px - меньше риск, что вылезет за экран */
-        transform: translateY(10px) scale(0.99); 
+        transform: translateY(10px) scale(0.99);
     }
+
     100% {
         opacity: 1;
         transform: translateY(0) scale(1);
@@ -1190,10 +1257,13 @@ button.btn-secondary {
         transform: scale(1);
         filter: blur(0px);
     }
+
     100% {
         opacity: 0;
-        transform: scale(0.96); /* Чуть отдаляем страницу */
-        filter: blur(4px);      /* Красивый блюр (эффект iOS) */
+        transform: scale(0.96);
+        /* Чуть отдаляем страницу */
+        filter: blur(4px);
+        /* Красивый блюр (эффект iOS) */
     }
 }
 
@@ -1201,13 +1271,15 @@ button.btn-secondary {
 body.is-exiting .container {
     /* Важно: duration (0.3s) должен совпадать с таймером в JS */
     animation: pageExit 0.3s cubic-bezier(0.4, 0, 1, 1) forwards;
-    pointer-events: none; /* Блокируем повторные клики пока уходит */
+    pointer-events: none;
+    /* Блокируем повторные клики пока уходит */
 }
 
 .container {
     opacity: 0;
     animation: pageEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    animation-delay: 0.1s; /* Контент появляется чуть позже меню */
+    animation-delay: 0.1s;
+    /* Контент появляется чуть позже меню */
 }
 
 
@@ -1218,6 +1290,7 @@ body.is-exiting .container {
     transform: translateY(-10px) scale(0.98);
     opacity: 0;
 }
+
 /* Чтобы фон (звезды/блобы) не дергались, мы их не анимируем, 
    анимируем только контент */
 
@@ -1228,25 +1301,27 @@ body.is-exiting .container {
 /* 1. Настройка главной карточки */
 .container {
     position: relative;
-    z-index: 20; /* Главная всегда сверху */
+    z-index: 20;
+    /* Главная всегда сверху */
     background: #fff;
     transition: transform 0.3s;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.15); 
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
 }
 
 /* 2. Общая обертка портала */
 .portal-container {
     position: fixed;
-    top: 150px; 
+    top: 150px;
     height: 60vh;
     width: 600px;
-    
-    z-index: 1; /* ВСЕГДА ПОЗАДИ (и при hover тоже) */
-    
+
+    z-index: 1;
+    /* ВСЕГДА ПОЗАДИ (и при hover тоже) */
+
     display: flex;
     align-items: center;
     justify-content: center;
-    
+
     transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     cursor: pointer;
 }
@@ -1255,20 +1330,24 @@ body.is-exiting .container {
 
 /* ЛЕВАЯ КАРТОЧКА */
 .portal-left {
-    right: 35%; /* Центр экрана */
-    margin-right: 380px; /* Отодвигаем влево из-под центра */
+    right: 35%;
+    /* Центр экрана */
+    margin-right: 380px;
+    /* Отодвигаем влево из-под центра */
 }
 
 .portal-left .portal-frame {
     /* Наклон 15 градусов влево */
-    transform: scale(0.8) rotate(-5deg) translateY(-120px); 
-    transform-origin: bottom right; 
+    transform: scale(0.8) rotate(-5deg) translateY(-120px);
+    transform-origin: bottom right;
 }
 
 /* ПРАВАЯ КАРТОЧКА */
 .portal-right {
-    left: 35%; /* Центр экрана */
-    margin-left: 380px; /* Отодвигаем вправо из-под центра */
+    left: 35%;
+    /* Центр экрана */
+    margin-left: 380px;
+    /* Отодвигаем вправо из-под центра */
 }
 
 .portal-right .portal-frame {
@@ -1282,28 +1361,31 @@ body.is-exiting .container {
     width: 100%;
     height: 800px;
     border: none;
-    
+
     /* 1. ФОН: Чтобы не было белого, ставим прозрачный или цвет темы сразу */
-    background: transparent; 
-    
+    background: transparent;
+
     border-radius: 25px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     overflow: hidden !important;
-    
+
     /* 2. СКРЫВАЕМ ПРИ ЗАГРУЗКЕ */
-    opacity: 0; 
-    
+    opacity: 0;
+
     /* Эффекты (блюр, чб) */
-    filter: blur(3px) brightness(0.7) grayscale(0.4); 
-    
-    transition: all 0.6s ease; /* Плавное появление */
+    filter: blur(3px) brightness(0.7) grayscale(0.4);
+
+    transition: all 0.6s ease;
+    /* Плавное появление */
     pointer-events: none;
 }
 
 /* 3. КЛАСС ГОТОВНОСТИ (Добавляется JS-ом, когда загрузка завершена) */
 .portal-frame.is-ready {
-    opacity: 0.4; /* Возвращаем нашу полупрозрачность */
-    background: #fff; /* Теперь можно включить белый фон (он уже не мигнет) */
+    opacity: 0.4;
+    /* Возвращаем нашу полупрозрачность */
+    background: #fff;
+    /* Теперь можно включить белый фон (он уже не мигнет) */
 }
 
 /* Dark Mode Background Fix (когда загрузится) */
@@ -1316,17 +1398,19 @@ body.is-exiting .container {
 /* === ЭФФЕКТ ПРИ НАВЕДЕНИИ (HOVER) === */
 
 .portal-left:hover .portal-frame.is-ready {
-    opacity: 1; /* Полная яркость */
+    opacity: 1;
+    /* Полная яркость */
     filter: blur(0px) brightness(1) grayscale(0);
     transform: scale(0.85) rotate(-10deg) translateY(-120px);
-    box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
 }
 
 .portal-right:hover .portal-frame.is-ready {
-    opacity: 1; /* Полная яркость */
+    opacity: 1;
+    /* Полная яркость */
     filter: blur(0px) brightness(1) grayscale(0);
     transform: scale(0.85) rotate(10deg) translateY(-120px);
-    box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
 }
 
 /* Оверлей */
@@ -1341,14 +1425,16 @@ body.is-exiting .container {
 
 /* Скрываем на узких экранах */
 @media (max-width: 1600px) {
-    .portal-container { display: none !important; }
+    .portal-container {
+        display: none !important;
+    }
 }
 
 /* Dark Mode */
 [data-theme="dark"] .portal-frame {
     background: #1e293b;
     border: 1px solid #444;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
 /* ==========================================
@@ -1357,13 +1443,15 @@ body.is-exiting .container {
 
 /* 1. Отключаем мышь для всего контейнера сразу */
 body.is-exiting .portal-container {
-    pointer-events: none !important; /* Курсор перестает "видеть" карточки */
+    pointer-events: none !important;
+    /* Курсор перестает "видеть" карточки */
 }
 
 /* Общие настройки анимации ухода */
 body.is-exiting .portal-frame {
     transition: all 0.4s ease-in;
-    opacity: 0 !important; /* Принудительно исчезаем */
+    opacity: 0 !important;
+    /* Принудительно исчезаем */
 }
 
 /* ВАЖНО: Добавляем !important к transform, 

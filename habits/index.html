@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Habit Garden | PRISMA</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        /* === LOCAL STYLES === */
+        body { overflow-y: auto; }
+
+        .garden-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding-bottom: 100px;
+        }
+
+        /* HEADER ROW (Заголовок + Кнопка вопроса) */
+        .header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        /* КНОПКА ВОПРОСА (?) */
+        .help-btn {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: var(--text-muted);
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: 0.2s;
+            backdrop-filter: blur(5px);
+        }
+        .help-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+        /* СЕТКА ПРИВЫЧЕК */
+        .habits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 20px;
+            width: 100%;
+        }
+
+        .habit-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            aspect-ratio: 1 / 1.2;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.3);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .habit-card.sleeping { filter: grayscale(100%); opacity: 0.7; transform: scale(0.98); }
+        
+        .habit-card.watered {
+            background: rgba(255, 255, 255, 0.85);
+            box-shadow: 0 10px 30px rgba(40, 167, 69, 0.2);
+            border-color: #28a745;
+            transform: translateY(-5px);
+        }
+
+        [data-theme="dark"] .habit-card { background: rgba(30, 41, 59, 0.6); border-color: rgba(255,255,255,0.05); }
+        [data-theme="dark"] .habit-card.watered {
+            background: rgba(16, 185, 129, 0.2);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.15);
+            border-color: #10b981;
+        }
+
+        .plant-icon {
+            font-size: 60px;
+            margin: 10px 0;
+            transition: transform 0.4s;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1));
+        }
+        .habit-card:hover .plant-icon { transform: scale(1.1); }
+        .habit-card:active .plant-icon { transform: scale(0.9); }
+
+        .habit-title { font-weight: 700; font-size: 16px; text-align: center; color: var(--text-main); margin-bottom: 5px; }
+        .habit-streak { font-size: 12px; color: var(--text-muted); background: rgba(0,0,0,0.05); padding: 4px 10px; border-radius: 10px; }
+        [data-theme="dark"] .habit-streak { background: rgba(255,255,255,0.1); color: #ccc; }
+        [data-theme="dark"] .habit-title { font-weight: 700; font-size: 16px; text-align: center; color: #ffffff; margin-bottom: 5px; }
+
+        .fab {
+            position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px;
+            background: var(--accent); border-radius: 50%; color: white; font-size: 30px;
+            border: none; box-shadow: 0 10px 25px rgba(40, 167, 69, 0.4);
+            cursor: pointer; transition: transform 0.2s; z-index: 100;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .fab:hover { transform: scale(1.1) rotate(90deg); }
+
+        .splash {
+            position: absolute; pointer-events: none; width: 100%; height: 100%; top: 0; left: 0;
+            background: radial-gradient(circle, rgba(40,167,69,0.4) 0%, transparent 70%); opacity: 0;
+        }
+        @keyframes splashAnim { 0% { opacity: 0.8; transform: scale(0.5); } 100% { opacity: 0; transform: scale(2); } }
+
+        /* MODAL STYLES */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
+            display: none; align-items: center; justify-content: center; z-index: 2000;
+        }
+        .modal-card {
+            background: #fff; padding: 30px; border-radius: 20px; width: 90%; max-width: 380px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3); text-align: center;
+        }
+        [data-theme="dark"] .modal-card { background: #1e293b; color: #fff; }
+
+        /* STAGES LEGEND */
+        .stages-row {
+            display: flex; gap: 10px; margin: 20px 0;
+            background: rgba(0,0,0,0.05); padding: 10px; border-radius: 12px;
+            overflow-x: auto; justify-content: space-between;
+        }
+        [data-theme="dark"] .stages-row { background: rgba(255,255,255,0.05); }
+        .stage-item { display: flex; flex-direction: column; align-items: center; font-size: 11px; }
+        .stage-icon { font-size: 20px; margin-bottom: 5px; }
+
+        .empty-state { text-align: center; padding: 50px; color: var(--text-muted); opacity: 0.7; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-row">
+            <h1 style="margin:0;">🌿 Habit Garden</h1>
+            <button class="help-btn" id="btnHelp" title="Как играть?">?</button>
+        </div>
+        
+        <div class="garden-container">
+            <div id="grid" class="habits-grid">
+                </div>
+            
+            <div id="emptyState" class="empty-state" style="display:none;">
+                <div style="font-size:50px; margin-bottom:10px;">🌰</div>
+                <p>Сад пуст.</p>
+                <p>Нажми <b>+</b>, чтобы посадить семя.</p>
+            </div>
+        </div>
+
+        <button class="fab" id="btnAdd">+</button>
+    </div>
+
+    <div class="modal-overlay" id="modalAdd">
+        <div class="modal-card">
+            <h2 style="margin-top:0">Новое семя</h2>
+            <input type="text" id="inputName" placeholder="Название (напр. Чтение)" 
+                   style="width:100%; padding:12px; border-radius:10px; border:1px solid #ccc; margin:20px 0; font-size:16px;">
+            <button id="btnSave">🌱 Посадить</button>
+            <button id="btnCancelAdd" class="btn-secondary" style="margin-top:10px; background:transparent; color: var(--text-muted);">Отмена</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalInfo">
+        <div class="modal-card">
+            <h2 style="margin-top:0">🌱 Правила Сада</h2>
+            <p style="text-align: left; font-size: 14px; opacity: 0.8; line-height: 1.5;">
+                Каждая привычка — это живое растение. Нажимай на карточку каждый день, чтобы <b>«полить»</b> её и увеличить серию (streak).
+            </p>
+            
+            <div class="stages-row">
+                <div class="stage-item"><div class="stage-icon">🌰</div><div>Старт</div></div>
+                <div class="stage-item"><div class="stage-icon">🌱</div><div>1д</div></div>
+                <div class="stage-item"><div class="stage-icon">🌿</div><div>7д</div></div>
+                <div class="stage-item"><div class="stage-icon">🌳</div><div>21д</div></div>
+                <div class="stage-item"><div class="stage-icon">🍎</div><div>30+</div></div>
+            </div>
+            
+            <p style="text-align: left; font-size: 13px; color: #e57373;">
+                ⚠️ <b>Внимание:</b> Если пропустить больше 2 дней подряд, растение завянет (🥀).
+            </p>
+
+            <button id="btnCloseInfo" style="margin-top:15px;">Всё понятно</button>
+        </div>
+    </div>
+
+    <script src="../main.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

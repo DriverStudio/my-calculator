@@ -17,6 +17,7 @@ const APPS = [
     { id: 'life',       name: 'Жизнь (Memento)',icon: '⏳', category: 'health' },
     { id: 'sounds',     name: 'Фокус и Релакс', icon: '🎧', category: 'health' },
     { id: 'ambient',    name: 'Фокус Видео',    icon: '🏔️', category: 'health' },
+    { id: 'habits',     name: 'Мой Сад',        icon: '🌿', category: 'health' },
     { id: 'freelance',  name: 'Рейт в час',     icon: '💸', category: 'work' },
     { id: 'pomodoro',   name: 'Фокус Таймер',   icon: '🍅', category: 'work' },
     { id: 'text',       name: 'Анализ текста',  icon: '📝', category: 'work' },
@@ -34,6 +35,7 @@ const APPS = [
     { id: 'mesh',       name: 'Mesh Gradients', icon: '🌈', category: 'tools' },
     { id: 'image',      name: 'Сжатие фото',    icon: '🖼️', category: 'tools' },
     { id: 'sign',       name: 'Автограф',       icon: '✍️', category: 'tools' },
+    { id: 'timer',      name: 'Visual Timer',   icon: '⏳', category: 'tools' },
     { id: 'clicker',    name: 'Принтер $',      icon: '🖨️', category: 'fun' },
     { id: 'reaction',   name: 'Реакция',        icon: '⚡', category: 'fun' },
     { id: 'typer',      name: 'Хакер Тайпер',   icon: '⌨️', category: 'fun' },
@@ -546,6 +548,82 @@ if (GOOGLE_ANALYTICS_ID) {
     gtag('config', GOOGLE_ANALYTICS_ID);
 }
 
+// ==========================================
+// 9. AUTO ICONS (Иконки из папки или Emoji)
+// ==========================================
+
+function initAutoIcons() {
+    // 1. Ищем текущее приложение в базе
+    const app = APPS.find(a => a.id === currentAppId);
+    if (!app) return; // Если это главная или 404 — ничего не делаем
+
+    // 2. Формируем путь к потенциальной SVG (учитываем pathPrefix ../)
+    // Важно: папка icons должна лежать в корне, рядом с main.js
+    const iconPath = `${pathPrefix}icons/${app.id}.svg`;
+
+    // 3. Проверяем, существует ли файл
+    const tester = new Image();
+    
+    tester.onload = function() {
+        // SVG найдена -> ставим её
+        applyPageIcon(iconPath, true);
+    };
+    
+    tester.onerror = function() {
+        // SVG нет -> ставим эмодзи из конфига
+        applyPageIcon(app.icon || '💎', false);
+    };
+    
+    tester.src = iconPath;
+}
+
+function applyPageIcon(src, isSvg) {
+    // A. УСТАНОВКА FAVICON (Вкладка браузера)
+    let link = document.querySelector("link[rel*='icon']");
+    if (!link) {
+        link = document.createElement('link');
+        link.rel = 'icon';
+        document.head.appendChild(link);
+    }
+
+    if (isSvg) {
+        link.type = 'image/svg+xml';
+        link.href = src;
+    } else {
+        // Превращаем эмодзи в SVG "на лету"
+        link.href = `data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>${src}</text></svg>`;
+    }
+
+    // B. УСТАНОВКА В ЗАГОЛОВОК H1
+    const h1 = document.querySelector('h1');
+    if (h1) {
+        // Проверяем, не стоит ли там уже иконка (чтобы не дублировать)
+        if (h1.querySelector('.logo-icon') || h1.innerText.includes(src)) return;
+
+        if (isSvg) {
+            const img = document.createElement('img');
+            img.src = src;
+            img.className = 'logo-icon'; 
+            img.alt = 'Logo';
+            
+            // Базовые стили, если в CSS их нет
+            img.style.height = '1em';
+            img.style.width = 'auto';
+            img.style.verticalAlign = 'middle';
+            img.style.marginRight = '10px';
+            img.style.marginBottom = '4px'; // Чуть-чуть коррекции
+            
+            h1.prepend(img);
+        } else {
+            // Если эмодзи
+            const span = document.createElement('span');
+            span.innerText = src;
+            span.style.marginRight = '10px';
+            h1.prepend(span);
+        }
+    }
+}
+
 
 // ==========================================
 // 7. СТАРТ (ENTRY POINT)
@@ -576,6 +654,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initMenu();          // 1. Создаем меню
     initTranslations();  // 2. Грузим язык
     initAds();           // 3. Грузим рекламу
+
+    initAutoIcons();
     
     initInputFormatting();
     initFooter();

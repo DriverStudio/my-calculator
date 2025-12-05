@@ -5,19 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta property="og:title" content="💎 PRISMA | 30+ Полезных Сервисов">
-    
-    <meta property="og:description" content="Калькуляторы, генераторы, утилиты для работы и жизни. BMI, ROAS, QR-коды, Звуки для фокуса и многое другое. Бесплатно.">
-    
+
+    <meta property="og:description"
+        content="Калькуляторы, генераторы, утилиты для работы и жизни. BMI, ROAS, QR-коды, Звуки для фокуса и многое другое. Бесплатно.">
+
     <meta property="og:image" content="https://driverstudio.github.io/my-calculator/assets/og-preview.png">
-    
+
     <meta property="og:type" content="website">
-    
+
     <meta property="og:url" content="https://driverstudio.github.io/my-calculator/">
-    
+
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="💎 PRISMA">
     <meta name="twitter:image" content="https://driverstudio.github.io/my-calculator/assets/og-preview.png">
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <style>
         /* Сетка остается прежней */
         .catalog-grid {
@@ -45,161 +47,179 @@
 
         .tool-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
             border-color: #28a745;
         }
 
-        .tool-icon { font-size: 40px; margin-bottom: 5px; }
-        .tool-name { font-weight: bold; font-size: 18px; }
-        .tool-desc { font-size: 13px; color: #777; }
-        
-        .hidden { display: none !important; }
+        .tool-icon {
+            font-size: 40px;
+            margin-bottom: 5px;
+        }
+
+        .tool-name {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .tool-desc {
+            font-size: 13px;
+            color: #777;
+        }
+
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
         <div style="width: 100%;">
-            <h1 style="margin-bottom: 10px;" data-i18n="home.title">💎 PRISMA</h1>
+            <h1 style="margin-bottom: 10px;" data-i18n="home.title">
+                <img src="favicon.svg" class="logo-icon" alt="Logo">
+                PRISMA
+            </h1>
             <p style="margin-bottom: 30px; color: #666;" data-i18n="home.subtitle">
                 Коллекция из 30 полезных сервисов для работы и жизни.
             </p>
-            <input type="text" id="searchInput" class="search-box" placeholder="🔍 Найти инструмент..." data-i18n="home.search_placeholder">
+            <input type="text" id="searchInput" class="search-box" placeholder="🔍 Найти инструмент..."
+                data-i18n="home.search_placeholder">
             <div id="ad-banner-top" class="ad-slot"></div>
             <div id="catalog-root"></div>
-            <div id="noResults" style="display:none; text-align:center; padding: 40px; color:#777;" data-i18n="home.no_results">
+            <div id="noResults" style="display:none; text-align:center; padding: 40px; color:#777;"
+                data-i18n="home.no_results">
                 🤷‍♂️ Ничего не найдено.
             </div>
         </div>
     </div>
     <script src="main.js"></script>
     <script>
-    const root = document.getElementById('catalog-root');
-    const searchInput = document.getElementById('searchInput');
-    const noResults = document.getElementById('noResults');
+        const root = document.getElementById('catalog-root');
+        const searchInput = document.getElementById('searchInput');
+        const noResults = document.getElementById('noResults');
 
-    // Функция перевода названия приложения
-    // Пытается найти перевод в JSON по ключу app.id + ".title" (или как у тебя в JSON)
-    // Если не находит, возвращает дефолтное app.name из main.js
-    function getAppName(app) {
-        if (window.I18N && window.I18N[currentLang] && window.I18N[currentLang][app.id]) {
-            // В твоем JSON ключи специфические, поэтому берем первый ключ из объекта сервиса, 
-            // который похож на заголовок, ИЛИ просто берем название из main.js, 
-            // если JSON для каталога еще не готов.
-            
-            // ВАРИАНТ: Если ты добавишь в JSON ключ "title" для каждого сервиса:
-            // return window.I18N[currentLang][app.id]['title'] || app.name;
-            
-            // ПОКА ЧТО (для текущей структуры): Оставляем как есть, 
-            // так как в твоем JSON нет чистых названий сервисов, только ключи внутри них.
-            // Рекомендую добавить в JSON для каждого сервиса ключ "_title": "Название"
-            
-            const serviceData = window.I18N[currentLang][app.id];
-            if (serviceData && serviceData['_title']) {
-                return serviceData['_title'];
-            }
-        }
-        return app.name;
-    }
-    
-    function getCategoryName(catKey) {
-        if (window.I18N && window.I18N[currentLang] && window.I18N[currentLang]['categories']) {
-            return window.I18N[currentLang]['categories'][catKey] || catKey;
-        }
-        // Фоллбэк, если JSON еще не загрузился
-        const RU_CATS = {
-            'finance': '💰 Финансы', 'health': '💊 Здоровье',
-            'work': '💻 Работа & IT', 'tools': '🛠 Утилиты', 'fun': '🎮 Развлечения'
-        };
-        return RU_CATS[catKey] || 'Разное';
-    }
+        // Функция перевода названия приложения
+        // Пытается найти перевод в JSON по ключу app.id + ".title" (или как у тебя в JSON)
+        // Если не находит, возвращает дефолтное app.name из main.js
+        function getAppName(app) {
+            if (window.I18N && window.I18N[currentLang] && window.I18N[currentLang][app.id]) {
+                // В твоем JSON ключи специфические, поэтому берем первый ключ из объекта сервиса, 
+                // который похож на заголовок, ИЛИ просто берем название из main.js, 
+                // если JSON для каталога еще не готов.
 
-    // Глобальная функция рендера (вызывается при старте и при смене языка)
-    window.renderCatalog = function() {
-        root.innerHTML = ''; // Очищаем текущее
-        
-        const uniqueCats = [...new Set(APPS.map(app => app.category))];
+                // ВАРИАНТ: Если ты добавишь в JSON ключ "title" для каждого сервиса:
+                // return window.I18N[currentLang][app.id]['title'] || app.name;
 
-        uniqueCats.forEach(catKey => {
-            const section = document.createElement('div');
-            section.className = 'category-section';
-            section.id = `cat-${catKey}`;
+                // ПОКА ЧТО (для текущей структуры): Оставляем как есть, 
+                // так как в твоем JSON нет чистых названий сервисов, только ключи внутри них.
+                // Рекомендую добавить в JSON для каждого сервиса ключ "_title": "Название"
 
-            const title = document.createElement('div');
-            title.className = 'category-title';
-            title.innerText = getCategoryName(catKey);
-            section.appendChild(title);
-
-            const grid = document.createElement('div');
-            grid.className = 'catalog-grid';
-
-            const catApps = APPS.filter(app => app.category === catKey);
-
-            catApps.forEach(app => {
-                const card = document.createElement('a');
-                card.className = 'tool-card';
-                card.href = `./${app.id}/index.html`;
-                
-                const localizedName = getAppName(app);
-                
-                // Для поиска сохраняем и оригинал и перевод
-                card.setAttribute('data-keywords', `${localizedName} ${app.name} ${app.id}`.toLowerCase());
-
-                // Текст кнопки "Открыть"
-                let openText = 'Открыть →';
-                if(window.I18N && window.I18N[currentLang] && window.I18N[currentLang]['home']) {
-                     openText = window.I18N[currentLang]['home']['open_btn'];
+                const serviceData = window.I18N[currentLang][app.id];
+                if (serviceData && serviceData['_title']) {
+                    return serviceData['_title'];
                 }
+            }
+            return app.name;
+        }
 
-                card.innerHTML = `
+        function getCategoryName(catKey) {
+            if (window.I18N && window.I18N[currentLang] && window.I18N[currentLang]['categories']) {
+                return window.I18N[currentLang]['categories'][catKey] || catKey;
+            }
+            // Фоллбэк, если JSON еще не загрузился
+            const RU_CATS = {
+                'finance': '💰 Финансы', 'health': '💊 Здоровье',
+                'work': '💻 Работа & IT', 'tools': '🛠 Утилиты', 'fun': '🎮 Развлечения'
+            };
+            return RU_CATS[catKey] || 'Разное';
+        }
+
+        // Глобальная функция рендера (вызывается при старте и при смене языка)
+        window.renderCatalog = function () {
+            root.innerHTML = ''; // Очищаем текущее
+
+            const uniqueCats = [...new Set(APPS.map(app => app.category))];
+
+            uniqueCats.forEach(catKey => {
+                const section = document.createElement('div');
+                section.className = 'category-section';
+                section.id = `cat-${catKey}`;
+
+                const title = document.createElement('div');
+                title.className = 'category-title';
+                title.innerText = getCategoryName(catKey);
+                section.appendChild(title);
+
+                const grid = document.createElement('div');
+                grid.className = 'catalog-grid';
+
+                const catApps = APPS.filter(app => app.category === catKey);
+
+                catApps.forEach(app => {
+                    const card = document.createElement('a');
+                    card.className = 'tool-card';
+                    card.href = `./${app.id}/index.html`;
+
+                    const localizedName = getAppName(app);
+
+                    // Для поиска сохраняем и оригинал и перевод
+                    card.setAttribute('data-keywords', `${localizedName} ${app.name} ${app.id}`.toLowerCase());
+
+                    // Текст кнопки "Открыть"
+                    let openText = 'Открыть →';
+                    if (window.I18N && window.I18N[currentLang] && window.I18N[currentLang]['home']) {
+                        openText = window.I18N[currentLang]['home']['open_btn'];
+                    }
+
+                    card.innerHTML = `
                     <div class="tool-icon">${app.icon}</div>
                     <div class="tool-name">${localizedName}</div>
                     <div class="tool-desc">${openText}</div>
                 `;
-                grid.appendChild(card);
+                    grid.appendChild(card);
+                });
+
+                section.appendChild(grid);
+                root.appendChild(section);
             });
 
-            section.appendChild(grid);
-            root.appendChild(section);
+            // Перезапускаем Spotlight эффект для новых карточек
+            if (typeof initSpotlight === 'function') initSpotlight();
+        };
+
+        // Живой поиск
+        searchInput.addEventListener('input', function () {
+            const query = this.value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.tool-card');
+            const sections = document.querySelectorAll('.category-section');
+            let totalVisible = 0;
+
+            cards.forEach(card => {
+                const keywords = card.getAttribute('data-keywords');
+                if (query === '' || keywords.includes(query)) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+
+            sections.forEach(section => {
+                const visibleCards = section.querySelectorAll('.tool-card:not(.hidden)');
+                if (visibleCards.length > 0) {
+                    section.classList.remove('hidden');
+                    totalVisible++;
+                } else {
+                    section.classList.add('hidden');
+                }
+            });
+
+            noResults.style.display = totalVisible === 0 ? 'block' : 'none';
         });
-        
-        // Перезапускаем Spotlight эффект для новых карточек
-        if(typeof initSpotlight === 'function') initSpotlight();
-    };
 
-    // Живой поиск
-    searchInput.addEventListener('input', function() {
-        const query = this.value.toLowerCase().trim();
-        const cards = document.querySelectorAll('.tool-card');
-        const sections = document.querySelectorAll('.category-section');
-        let totalVisible = 0;
-
-        cards.forEach(card => {
-            const keywords = card.getAttribute('data-keywords');
-            if (query === '' || keywords.includes(query)) {
-                card.classList.remove('hidden');
-            } else {
-                card.classList.add('hidden');
-            }
-        });
-
-        sections.forEach(section => {
-            const visibleCards = section.querySelectorAll('.tool-card:not(.hidden)');
-            if (visibleCards.length > 0) {
-                section.classList.remove('hidden');
-                totalVisible++;
-            } else {
-                section.classList.add('hidden');
-            }
-        });
-
-        noResults.style.display = totalVisible === 0 ? 'block' : 'none';
-    });
-
-    // Первичный рендер (если переводы еще не загрузились, отрисует дефолт, 
-    // а потом initTranslations вызовет renderCatalog еще раз)
-    renderCatalog();
-</script>
+        // Первичный рендер (если переводы еще не загрузились, отрисует дефолт, 
+        // а потом initTranslations вызовет renderCatalog еще раз)
+        renderCatalog();
+    </script>
 </body>
 
 
