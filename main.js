@@ -122,12 +122,35 @@ function toggleLanguage() {
 // 3. МЕНЮ И ТЕМА (UI) - FIXED
 // ==========================================
 
+// В main.js
+
 function initMenu() {
     const navBar = document.createElement('div');
     navBar.className = 'nav-bar';
     
+    // 1. Создаем контейнер для скролла
     const scrollBox = document.createElement('div');
     scrollBox.className = 'nav-scroll';
+
+    // === 🔥 ФИКС ДЕРГАНЬЯ: ВОССТАНАВЛИВАЕМ ПОЗИЦИЮ СКРОЛЛА ===
+    // Читаем сохраненную позицию из памяти
+    const savedScroll = sessionStorage.getItem('navScrollPos');
+    
+    // Если позиция сохранена, применяем её сразу, как только элемент появится
+    if (savedScroll) {
+        // requestAnimationFrame гарантирует, что это произойдет до отрисовки кадра
+        requestAnimationFrame(() => {
+            scrollBox.scrollLeft = parseInt(savedScroll, 10);
+        });
+    }
+
+    // Сохраняем позицию при каждом движении скролла
+    scrollBox.addEventListener('scroll', () => {
+        sessionStorage.setItem('navScrollPos', scrollBox.scrollLeft);
+    });
+
+    // === КОНЕЦ ФИКСА ===
+
     scrollBox.addEventListener('wheel', (evt) => {
         if (scrollBox.scrollWidth > scrollBox.clientWidth) {
             evt.preventDefault();
@@ -156,12 +179,14 @@ function initMenu() {
     controls.style.alignItems = 'center';
     controls.style.gap = '8px';
     controls.style.paddingRight = '20px';
+    // Чтобы кнопки справа не сжимались
+    controls.style.flexShrink = '0'; 
 
-    // Кнопка Языка (с ID!)
+    // Кнопка Языка
     const langBtn = document.createElement('div');
     langBtn.className = 'theme-toggle'; 
     langBtn.id = 'langBtn'; 
-    langBtn.innerHTML = currentLang.toUpperCase();
+    langBtn.innerText = currentLang.toUpperCase(); // innerText безопаснее
     langBtn.style.fontWeight = 'bold';
     langBtn.style.fontSize = '14px';
     langBtn.onclick = toggleLanguage;
@@ -170,7 +195,7 @@ function initMenu() {
     const themeBtn = document.createElement('div');
     themeBtn.className = 'theme-toggle';
     themeBtn.id = 'themeBtn'; 
-    themeBtn.innerHTML = '🌙'; 
+    themeBtn.innerText = '🌙'; 
     themeBtn.onclick = toggleTheme;
 
     controls.appendChild(langBtn);
@@ -246,24 +271,46 @@ async function initAds() {
 // ==========================================
 
 function createStarBackground() {
+    // Если контейнер уже есть, не создаем дубликат
     if (document.getElementById('stars-bg')) return;
+
     const container = document.createElement('div');
     container.id = 'stars-bg';
     container.className = 'stars-container';
-    
-    [1, 2, 3].forEach(i => {
+
+    // Попытаемся достать "карту звезд" из памяти
+    let starData = JSON.parse(localStorage.getItem('fixed_stars_v2'));
+
+    // Если карты нет (первый заход), генерируем её
+    if (!starData) {
+        starData = [];
+        [1, 2, 3].forEach(i => {
+            let shadows = [];
+            // Генерируем звезды (количество зависит от слоя)
+            for (let s = 0; s < 100 * i; s++) {
+                shadows.push(`${Math.floor(Math.random()*100)}vw ${Math.floor(Math.random()*100)}vh 0 ${Math.random()*2}px rgba(255,255,255,${Math.random()})`);
+            }
+            starData.push(shadows.join(','));
+        });
+        // Сохраняем "вселенную" навсегда
+        localStorage.setItem('fixed_stars_v2', JSON.stringify(starData));
+    }
+
+    // Создаем слои, используя сохраненные данные
+    [1, 2, 3].forEach((i, index) => {
         const layer = document.createElement('div');
         layer.className = 'star-layer';
         layer.id = `star-layer-${i}`;
-        let shadows = [];
-        for (let s = 0; s < 100 * i; s++) {
-            shadows.push(`${Math.floor(Math.random()*100)}vw ${Math.floor(Math.random()*100)}vh 0 ${Math.random()*2}px rgba(255,255,255,${Math.random()})`);
-        }
-        layer.style.boxShadow = shadows.join(',');
+        
+        // Применяем сохраненные тени (координаты звезд)
+        layer.style.boxShadow = starData[index];
+        
         container.appendChild(layer);
     });
+
     document.body.prepend(container);
-    
+
+    // Параллакс эффект при скролле (оставляем как есть)
     window.addEventListener('scroll', () => {
         const y = window.scrollY;
         const l1 = document.getElementById('star-layer-1');
@@ -303,6 +350,42 @@ function initSpotlight() {
 // ==========================================
 // 6. УТИЛИТЫ (Captcha, Analytics, Inputs)
 // ==========================================
+
+// ==========================================
+// 8. СИСТЕМА ПЕРЕХОДОВ (TRANSITIONS)
+// ==========================================
+
+function initPageTransitions() {
+    // 1. Перехватываем клики по всем ссылкам
+    document.addEventListener('click', (e) => {
+        const link = e.target.closest('a');
+        
+        // Если клик не по ссылке, или ссылка открывается в новом окне (_blank), игнорируем
+        if (!link || link.target === '_blank' || link.getAttribute('href').startsWith('#')) return;
+
+        // Если это внутренняя ссылка
+        const href = link.getAttribute('href');
+        if (href) {
+            e.preventDefault(); 
+            
+            // 1. Вешаем класс, запускающий CSS @keyframes pageExit
+            document.body.classList.add('is-exiting');
+
+            // 2. Ждем, пока анимация (0.3s) закончится
+            setTimeout(() => {
+                window.location.href = href;
+            }, 300); // <--- Должно быть 300, как в CSS
+        }
+    });
+
+    // 2. Фикс для кнопки "Назад" в браузере
+    // (Если пользователь нажал Назад, страница берется из кэша, и класс is-exiting может остаться)
+    window.addEventListener('pageshow', (event) => {
+        if (event.persisted) {
+            document.body.classList.remove('is-exiting');
+        }
+    });
+}
 
 // Загрузка капчи
 (function loadCaptchaScript() {
@@ -371,6 +454,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     initInputFormatting();
     initFooter();
+    initPageTransitions();
     
     const copyBtn = document.getElementById('btnCopy');
     if(copyBtn) copyBtn.onclick = copyResult;
