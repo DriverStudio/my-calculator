@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Name | PRISMA</title>
+    
+    <link rel="stylesheet" href="../style.css">
+    
+    <style>
+        /* === LOCAL STYLES === */
+        /* Специфичные стили для конкретного сервиса */
+        .service-specific-box {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        /* Dark mode support for local styles */
+        [data-theme="dark"] .service-specific-box {
+            background: rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 data-i18n="service_id.title">💎 Название Сервиса</h1>
+        
+        <p class="tool-desc" style="margin-bottom: 20px;">
+            Краткое описание функционала.
+        </p>
+
+        <div class="input-group">
+            <label>Входные данные</label>
+            <input type="text" id="inputData" placeholder="Введите значение...">
+        </div>
+
+        <button id="actionBtn">Выполнить</button>
+
+        <div id="result" class="result">
+            <span id="resultValue">0</span>
+            <div style="margin-top:10px; font-size: 12px; cursor:pointer; color:var(--text-muted)" onclick="copyResult()">
+                Копировать
+            </div>
+        </div>
+    </div>
+
+    <script src="../main.js"></script>
+    
+    <script>
+        const btn = document.getElementById('actionBtn');
+        const input = document.getElementById('inputData');
+        const resultBox = document.getElementById('result');
+        const resultVal = document.getElementById('resultValue');
+
+        // Основная функция
+        function calculate() {
+            const val = input.value;
+            
+            // Логика...
+            
+            resultVal.innerText = `Результат: ${val}`;
+            resultBox.style.display = 'block';
+        }
+
+        // Слушатели (Enter + Клик)
+        btn.addEventListener('click', calculate);
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') calculate();
+        });
+    </script>
+</body>
+</html>

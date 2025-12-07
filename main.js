@@ -36,10 +36,11 @@ const APPS = [
     { id: 'image',      name: 'Сжатие фото',    icon: '🖼️', category: 'tools' },
     { id: 'sign',       name: 'Автограф',       icon: '✍️', category: 'tools' },
     { id: 'timer',      name: 'Visual Timer',   icon: '⏳', category: 'tools' },
+    { id: 'timeline',   name: 'Timeline',       icon: '🧬', category: 'tools' },
     { id: 'clicker',    name: 'Принтер $',      icon: '🖨️', category: 'fun' },
     { id: 'reaction',   name: 'Реакция',        icon: '⚡', category: 'fun' },
     { id: 'typer',      name: 'Хакер Тайпер',   icon: '⌨️', category: 'fun' },
-    { id: 'wheel',      name: 'Колесо удачи',   icon: '🎡', category: 'fun' }
+    { id: 'wheel',      name: 'Колесо удачи',   icon: '🎡', category: 'fun' },
 ];
 
 // Настройки Рекламы и Аналитики
@@ -211,6 +212,44 @@ function initMenu() {
     // Чтобы кнопки справа не сжимались
     controls.style.flexShrink = '0'; 
 
+    // === 🔔 КОЛОКОЛЬЧИК (НОВОЕ) ===
+    const bellBtn = document.createElement('div');
+    bellBtn.className = 'notification-btn';
+    bellBtn.id = 'notifBtn';
+    bellBtn.innerHTML = '🔔<div class="bell-badge" id="bellBadge"></div>';
+    
+    // Панель уведомлений
+    const notifPanel = document.createElement('div');
+    notifPanel.className = 'notif-panel';
+    notifPanel.id = 'notifPanel';
+    notifPanel.innerHTML = '<div class="notif-empty">Нет новых уведомлений</div>';
+
+    // Логика открытия/закрытия
+    bellBtn.onclick = (e) => {
+        e.stopPropagation(); // Чтобы клик не ушел на window и сразу не закрыл панель
+        notifPanel.classList.toggle('open');
+
+        // === ДОБАВЛЕНО: Убираем точку при открытии ===
+        if (notifPanel.classList.contains('open')) {
+            const badge = document.getElementById('bellBadge');
+            if (badge) {
+                badge.classList.remove('active');
+            }
+        }
+    };
+
+    // Закрытие при клике вне панели
+    window.addEventListener('click', (e) => {
+        if (!notifPanel.contains(e.target) && !bellBtn.contains(e.target)) {
+            notifPanel.classList.remove('open');
+        }
+    });
+
+    controls.appendChild(bellBtn);
+    controls.appendChild(notifPanel);
+    // === КОНЕЦ КОЛОКОЛЬЧИКА ===
+
+
     // Кнопка Языка
     const langBtn = document.createElement('div');
     langBtn.className = 'theme-toggle'; 
@@ -262,7 +301,7 @@ function initTheme() {
 
 
 // ==========================================
-// 4. РЕКЛАМА (GOOGLE SHEETS) - RESTORED
+// 4. РЕКЛАМА (GOOGLE SHEETS) - FIXED SIDEBAR
 // ==========================================
 
 async function initAds() {
@@ -277,21 +316,41 @@ async function initAds() {
         const renderAd = (slotId, type) => {
             const ad = myAds.find(row => row.type === type);
             const slot = document.getElementById(slotId);
-            
-            if (slot && ad && String(ad.active).toLowerCase() === 'true') {
+            const sidebarParent = slot ? slot.closest('.sidebar') : null;
+            const hasAd = slot && ad && String(ad.active).toLowerCase() === 'true';
+
+            if (hasAd) {
+                // ЕСТЬ РЕКЛАМА
                 slot.style.display = 'block';
+                // Убеждаемся, что сайдбар виден (на случай если он был скрыт CSS)
+                if (sidebarParent) sidebarParent.style.display = 'block';
+
                 slot.innerHTML = `
                     <div style="font-size:9px;color:#ccc;text-transform:uppercase;margin:5px">Реклама</div>
                     <a href="${ad.link}" target="_blank" style="text-decoration:none;color:inherit">
-                        <img src="${ad.image}" alt="${ad.title}" style="width:100%;border-radius:10px;">
-                        <div class="ad-text" style="padding:10px;"><b>${ad.title}</b><br>${ad.text}</div>
+                        <img src="${ad.image}" alt="${ad.title}">
+                        <div class="ad-text">${ad.title}<br>${ad.text}</div>
                     </a>`;
+            } else {
+                // НЕТ РЕКЛАМЫ
+                if (slot) slot.style.display = 'none';
+
+                // ВАЖНО: Мы НЕ скрываем sidebarParent, потому что там могут быть инструкции!
             }
         };
 
         renderAd('ad-banner-top', 'top_banner');
         renderAd('ad-sidebar', 'sidebar');
-    } catch (e) { console.error("Ads Error:", e); }
+
+    } catch (e) { 
+        console.error("Ads Error:", e);
+        // При ошибке сети тоже просто скрываем слоты, не трогая контент
+        const sidebarSlot = document.getElementById('ad-sidebar');
+        if (sidebarSlot) sidebarSlot.style.display = 'none';
+        
+        const topSlot = document.getElementById('ad-banner-top');
+        if (topSlot) topSlot.style.display = 'none';
+    }
 }
 
 
@@ -626,6 +685,143 @@ function applyPageIcon(src, isSvg) {
 
 
 // ==========================================
+// 10. AUTO-SAVE (Сохранение введенных данных)
+// ==========================================
+
+function initAutoSave() {
+    // Работаем только внутри сервисов (не на главной)
+    if (currentAppId === 'home') return;
+
+    // Ищем все инпуты, у которых есть ID
+    const inputs = document.querySelectorAll('input[id], textarea[id], select[id]');
+
+    inputs.forEach(input => {
+        // Уникальный ключ: id_приложения + id_инпута (например: "bmi_input1")
+        const storageKey = `${currentAppId}_${input.id}`;
+
+        // 1. ВОССТАНОВЛЕНИЕ: Если есть сохраненное значение — подставляем
+        const savedValue = localStorage.getItem(storageKey);
+        if (savedValue !== null && savedValue !== '') {
+            input.value = savedValue;
+        }
+
+        // 2. СОХРАНЕНИЕ: При каждом изменении пишем в память
+        input.addEventListener('input', () => {
+            localStorage.setItem(storageKey, input.value);
+        });
+        
+        // Для select (выпадающих списков) событие change надежнее
+        input.addEventListener('change', () => {
+            localStorage.setItem(storageKey, input.value);
+        });
+    });
+}
+
+// ==========================================
+// 11. HABIT REMINDER (Умные напоминания)
+// ==========================================
+
+function initHabitReminder() {
+    // 1. Читаем базу
+    const rawData = localStorage.getItem('prisma_habits_flat');
+    if (!rawData) return;
+
+    const habits = JSON.parse(rawData);
+    if (habits.length === 0) return;
+
+    // 2. Считаем жаждущих
+    const today = new Date().toISOString().split('T')[0];
+    const thirstyHabits = habits.filter(h => {
+        if (h.lastWatered === today) return false;
+        
+        // Проверка на "мертвые" растения
+        if (h.lastWatered) {
+            const last = new Date(h.lastWatered);
+            const now = new Date();
+            const diffDays = Math.floor((now - last) / (1000 * 60 * 60 * 24));
+            if (diffDays > 2) return false; 
+        }
+        return true;
+    });
+
+    const count = thirstyHabits.length;
+    if (count === 0) return;
+
+    // === ЛОГИКА КОЛОКОЛЬЧИКА ===
+    const badge = document.getElementById('bellBadge');
+    const panel = document.getElementById('notifPanel');
+
+    if (badge && panel) {
+        // 1. Включаем красную точку
+        badge.classList.add('active');
+
+        // 2. Наполняем панель
+        const text = count === 1 ? 'растение хочет пить' : 'растения хотят пить';
+        
+        panel.innerHTML = `
+            <div style="padding: 0 5px 10px; font-weight: bold; font-size: 13px; color: var(--text-muted); border-bottom: 1px solid rgba(0,0,0,0.05); margin-bottom: 5px;">
+                Уведомления
+            </div>
+            <div class="notif-item" onclick="window.location.href='${pathPrefix}habits/index.html'">
+                <div class="notif-icon">🌱</div>
+                <div class="notif-content">
+                    <div class="notif-title">Habit Garden</div>
+                    <div class="notif-text">Сад зовёт! ${count} ${text}.</div>
+                </div>
+            </div>
+        `;
+    }
+
+    // === ЛОГИКА ТОСТА (Оставляем для важности) ===
+    // Показываем только 1 раз за сессию, если мы не внутри приложения
+    const sessionKey = 'prisma_habit_toast_shown';
+    if (!sessionStorage.getItem(sessionKey) && currentAppId !== 'habits') {
+        showToast(count); // Используем функцию из предыдущего шага
+        sessionStorage.setItem(sessionKey, 'true');
+    }
+}
+
+function showToast(count) {
+    const toast = document.createElement('div');
+    toast.className = 'global-toast';
+    
+    // Текст зависит от числа
+    const text = count === 1 ? 'растение хочет пить' : 'растения хотят пить';
+    
+    toast.innerHTML = `
+        <span style="font-size:20px">🌱</span>
+        <div style="font-size:14px; font-weight:600">
+            Сад зовёт! <span style="font-weight:400; opacity:0.8">${count} ${text}.</span>
+        </div>
+    `;
+
+    // При клике - переход в приложение
+    toast.onclick = () => {
+        // Эффект выхода перед переходом
+        document.body.classList.add('is-exiting');
+        setTimeout(() => {
+            // Учитываем pathPrefix, чтобы ссылка сработала из любой папки
+            window.location.href = `${pathPrefix}habits/index.html`; 
+        }, 300);
+    };
+
+    document.body.appendChild(toast);
+
+    // Анимация входа (небольшая задержка, чтобы интерфейс прогрузился)
+    setTimeout(() => {
+        toast.classList.add('show');
+        // Звук "Pop" (опционально, очень тихий)
+        // new Audio(pathPrefix + 'assets/pop.mp3').play().catch(()=>{}); 
+    }, 1500);
+
+    // Авто-скрытие через 6 секунд
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 600);
+    }, 8000);
+}
+
+// ==========================================
 // 7. СТАРТ (ENTRY POINT)
 // ==========================================
 
@@ -661,6 +857,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initFooter();
     initPageTransitions();
     initSidePortals();
+    initAutoSave();
+    initHabitReminder();
     
     const copyBtn = document.getElementById('btnCopy');
     if(copyBtn) copyBtn.onclick = copyResult;
@@ -694,4 +892,124 @@ function getNumber(id) {
     // 4. Превращаем в число. Если пусто или мусор — возвращаем 0
     const num = parseFloat(val);
     return isNaN(num) ? 0 : num;
+}
+
+/**
+ * Универсальная отправка уведомления
+ * @param {string} title - Заголовок (напр. "Таймер")
+ * @param {string} text - Текст сообщения
+ * @param {string} icon - Эмодзи или URL
+ * @param {function} onClick - Что делать при клике (необязательно)
+ */
+/**
+ * Универсальная отправка уведомления (Панель + Всплывашка)
+ */
+/**
+ * Проверка: если уведомлений нет, вернуть заглушку и убрать красную точку
+ */
+function checkNotifEmpty() {
+    const panel = document.getElementById('notifPanel');
+    const badge = document.getElementById('bellBadge');
+    
+    // Ищем элементы с классом .notif-item
+    const items = panel.querySelectorAll('.notif-item');
+    
+    if (items.length === 0) {
+        // Если пусто -> возвращаем надпись "Нет уведомлений"
+        panel.innerHTML = '<div class="notif-empty">Нет новых уведомлений</div>';
+        // Убираем красную точку
+        if (badge) badge.classList.remove('active');
+    }
+}
+
+/**
+ * Очистить всё (вызывается из HTML)
+ */
+function clearAllNotifications() {
+    const panel = document.getElementById('notifPanel');
+    // Удаляем все элементы .notif-item
+    panel.querySelectorAll('.notif-item').forEach(el => el.remove());
+    // Проверяем состояние (вернет заглушку и уберет точку)
+    checkNotifEmpty();
+}
+
+/**
+ * FINAL VERSION: Уведомления с удалением и очисткой
+ */
+function sendNotification(title, text, icon = '🔔', onClick = null) {
+    const panel = document.getElementById('notifPanel');
+    const badge = document.getElementById('bellBadge');
+    
+    if (panel && badge) {
+        badge.classList.add('active'); 
+
+        // Если сейчас висит заглушка "Нет уведомлений" — создаем шапку
+        if (panel.querySelector('.notif-empty')) {
+            panel.innerHTML = `
+                <div class="notif-header">
+                    <span class="notif-header-title">Уведомления</span>
+                    <span class="notif-clear-all" onclick="clearAllNotifications()">Очистить всё</span>
+                </div>`;
+        }
+
+        // Создаем само уведомление
+        const item = document.createElement('div');
+        item.className = 'notif-item';
+        
+        // ВАЖНО: Добавили крестик (notif-close)
+        item.innerHTML = `
+            <div class="notif-icon">${icon}</div>
+            <div class="notif-content">
+                <div class="notif-title">${title}</div>
+                <div class="notif-text">${text}</div>
+            </div>
+            <div class="notif-close">✕</div> 
+        `;
+        
+        // 1. Логика клика по самому уведомлению
+        item.onclick = (e) => {
+            // Если кликнули не по крестику
+            if (!e.target.classList.contains('notif-close')) {
+                if (onClick) onClick();
+            }
+        };
+
+        // 2. Логика клика по крестику
+        const closeBtn = item.querySelector('.notif-close');
+        closeBtn.onclick = (e) => {
+            e.stopPropagation(); // Чтобы не сработал клик по самому уведомлению
+            item.remove();       // Удаляем элемент
+            checkNotifEmpty();   // Проверяем, не опустел ли список
+        };
+
+        // Вставляем после заголовка (header всегда первый child)
+        panel.insertBefore(item, panel.children[1]);
+    }
+
+    // --- TOAST (Всплывашка) ---
+    // (Код тоста оставляем тот же, он работает отлично)
+    const toast = document.createElement('div');
+    toast.className = 'global-toast';
+    toast.innerHTML = `
+        <span style="font-size:24px">${icon}</span>
+        <div>
+            <div style="font-weight:700; font-size:14px; margin-bottom:2px">${title}</div>
+            <div style="font-size:13px; opacity:0.9">${text}</div>
+        </div>
+    `;
+    toast.onclick = () => {
+        if (onClick) onClick();
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 600);
+    };
+    document.body.appendChild(toast);
+    requestAnimationFrame(() => {
+        setTimeout(() => toast.classList.add('show'), 100);
+    });
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 600);
+        }
+    }, 6000);
 }

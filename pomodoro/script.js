@@ -1,76 +1,145 @@
-let timeLeft = 25 * 60; // 25 минут в секундах
+/* script.js - Pomodoro Logic */
+
+// Настройки
+const MODES = {
+    work: { time: 25 * 60, color: '#ff6b6b', label: 'Работа' }, // Красный
+    break: { time: 5 * 60,  color: '#4dabf7', label: 'Отдых' }  // Голубой
+};
+
+let currentMode = 'work';
+let timeLeft = MODES.work.time;
 let timerId = null;
 let isRunning = false;
-let currentMode = 'work'; // 'work' или 'break'
 
-const display = document.getElementById('timer');
-const btnStart = document.getElementById('btnStart');
-const title = document.title; // Сохраняем исходный заголовок
+// DOM Элементы
+const display = document.getElementById('timerDisplay');
+const circle = document.getElementById('progressCircle');
+const btnAction = document.getElementById('btnAction');
+const btnReset = document.getElementById('btnReset');
 
-// Форматирование времени (125 -> 02:05)
-function formatTime(seconds) {
-    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-    const s = (seconds % 60).toString().padStart(2, '0');
-    return `${m}:${s}`;
+// Для SVG круга
+const radius = circle.r.baseVal.value;
+const circumference = 2 * Math.PI * radius; // Длина окружности
+
+// Инициализация
+function initTimer() {
+    // Настраиваем SVG
+    circle.style.strokeDasharray = `${circumference} ${circumference}`;
+    circle.style.strokeDashoffset = 0;
+    
+    updateInterface();
+    
+    // Слушатели
+    btnAction.onclick = toggleTimer;
+    btnReset.onclick = resetTimer;
 }
 
-function updateDisplay() {
-    const timeStr = formatTime(timeLeft);
-    display.innerText = timeStr;
-    // Обновляем заголовок вкладки, чтобы было видно время!
-    document.title = `(${timeStr}) ${currentMode === 'work' ? 'Работа' : 'Отдых'}`;
+// Переключение режимов
+window.switchMode = (mode) => {
+    resetTimer();
+    currentMode = mode;
+    timeLeft = MODES[mode].time;
+    
+    // UI кнопок
+    document.getElementById('btnModeWork').classList.toggle('active', mode === 'work');
+    document.getElementById('btnModeBreak').classList.toggle('active', mode === 'break');
+    
+    updateInterface();
 }
 
 // Старт / Пауза
-btnStart.addEventListener('click', () => {
+function toggleTimer() {
     if (isRunning) {
-        clearInterval(timerId);
-        isRunning = false;
-        btnStart.innerText = '▶️ Продолжить';
+        pauseTimer();
     } else {
-        isRunning = true;
-        btnStart.innerText = '⏸ Пауза';
-        timerId = setInterval(() => {
-            if (timeLeft > 0) {
-                timeLeft--;
-                updateDisplay();
-            } else {
-                // Время вышло
-                clearInterval(timerId);
-                isRunning = false;
-                const sound = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
-                sound.play().catch(() => {}); // Игнор ошибок автоплей
-                alert('Время вышло! Пора сменить деятельность.');
-                btnStart.innerText = '▶️ Старт';
-            }
-        }, 1000);
+        startTimer();
     }
-});
+}
 
-// Сброс
-document.getElementById('btnReset').addEventListener('click', () => {
-    clearInterval(timerId);
+function startTimer() {
+    isRunning = true;
+    btnAction.innerText = '⏸ Пауза';
+    btnAction.style.background = '#ffd43b'; // Желтый для паузы
+    btnAction.style.color = '#000';
+
+    timerId = setInterval(() => {
+        if (timeLeft > 0) {
+            timeLeft--;
+            updateInterface();
+            updateTitle();
+        } else {
+            finishTimer();
+        }
+    }, 1000);
+}
+
+function pauseTimer() {
     isRunning = false;
-    btnStart.innerText = '▶️ Старт';
-    setMode(currentMode); // Сброс к началу текущего режима
-});
-
-// Переключение режимов
-window.setMode = (mode) => { // window, чтобы вызвать из HTML
     clearInterval(timerId);
-    isRunning = false;
-    btnStart.innerText = '▶️ Старт';
-    currentMode = mode;
-    
-    // UI переключение
-    document.getElementById('modeWork').classList.toggle('active', mode === 'work');
-    document.getElementById('modeBreak').classList.toggle('active', mode === 'break');
+    btnAction.innerText = '▶️ Продолжить';
+    btnAction.style.background = ''; // Возвращаем градиент
+    btnAction.style.color = '';
+    document.title = 'Фокус Таймер | PRISMA';
+}
 
-    if (mode === 'work') {
-        timeLeft = 25 * 60;
+function resetTimer() {
+    pauseTimer();
+    timeLeft = MODES[currentMode].time;
+    btnAction.innerText = '▶️ Старт';
+    updateInterface();
+}
+
+// Завершение таймера
+function finishTimer() {
+    pauseTimer();
+    timeLeft = 0;
+    updateInterface();
+
+    // 1. Звук (Используем встроенный в браузер или короткий URL)
+    const audio = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
+    audio.volume = 0.5;
+    audio.play().catch(e => console.log('Audio error:', e));
+
+    // 2. ОТПРАВКА УВЕДОМЛЕНИЯ (Интеграция с main.js)
+    if (typeof sendNotification === 'function') {
+        const title = currentMode === 'work' ? 'Время отдыхать! ☕' : 'Пора за работу! 🔥';
+        const msg = currentMode === 'work' ? 'Отличная работа! Сделайте перерыв 5 минут.' : 'Перерыв окончен. Готовы продолжить?';
+        const icon = currentMode === 'work' ? '☕' : '🚀';
+
+        sendNotification(title, msg, icon, () => {
+            // При клике на уведомление можно переключить режим
+            const nextMode = currentMode === 'work' ? 'break' : 'work';
+            switchMode(nextMode);
+        });
     } else {
-        timeLeft = 5 * 60;
+        alert('Время вышло!');
     }
-    updateDisplay();
-    document.title = title; // Возвращаем заголовок при сбросе
-};
+}
+
+// Обновление UI (Текст + Круг + Цвет)
+function updateInterface() {
+    // 1. Текст
+    const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+    const s = (timeLeft % 60).toString().padStart(2, '0');
+    display.innerText = `${m}:${s}`;
+
+    // 2. Цвет (CSS переменная --accent)
+    const color = MODES[currentMode].color;
+    document.documentElement.style.setProperty('--accent', color);
+
+    // 3. SVG Круг (offset)
+    const totalTime = MODES[currentMode].time;
+    const offset = circumference - (timeLeft / totalTime) * circumference;
+    circle.style.strokeDashoffset = offset;
+}
+
+// Обновление заголовка вкладки
+function updateTitle() {
+    const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+    const s = (timeLeft % 60).toString().padStart(2, '0');
+    const icon = isRunning ? '▶️' : '⏸';
+    document.title = `${icon} ${m}:${s} - ${MODES[currentMode].label}`;
+}
+
+// Запуск
+initTimer();

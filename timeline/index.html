@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Timeline Generator | PRISMA</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .portal-container {
+            display: none !important;
+        }
+
+        :root {
+            --tl-accent: #ff0055;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            background-size: 300% 300%;
+            animation: gradientBG 30s ease infinite;
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .app-layout {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding-bottom: 120px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .timeline-wrapper {
+            position: relative;
+            width: 100%;
+            padding: 40px 0;
+            min-height: 50vh;
+        }
+
+        .timeline-spine {
+            position: absolute;
+            left: 30px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 2px;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        /* КУРСОР ВРЕМЕНИ (Прогресс) */
+        .scroll-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 0px;
+            background: var(--tl-accent);
+            box-shadow: 0 0 15px var(--tl-accent);
+            transition: height 0.5s cubic-bezier(0.25, 1, 0.5, 1), background 0.3s;
+            border-radius: 2px;
+        }
+
+        .scroll-progress::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: -3px;
+            right: -3px;
+            height: 10px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px var(--tl-accent);
+            z-index: 2;
+        }
+
+        /* КАРТОЧКА СОБЫТИЯ */
+        .event-card {
+            position: relative;
+            margin-left: 60px;
+            margin-right: 20px;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s;
+            user-select: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow: visible;
+        }
+
+        .event-card:hover {
+            transform: scale(1.02);
+            background: rgba(255, 255, 255, 0.15);
+            z-index: 10;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .event-card:hover .event-dot {
+            transform: scale(0.98);
+        }
+
+        .event-card:active {
+            cursor: grabbing;
+            transform: scale(0.98);
+        }
+
+        .event-card.dragging {
+            opacity: 0.5;
+            transform: scale(0.95);
+            box-shadow: none;
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+        }
+
+        /* Точка на линии */
+        .event-dot {
+            position: absolute;
+            left: -38px;
+            top: 24px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--tl-accent);
+            border: 3px solid rgba(44, 83, 100, 1);
+            box-shadow: 0 0 15px var(--tl-accent);
+            transition: background 0.3s, transform 0.4s;
+            cursor: pointer;
+            z-index: 5;
+        }
+
+        .event-dot:hover {
+            transform: scale(1.2) !important;
+        }
+
+        /* Стили инпутов */
+        [data-theme="dark"] .input-glass {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 15px;
+            width: 100%;
+            color: #fff;
+            font-family: inherit;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-glass {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 15px;
+            width: 100%;
+            color: #fff;
+            font-family: inherit;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-glass:focus {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: var(--tl-accent);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+
+        .event-date-input {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--tl-accent);
+            margin-bottom: 5px;
+            cursor: pointer;
+        }
+
+        .event-title-input {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .event-title-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Группировка даты и времени в одну строку */
+        .date-row {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .event-time-input {
+            flex: 0 0 35%;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--tl-accent);
+            cursor: pointer;
+            text-align: center;
+        }
+
+        /* === НОВЫЙ БЛОК: НИЖНЯЯ ПАНЕЛЬ КАРТОЧКИ === 
+           Здесь находятся чекбокс и кнопка удаления.
+        */
+        .card-actions {
+            display: flex;
+            justify-content: flex-end; /* Прижимаем вправо */
+            align-items: center;
+            gap: 12px;                 /* Расстояние между кнопками */
+            margin-top: 10px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1); /* Линия разделитель */
+        }
+
+        /* Кнопка удаления */
+        .del-btn {
+            width: 36px;
+            height: 36px;
+            border: 1px solid rgba(255, 71, 87, 0.4);
+            background: rgba(255, 71, 87, 0.15);
+            color: #ff4757;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.2s ease;
+            position: static;
+            opacity: 1;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .del-btn:hover {
+            background: #ff4757;
+            color: #fff;
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.3);
+        }
+
+        /* Чекбокс */
+        .custom-checkbox {
+            appearance: none;
+            width: 36px;
+            height: 36px;
+            background: rgba(252, 252, 252, 0.1) !important;
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            position: static;
+        }
+
+        .custom-checkbox:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: #fff !important;
+            transform: scale(1.1);
+        }
+
+        .custom-checkbox:checked {
+            background: #00ff88;
+            border-color: #00ff88;
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.4);
+        }
+
+        .custom-checkbox:checked::after {
+            content: '✔';
+            font-size: 18px;
+            color: #004d26;
+            font-weight: 800;
+        }
+
+        /* === СТИЛЬ ВЫПОЛНЕННОЙ КАРТОЧКИ === */
+        .event-card.completed {
+            opacity: 0.7;
+            border-color: rgba(0, 255, 136, 0.2);
+        }
+
+        .event-card.completed input {
+            text-decoration: line-through;
+            color: rgba(255, 255, 255, 0.6) !important;
+        }
+
+        .event-card.completed .event-dot {
+            background: #555 !important;
+            box-shadow: none !important;
+            border-color: #777;
+        }
+
+        /* === ГЛАВНОЕ НИЖНЕЕ МЕНЮ (CONTROLS BAR) === */
+        /* Не путать с кнопками внутри карточки */
+        .controls-bar {
+            position: fixed;
+            bottom: 30px;
+            display: flex;
+            gap: 20px;
+            z-index: 100;
+            backdrop-filter: blur(15px);
+            padding: 12px 25px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .c-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+            margin-top: 0 !important;
+        }
+
+        .c-btn:hover {
+            transform: scale(1.15);
+        }
+
+        .c-btn:active {
+            transform: scale(0.9);
+        }
+
+        .btn-add { background: #fff; color: #000; }
+        .btn-theme { background: rgba(255, 255, 255, 0.1); color: #fff; }
+        .btn-export { 
+            background: linear-gradient(135deg, #ff0055, #ff4d4d); 
+            color: #fff; 
+            box-shadow: 0 5px 15px rgba(255, 0, 85, 0.4); 
+        }
+
+        /* THEME PICKER */
+        .theme-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .color-palette {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .color-swatch {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .color-swatch:hover {
+            transform: scale(1.1);
+            border-color: #fff;
+        }
+
+        .mt-0 { margin-top: 0 !important; }
+
+        /* === DESKTOP LAYOUT === */
+        @media (min-width: 800px) {
+            .timeline-spine {
+                left: 50%;
+                margin-left: -2px;
+            }
+
+            .event-card {
+                width: 42%;
+                margin: 0 0 40px 0;
+            }
+
+            .event-card:nth-child(odd) {
+                margin-left: auto;
+                margin-right: 30px;
+                transform-origin: left center;
+            }
+
+            .event-card:nth-child(odd) .event-dot {
+                left: -42px;
+                right: auto;
+            }
+
+            .event-card:nth-child(even) {
+                margin-left: 30px;
+                margin-right: auto;
+                text-align: right;
+                transform-origin: right center;
+            }
+
+            .event-card:nth-child(even) .event-dot {
+                right: -42px;
+                left: auto;
+            }
+
+            /* На десктопе выравниваем кнопки действий тоже */
+            .event-card:nth-child(even) .card-actions {
+                justify-content: flex-start; /* Слева для четных */
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container" style="background: transparent; box-shadow: none; padding: 0;">
+        <div class="app-layout">
+            <div style="text-align: center; margin-top: 20px; margin-bottom: 40px;">
+                <h1 style="margin: 0; font-size: 2.5rem; letter-spacing: -1px;">Timeline</h1>
+                <p style="opacity: 0.6; font-size: 1rem; margin-top: 5px;">Создай свою историю</p>
+            </div>
+
+            <div class="timeline-wrapper" id="timelineContainer">
+                <div class="timeline-spine">
+                    <!-- Элемент прогресс бара -->
+                    <div class="scroll-progress"></div>
+                </div>
+            </div>
+
+            <div class="controls-bar">
+                <button class="c-btn btn-theme mt-0" id="btnTheme" title="Цвет акцента">🎨</button>
+                <button class="c-btn btn-add mt-0" id="btnAdd" title="Добавить событие">+</button>
+                <button class="c-btn btn-export mt-0" id="btnExport" title="Сохранить как постер">📸</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="theme-overlay" id="themeModal">
+        <div class="color-palette">
+            <div class="color-swatch" style="background: #ff0055" data-color="#ff0055"></div>
+            <div class="color-swatch" style="background: #00f3ff" data-color="#00f3ff"></div>
+            <div class="color-swatch" style="background: #7000ff" data-color="#7000ff"></div>
+            <div class="color-swatch" style="background: #f6d365" data-color="#f6d365"></div>
+            <div class="color-swatch" style="background: #00ff88" data-color="#00ff88"></div>
+            <div class="color-swatch" style="background: #ff9a9e" data-color="#ff9a9e"></div>
+        </div>
+    </div>
+
+    <canvas id="exportCanvas" style="display:none;"></canvas>
+
+    <script src="../main.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

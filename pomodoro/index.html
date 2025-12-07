@@ -1,112 +1,160 @@
 <!DOCTYPE html>
-
 <html lang="ru">
 
 <head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Таймер Помодоро онлайн</title>
-    <meta content="Техника 25 минут" name="description" />
-    <meta content="Таймер Помодоро онлайн" property="og:title" />
-    <meta content="Техника 25 минут" property="og:description" />
-    <meta content="website" property="og:type" />
-    <link href="../style.css" rel="stylesheet" />
-    <link
-        href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🧰&lt;/text&gt;&lt;/svg&gt;"
-        rel="icon" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Фокус Таймер | PRISMA</title>
+
+    <link rel="stylesheet" href="../style.css">
+
     <style>
-        .timer-box {
-            text-align: center;
-            padding: 40px 0;
-        }
-
-        .timer-display {
-            font-size: 80px;
-            font-weight: bold;
-            color: #333;
-            font-variant-numeric: tabular-nums;
-            /* Чтобы цифры не скакали */
-            line-height: 1;
-            margin: 20px 0;
-        }
-
-        .mode-tabs {
+        /* === ЛОКАЛЬНЫЕ СТИЛИ (SVG CIRCLE) === */
+        .timer-container {
             display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            margin: 40px 0;
         }
+
+        /* SVG Круг */
+        .progress-ring {
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        .progress-ring__circle-bg {
+            fill: transparent;
+            stroke: #e9ecef;
+            /* Серый фон круга */
+            stroke-width: 8;
+        }
+
+        .progress-ring__circle {
+            fill: transparent;
+            stroke: var(--accent, #ff6b6b);
+            /* Цвет берем из переменной */
+            stroke-width: 8;
+            stroke-linecap: round;
+            stroke-dasharray: 880;
+            /* Длина окружности 2 * PI * R (140) ≈ 880 */
+            stroke-dashoffset: 0;
+            transition: stroke-dashoffset 1s linear, stroke 0.3s;
+            filter: drop-shadow(0 0 10px var(--accent));
+            /* Неоновое свечение */
+        }
+
+        /* Время внутри круга */
+        .timer-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 64px;
+            font-weight: 800;
+            color: var(--text-main);
+            font-variant-numeric: tabular-nums;
+            /* Чтобы цифры не прыгали */
+        }
+
+        /* Темная тема для круга */
+        [data-theme="dark"] .progress-ring__circle-bg {
+            stroke: #334155;
+        }
+
+        [data-theme="dark"] .timer-value {
+            color: #fff;
+        }
+
+        /* Кнопки режимов */
+        .mode-switcher {
+            display: flex;
+            background: rgba(0, 0, 0, 0.05);
+            padding: 5px;
+            border-radius: 30px;
+            margin-bottom: 30px;
+        }
+
+        [data-theme="dark"] .mode-switcher {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* pomodoro/index.html -> <style> */
 
         .mode-btn {
-            padding: 8px 16px;
-            border-radius: 20px;
-            background: #f1f3f5;
+            flex: 1;
+            /* <--- ГЛАВНОЕ: Растягиваем кнопки равномерно */
+            text-align: center;
+            /* Центрируем текст внутри кнопки */
+
+            padding: 10px 0;
+            /* Убираем боковые отступы (они теперь автоматические) */
+            border-radius: 25px;
             cursor: pointer;
-            border: 2px solid transparent;
+            font-weight: 600;
+            font-size: 14px;
+            transition: 0.3s;
+            color: var(--text-muted);
+
+            /* Чтобы текст не прилипал к краям на мобилках */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            /* Отступ между иконкой и текстом */
         }
 
         .mode-btn.active {
-            background: #ffe3e3;
-            color: #e03131;
-            border-color: #e03131;
-            font-weight: bold;
+            background: #fff;
+            color: #333;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
-        .mode-btn.break-mode {
-            background: #e3fafc;
-            color: #0c8599;
-        }
-
-        .mode-btn.break-mode.active {
-            border-color: #0c8599;
-            background: #e3fafc;
-        }
-
-        .controls {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-        }
-
-        .btn-round {
-            border-radius: 50px;
-            width: auto;
-            padding: 15px 30px;
+        [data-theme="dark"] .mode-btn.active {
+            background: #334155;
+            color: #fff;
         }
     </style>
 </head>
 
 <body>
+
     <div class="container">
-        <div class="calculator">
-            <h1 data-i18n="pomodoro.Метод_Помодоро">🍅 Метод Помодоро</h1>
-            <p data-i18n="pomodoro.Работайте_интервалами_чтобы_не_перегорать">Работайте интервалами, чтобы не
-                перегорать.</p>
-            <div class="timer-box">
-                <div class="mode-tabs">
-                    <div class="mode-btn active" id="modeWork" onclick="setMode('work')">Работа (25:00)</div>
-                    <div class="mode-btn break-mode" id="modeBreak" onclick="setMode('break')">Отдых (05:00)</div>
-                </div>
-                <div class="timer-display" id="timer">25:00</div>
-                <div class="controls">
-                    <button class="btn-round" data-i18n="pomodoro.Старт" id="btnStart">▶️ Старт</button>
-                    <button class="btn-round btn-secondary" data-i18n="pomodoro.Сброс" id="btnReset">⏹ Сброс</button>
-                </div>
+        <div class="calculator" style="text-align: center;">
+            <h1>🍅 Фокус Таймер</h1>
+            <p class="tool-desc">Техника Pomodoro для максимальной продуктивности.</p>
+
+            <div class="mode-switcher">
+                <div class="mode-btn active" id="btnModeWork" onclick="switchMode('work')">🔥 Работа</div>
+                <div class="mode-btn" id="btnModeBreak" onclick="switchMode('break')">☕ Отдых</div>
             </div>
+
+            <div class="timer-container">
+                <svg class="progress-ring" width="340" height="340" viewBox="0 0 340 340">
+                    <circle class="progress-ring__circle-bg" r="140" cx="170" cy="170" />
+                    <circle class="progress-ring__circle" id="progressCircle" r="140" cx="170" cy="170" />
+                </svg>
+                <div class="timer-value" id="timerDisplay">25:00</div>
+            </div>
+
+            <button id="btnAction" style="max-width: 200px;">▶️ Старт</button>
+            <button id="btnReset" class="btn-secondary" style="max-width: 200px; margin-top: 10px;">⏹ Сброс</button>
         </div>
+
         <div class="sidebar">
-            <div class="ad-slot" id="ad-sidebar"></div>
             <div class="note">
-                <h3 data-i18n="pomodoro.Как_это_работает">Как это работает?</h3>
-                <ol style="padding-left: 20px; margin: 0;">
-                    <li>Ставьте задачу.</li>
-                    <li>Работайте 25 минут (до звонка).</li>
-                    <li>Сделайте паузу 5 минут.</li>
-                    <li>Повторите 4 раза.</li>
-                </ol>
+                <h3>Как это работает?</h3>
+                <ul style="margin-top:10px; line-height: 1.6;">
+                    <li><b>25 мин</b> — Полный фокус на задаче.</li>
+                    <li><b>5 мин</b> — Короткий перерыв.</li>
+                    <li>После 4 циклов — длинный перерыв (15-30 мин).</li>
+                </ul>
             </div>
+            <div id="ad-sidebar"></div>
         </div>
     </div>
+
     <script src="../main.js"></script>
     <script src="script.js"></script>
 </body>
