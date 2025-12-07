@@ -822,7 +822,96 @@ function showToast(count) {
 }
 
 // ==========================================
-// 7. СТАРТ (ENTRY POINT)
+// 12. ТУТОРИАЛ (АВТОМАТИЧЕСКАЯ ЗАГРУЗКА)
+// ==========================================
+
+async function initTutorial() {
+    // 1. На главной странице туториал сервисов не нужен
+    if (currentAppId === 'home') return;
+
+    try {
+        // 2. Пытаемся найти файл tutorial.json ПРЯМО В ТЕКУЩЕЙ ПАПКЕ
+        // (Т.к. index.html и tutorial.json лежат рядом, путь просто имя файла)
+        const response = await fetch('tutorial.json');
+
+        if (response.ok) {
+            const steps = await response.json();
+            console.log('🎓 Найден туториал для', currentAppId);
+            
+            // 3. Если файл есть — грузим движок и запускаем
+            loadDriverJs(steps);
+        }
+    } catch (e) {
+        // Если файла нет (404) — просто молчим, ошибки не будет
+        // console.log('Туториала нет');
+    }
+}
+
+function loadDriverJs(steps) {
+    // Проверяем, может библиотека уже есть
+    if (window.driver) {
+        startTour(steps);
+        return;
+    }
+
+    // Динамически подключаем стили
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css';
+    document.head.appendChild(link);
+
+    // Динамически подключаем скрипт
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js';
+    
+    script.onload = () => {
+        // Сохраняем шаги глобально, чтобы кнопка в футере могла их перезапустить
+        window.currentTutorialSteps = steps;
+        
+        // Проверяем, видел ли юзер этот туториал ранее
+        const key = `tutorial_seen_${currentAppId}`;
+        if (!localStorage.getItem(key)) {
+            startTour(steps);
+            localStorage.setItem(key, 'true');
+        }
+    };
+    
+    document.head.appendChild(script);
+}
+
+function startTour(steps) {
+    if (!window.driver || !window.driver.js) return;
+
+    const driverObj = window.driver.js.driver({
+        showProgress: true,
+        steps: steps,
+        nextBtnText: 'Далее →',
+        prevBtnText: '← Назад',
+        doneBtnText: 'Готово',
+        // Исправляем перекрытие элементами интерфейса (на всякий случай)
+        popoverClass: 'driverjs-theme'
+    });
+
+    driverObj.drive();
+}
+
+// Глобальная функция для кнопки "Обучение" в футере
+window.restartTour = function() {
+    if (window.currentTutorialSteps) {
+        startTour(window.currentTutorialSteps);
+    } else {
+        // Если шаги еще не загружены, попробуем загрузить принудительно
+        // (на случай если юзер закрыл и снова нажал, а переменная стерлась)
+        initTutorial().then(() => {
+             if(window.currentTutorialSteps) startTour(window.currentTutorialSteps);
+             else alert('Для этого раздела нет обучения');
+        });
+    }
+};
+
+
+// ==========================================
+// СТАРТ (ENTRY POINT)
 // ==========================================
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -859,6 +948,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initSidePortals();
     initAutoSave();
     initHabitReminder();
+
+    initTutorial();      // 4. Пытаемся загрузить туториал (если есть)
     
     const copyBtn = document.getElementById('btnCopy');
     if(copyBtn) copyBtn.onclick = copyResult;
@@ -868,9 +959,15 @@ function initFooter() {
     const footer = document.createElement('footer');
     footer.className = 'global-footer';
     const year = new Date().getFullYear();
+    
+    // Добавляем ссылку "Обучение" с onclick="restartTour()"
     footer.innerHTML = `
-        <div>&copy; ${year} <b>DriverStudio</b>.</div>
-        <div style="margin-top:10px"><a href="${pathPrefix}index.html">Главная</a></div>
+        <div style="margin-bottom: 8px;">&copy; ${year} <b>DriverStudio</b></div>
+        <div style="font-size: 13px; opacity: 0.8; display: flex; gap: 15px; justify-content: center;">
+            <a href="${pathPrefix}index.html">Главная</a>
+            <span>•</span>
+            <span onclick="window.restartTour && window.restartTour()" style="cursor: pointer; border-bottom: 1px dotted; text-decoration: none;">Обучение</span>
+        </div>
     `;
     document.body.appendChild(footer);
 }

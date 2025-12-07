@@ -219,7 +219,206 @@
         // Первичный рендер (если переводы еще не загрузились, отрисует дефолт, 
         // а потом initTranslations вызовет renderCatalog еще раз)
         renderCatalog();
+
+        // === PRISMA TOUR LOGIC ===
+
+        const TOUR_SLIDES = [
+            {
+                title: "Добро пожаловать в PRISMA",
+                text: "Это ваша новая операционная система в браузере. Инструменты, которые работают всегда.",
+                icon: "💎",
+                action: () => {
+                    // Чистка перед стартом
+                    cleanUpTour();
+                }
+            },
+            {
+                title: "Умный Поиск",
+                text: "Введите 'BMI', 'QR' или 'ROAS'. Мы найдем инструмент мгновенно.",
+                icon: "🔍",
+                action: () => {
+                    cleanUpTour(); // Сброс прошлых шагов
+
+                    const search = document.getElementById('searchInput');
+                    const container = document.querySelector('.container');
+                    // 1. Поднимаем контейнер (Родителя)
+                    container.classList.add('tour-parent-fix');
+                    // 2. Подсвечиваем поиск
+                    search.classList.add('tour-highlight');
+
+                    search.focus();
+                    search.value = "Cryp";
+                    search.dispatchEvent(new Event('input'));
+
+                    setTimeout(() => {
+                        search.value = "";
+                        search.dispatchEvent(new Event('input'));
+                    }, 1500);
+                }
+            },
+            {
+                title: "Тёмная тема",
+                text: "Кликните один раз, чтобы сберечь зрение ночью.",
+                icon: "🌗",
+                action: () => {
+                    cleanUpTour();
+
+                    const themeBtn = document.getElementById('themeBtn');
+                    // Поскольку кнопка в навбаре (fixed), ей не нужен fix контейнера
+                    // Но у навбара должен быть z-index выше оверлея.
+                    // Если кнопка не светится, можно добавить z-index навбару.
+                    document.querySelector('.nav-bar').style.zIndex = '10005';
+                    themeBtn.classList.add('tour-highlight');
+
+                    // ПРОСТО ПЕРЕКЛЮЧАЕМ (Тук-тук)
+                    toggleTheme(); // Станет светлой (раз была темной)
+
+                    setTimeout(() => {
+                        toggleTheme(); // Вернем как было через 1.5 сек
+                    }, 1500);
+                }
+            },
+            {
+                title: "Всё готово!",
+                text: "Вы готовы к работе. Пользуйтесь!",
+                icon: "🚀",
+                action: () => {
+                    cleanUpTour();
+                    // Салют, если захочешь
+                }
+            }
+        ];
+
+        // Вспомогательная функция очистки (чтобы не дублировать код)
+        function cleanUpTour() {
+            document.querySelectorAll('.tour-highlight').forEach(el => el.classList.remove('tour-highlight'));
+            document.querySelectorAll('.tour-parent-fix').forEach(el => el.classList.remove('tour-parent-fix'));
+
+            // Возвращаем z-index навбару как было
+            const nav = document.querySelector('.nav-bar');
+            if (nav) nav.style.zIndex = '';
+
+            // Скролл наверх
+            // window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        let currentSlide = 0;
+
+        function initTour() {
+            // Если уже смотрели - выходим
+            if (localStorage.getItem('prisma_tour_completed')) return;
+            startTour();
+        }
+
+        // Новая функция для принудительного запуска
+        window.startTour = function () {
+            const overlay = document.getElementById('tour-overlay');
+            const btn = document.getElementById('tour-btn');
+            const dotsContainer = document.getElementById('tour-dots');
+
+            // Сбрасываем слайд на начало
+            currentSlide = 0;
+
+            // Генерируем точки
+            dotsContainer.innerHTML = '';
+            TOUR_SLIDES.forEach((_, i) => {
+                const dot = document.createElement('div');
+                dot.className = `tour-dot ${i === 0 ? 'active' : ''}`;
+                dotsContainer.appendChild(dot);
+            });
+
+            // Показываем оверлей
+            overlay.classList.remove('hidden');
+            // Небольшая задержка для анимации
+            requestAnimationFrame(() => {
+                overlay.classList.add('active');
+            });
+
+            renderSlide(0);
+            btn.onclick = nextSlide;
+        }
+
+        // Функция для вызова по кнопке (сбрасывает память)
+        window.restartTour = function () {
+            // Удаляем метку "просмотрено"
+            localStorage.removeItem('prisma_tour_completed');
+            // Запускаем
+            startTour();
+        }
+
+        function renderSlide(index) {
+            const slide = TOUR_SLIDES[index];
+
+            // Анимация смены контента
+            const card = document.querySelector('.tour-card');
+
+            // Обновляем тексты
+            document.getElementById('tour-visual').innerText = slide.icon;
+            document.getElementById('tour-title').innerText = slide.title;
+            document.getElementById('tour-desc').innerText = slide.text;
+
+            // Обновляем кнопку
+            const btn = document.getElementById('tour-btn');
+            btn.innerText = index === TOUR_SLIDES.length - 1 ? "Начать работу" : "Далее →";
+
+            // Обновляем точки
+            document.querySelectorAll('.tour-dot').forEach((d, i) => {
+                d.classList.toggle('active', i === index);
+            });
+
+            // Запускаем экшн слайда (подсветка, переключение темы и т.д.)
+            if (slide.action) slide.action();
+        }
+
+        function nextSlide() {
+            if (currentSlide < TOUR_SLIDES.length - 1) {
+                currentSlide++;
+                renderSlide(currentSlide);
+            } else {
+                endTour();
+            }
+        }
+
+        function endTour() {
+            const overlay = document.getElementById('tour-overlay');
+            overlay.classList.remove('active');
+            setTimeout(() => overlay.classList.add('hidden'), 500);
+
+            // Убираем все подсветки
+            document.querySelectorAll('.tour-highlight').forEach(el => el.classList.remove('tour-highlight'));
+
+            // Запоминаем, что юзер прошел обучение
+            localStorage.setItem('prisma_tour_completed', 'true');
+        }
+
+        // Запуск при загрузке страницы
+        document.addEventListener('DOMContentLoaded', () => {
+            // Даем сайту прогрузиться секунду, потом стартуем тур
+            setTimeout(initTour, 1000);
+        });
+
     </script>
+
+    <div id="tour-overlay" class="tour-overlay hidden">
+        <div class="tour-card">
+            <div class="tour-visual" id="tour-visual">
+                💎
+            </div>
+            <h2 id="tour-title" class="tour-title">Добро пожаловать</h2>
+            <p id="tour-desc" class="tour-desc">
+                Prisma — это не просто набор ссылок. Это ваша новая операционная система в браузере.
+            </p>
+
+            <div class="tour-controls">
+                <div class="tour-dots" id="tour-dots">
+                </div>
+                <button id="tour-btn" class="tour-btn">Далее →</button>
+            </div>
+
+            <div class="tour-skip" onclick="endTour()">Пропустить обучение</div>
+        </div>
+    </div>
+
 </body>
 
 
