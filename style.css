@@ -1985,3 +1985,267 @@ body.is-exiting .portal-right .portal-frame {
     transition: all 0.5s;
 }
 [data-theme="dark"] .tour-highlight { background: #1e293b; }
+
+/* === КНОПКА ПОМОЩИ НА КАРТОЧКЕ === */
+.card-help-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.05);
+    color: #999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+    opacity: 0; /* Скрыта по умолчанию */
+    transition: all 0.2s;
+    z-index: 5; /* Чтобы была поверх карточки */
+}
+
+.tool-card:hover .card-help-btn {
+    opacity: 1; /* Появляется при наведении */
+}
+
+.card-help-btn:hover {
+    background: #28a745;
+    color: white;
+    transform: scale(1.1);
+}
+
+[data-theme="dark"] .card-help-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ccc;
+}
+[data-theme="dark"] .card-help-btn:hover {
+    background: #28a745;
+    color: white;
+}
+
+/* === МОДАЛЬНОЕ ОКНО ПРЕВЬЮ === */
+.preview-content {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+    text-align: left; /* Возвращаем выравнивание влево */
+}
+
+.preview-text {
+    flex: 1;
+}
+
+.preview-media {
+    flex: 1;
+    max-width: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.preview-gif {
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border: 1px solid #eee;
+}
+
+[data-theme="dark"] .preview-gif {
+    border-color: #444;
+}
+
+/* Адаптив для мобильных: картинка сверху */
+@media (max-width: 600px) {
+    .preview-content {
+        flex-direction: column-reverse;
+        text-align: center;
+    }
+    .preview-media {
+        max-width: 100%;
+        width: 150px;
+    }
+}
+
+/* Кнопка помощи (скрыта, пока JS не покажет её) */
+.card-help-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.05);
+    color: #999;
+    display: none; /* ВАЖНО: Скрыто по умолчанию! JS включит display: flex */
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.2s;
+    z-index: 5;
+    cursor: pointer; /* Чтобы курсор менялся */
+}
+
+/* Показываем кнопку только при наведении на карточку (если у нее есть класс has-preview) */
+.tool-card:hover .card-help-btn {
+    background: rgba(0,0,0,0.1); 
+}
+
+.card-help-btn:hover {
+    background: #28a745 !important;
+    color: white !important;
+    transform: scale(1.1);
+}
+
+/* Стили модального окна */
+.preview-content {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start; /* Выравнивание по верху */
+    text-align: left;
+}
+
+.preview-text { flex: 1; }
+
+.preview-media {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.preview-gif {
+    max-width: 100%;
+    max-height: 300px; /* Ограничение высоты */
+    width: auto;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    object-fit: contain; /* Чтобы картинка не растягивалась */
+    border: 1px solid #eee;
+}
+
+[data-theme="dark"] .preview-gif { border-color: #444; }
+
+/* Адаптив для телефонов */
+@media (max-width: 700px) {
+    .preview-content {
+        flex-direction: column-reverse;
+    }
+    .preview-media { width: 100%; }
+    .preview-gif { max-height: 200px; }
+}
+
+/* === МОДАЛКА ПРЕВЬЮ (SPLIT VIEW) === */
+
+/* Спец. класс для карточки превью, чтобы убрать стандартные отступы */
+.tour-card.preview-mode {
+    padding: 0 !important; /* Убираем паддинг родителя */
+    display: flex;         /* Включаем флекс для двух колонок */
+    overflow: hidden;      /* Чтобы картинка не вылезала за скругления */
+    max-height: 80vh;      /* Ограничиваем высоту, чтобы влезало в экран */
+}
+
+/* Левая часть (Текст) */
+.preview-text-side {
+    flex: 1;               /* Занимает 50% (или оставшееся место) */
+    padding: 40px;         /* Внутренние отступы только для текста */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    text-align: left;
+    z-index: 2;            /* Чтобы текст был выше, если что */
+}
+
+/* Правая часть (Контейнер картинки) */
+.preview-media-side {
+    flex: 1.2;             /* Чуть больше места под картинку (по желанию) */
+    position: relative;
+    background: #f0f2f5;   /* Фон на случай прозрачной гифки */
+    min-height: 400px;     /* Минимальная высота */
+}
+
+/* Сама картинка */
+.preview-full-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;     /* КЛЮЧЕВОЙ МОМЕНТ: Заполняет блок, обрезая лишнее */
+    display: block;
+}
+
+/* Dark Mode коррекции */
+[data-theme="dark"] .preview-media-side {
+    background: #0f172a;
+    border-left: 1px solid #334155; /* Разделительная линия */
+}
+
+/* === АДАПТИВ (МОБИЛЬНЫЕ) === */
+@media (max-width: 768px) {
+    .tour-card.preview-mode {
+        flex-direction: column-reverse; /* Картинка сверху, текст снизу */
+        width: 90% !important;
+        max-height: 90vh;
+        overflow-y: auto; /* Скролл если не влезает */
+    }
+
+    .preview-media-side {
+        flex: none;
+        height: 200px; /* Фиксированная высота картинки на телефоне */
+        min-height: auto;
+    }
+    
+    .preview-text-side {
+        padding: 25px;
+    }
+}
+
+/* === УМНЫЙ МАКЕТ ДЛЯ ПРЕВЬЮ === */
+
+/* По умолчанию (или если класс horizontal) - видео СПРАВА */
+.tour-card.preview-mode {
+    flex-direction: row; 
+    width: 900px !important; /* Широкая карточка для горизонтального режима */
+    transition: all 0.3s ease;
+}
+
+/* Если видео ШИРОКОЕ - видео ВНИЗУ */
+.tour-card.preview-mode.vertical-layout {
+    flex-direction: column;
+    width: 600px !important; /* Карточка становится уже */
+    max-height: 95vh;
+    overflow-y: auto;
+}
+
+.tour-card.preview-mode.vertical-layout .preview-text-side {
+    padding-bottom: 20px;
+    flex: 0 0 auto; /* Текст не растягивается */
+}
+
+.tour-card.preview-mode.vertical-layout .preview-media-side {
+    width: 100%;
+    min-height: 300px; /* Высота блока под видео */
+    border-left: none;
+    border-top: 1px solid #e9ecef; /* Линия переезжает наверх */
+}
+
+[data-theme="dark"] .tour-card.preview-mode.vertical-layout .preview-media-side {
+    border-top: 1px solid #334155;
+}
+
+/* Общие настройки медиа */
+.preview-full-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Вписываем контент целиком, чтобы не обрезался */
+    background: #000; /* Черный фон для видео */
+}
+
+/* На мобильных всегда вертикально */
+@media (max-width: 768px) {
+    .tour-card.preview-mode,
+    .tour-card.preview-mode.vertical-layout {
+        flex-direction: column-reverse !important; /* Картинка сверху */
+        width: 95% !important;
+    }
+}

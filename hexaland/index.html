@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hexa Lands | PRISMA</title>
+
+    <link rel="stylesheet" href="../style.css">
+
+    <style>
+        /* === GAME SPECIFIC STYLES === */
+
+        .game-area {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            background: #eef2f5;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.05);
+            cursor: grab; /* Курсор-рука по умолчанию */
+            user-select: none;
+        }
+
+        .game-area:active {
+            cursor: grabbing; /* Сжатая рука при клике */
+        }
+
+        [data-theme="dark"] .game-area {
+            background: #1e293b;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.3);
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* UI Overlays inside Canvas area */
+        .overlay-ui {
+            position: absolute;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .score-box {
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            font-weight: bold;
+            font-size: 18px;
+            display: flex;
+            gap: 15px;
+            transition: transform 0.1s;
+        }
+
+        [data-theme="dark"] .score-box {
+            background: rgba(15, 23, 42, 0.8);
+            color: #fff;
+        }
+
+        .stat-item span {
+            color: var(--accent);
+        }
+
+        /* Next Tile Preview (in sidebar) */
+        .preview-box {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.1s; /* Для анимации клика */
+        }
+
+        #previewCanvas {
+            width: 120px;
+            height: 120px;
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.2));
+        }
+
+        /* Controls */
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .rot-btn {
+            background: #fff;
+            border: 2px solid #e1e4e8;
+            color: #333;
+            font-size: 20px;
+        }
+
+        [data-theme="dark"] .rot-btn {
+            background: #334155;
+            border-color: #475569;
+            color: #fff;
+        }
+        
+        .rot-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Game Over Modal */
+        .game-over-modal {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            z-index: 100;
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s;
+        }
+
+        .game-over-modal h2 {
+            font-size: 40px;
+            margin: 0 0 10px 0;
+        }
+
+        .game-over-modal p {
+            font-size: 20px;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        .restart-btn {
+            background: var(--accent);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 30px;
+            border: none;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+            pointer-events: auto;
+        }
+
+        .restart-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* UPDATED Floating Score Text Animation */
+        .float-text {
+            position: absolute;
+            font-weight: 800;
+            font-size: 24px;
+            pointer-events: none;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            /* Новая, более сочная анимация */
+            animation: popUpFloat 1.2s cubic-bezier(0.1, 0.7, 0.1, 1) forwards;
+            z-index: 1000;
+        }
+
+        @keyframes popUpFloat {
+            0% {
+                transform: translateY(0) scale(0.5);
+                opacity: 0;
+            }
+            20% {
+                transform: translateY(-20px) scale(1.2);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-80px) scale(1);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 900px) {
+            .game-area {
+                height: 400px;
+            }
+
+            .sidebar {
+                order: -1;
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                gap: 20px;
+                padding-bottom: 0;
+            }
+
+            .preview-box {
+                margin: 0;
+                width: 80px;
+                height: 80px;
+            }
+
+            #previewCanvas {
+                width: 80px;
+                height: 80px;
+            }
+
+            .controls-grid {
+                display: flex;
+                gap: 10px;
+                margin: 0;
+            }
+
+            .description-text {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="calculator" style="flex: 3;">
+            <h1 data-i18n="hex.title">🏝️ Hexa Lands</h1>
+
+            <div class="game-area" id="gameContainer">
+                <canvas id="gameCanvas"></canvas>
+
+                <div class="overlay-ui score-box">
+                    <div class="stat-item">🏆 <span id="scoreVal">0</span></div>
+                    <div class="stat-item" style="border-left: 1px solid #ccc; padding-left: 15px;">🎲 <span
+                            id="stackVal">30</span></div>
+                </div>
+
+                <div class="game-over-modal" id="gameOverModal">
+                    <h2 data-i18n="hex.game_over">Конец Игры</h2>
+                    <p><span data-i18n="hex.final_score">Счет</span>: <b id="finalScore">0</b></p>
+                    <button class="restart-btn" onclick="initGame()" data-i18n="hex.restart">Сыграть снова</button>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; font-size: 14px; color: var(--text-muted);">
+                <b data-i18n="hex.controls">Управление:</b> ЛКМ — Поставить, ПКМ / R / Колесо — Вращать, Drag — Камера.
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="service-specific-box">
+                <div style="text-align: center; margin-bottom: 10px; font-weight: bold; color: var(--text-muted);"
+                    data-i18n="hex.next_tile">
+                    Следующая
+                </div>
+
+                <div class="preview-box">
+                    <canvas id="previewCanvas"></canvas>
+                </div>
+
+                <div class="controls-grid">
+                    <button class="rot-btn" onclick="rotateCurrentTile(-1)">↺</button>
+                    <button class="rot-btn" onclick="rotateCurrentTile(1)">↻</button>
+                </div>
+
+                <p class="description-text" style="font-size: 13px; color: var(--text-muted); line-height: 1.4;">
+                    Совмещайте границы ландшафтов:
+                    <br>🌲 Лес к лесу
+                    <br>🏠 Дома к домам
+                    <br>💧 Воду к воде
+                    <br><br>
+                    <b>Идеальное совпадение</b> (все 6 граней) дает +50 очков и доп. тайл!
+                </p>
+            </div>
+
+            <button class="btn-secondary" onclick="resetCam()" style="margin-top: 10px;">🔍 Центр камеры</button>
+        </div>
+    </div>
+
+    <script src="../main.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
