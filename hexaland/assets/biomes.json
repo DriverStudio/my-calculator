@@ -1,0 +1,24 @@
+{
+    "1": [
+        { "id": "forest_default", "src": "forest_1.png", "weight": 50, "scale": 0.6, "origin": { "x": 0.5, "y": 0.95 } },
+        { "id": "forest_dense",   "src": "forest_2.png", "weight": 30, "scale": 0.7, "origin": { "x": 0.5, "y": 0.95 } },
+        { "id": "forest_bear",    "src": "bear.png",     "weight": 5,  "scale": 0.4, "origin": { "x": 0.5, "y": 0.95 } },
+        { "id": "none",           "src": "",             "weight": 15, "scale": 0.0, "origin": { "x": 0.5, "y": 0.95 } }
+    ],
+    "2": [
+        { "id": "water_wave",     "src": "wave.png",     "weight": 60, "scale": 0.5, "origin": { "x": 0.5, "y": 0.5 } },
+        { "id": "water_fish",     "src": "fish.png",     "weight": 20, "scale": 0.3, "origin": { "x": 0.5, "y": 0.5 } },
+        { "id": "water_ship",     "src": "ship.png",     "weight": 5,  "scale": 0.6, "origin": { "x": 0.5, "y": 0.95 } },
+        { "id": "water_rock",     "src": "rock.png",     "weight": 15, "scale": 0.4, "origin": { "x": 0.5, "y": 0.95 } }
+    ],
+    "3": [
+        { "id": "house_small",    "src": "house_1.png",  "weight": 50, "scale": 0.5, "origin": { "x": 0.5, "y": 0.95 } },
+        { "id": "house_big",      "src": "house_2.png",  "weight": 20, "scale": 0.6, "origin": { "x": 0.5, "y": 0.95 } },
+        { "id": "house_road",     "src": "road.png",     "weight": 30, "scale": 0.5, "origin": { "x": 0.5, "y": 0.95 } }
+    ],
+    "4": [
+        { "id": "field_wheat",    "src": "wheat.png",    "weight": 60, "scale": 0.6, "origin": { "x": 0.5, "y": 0.95 } },
+        { "id": "field_tractor",  "src": "tractor.png",  "weight": 5,  "scale": 0.5, "origin": { "x": 0.5, "y": 0.95 } },
+        { "id": "field_flower",   "src": "flower.png",   "weight": 35, "scale": 0.3, "origin": { "x": 0.5, "y": 0.95 } }
+    ]
+}

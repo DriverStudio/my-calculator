@@ -40,6 +40,7 @@ const APPS = [
     { id: 'clicker',    name: 'Принтер $',      icon: '🖨️', category: 'fun' },
     { id: 'reaction',   name: 'Реакция',        icon: '⚡', category: 'fun' },
     { id: 'typer',      name: 'Хакер Тайпер',   icon: '⌨️', category: 'fun' },
+    { id: 'hexaland',   name: 'Hexa Lands',     icon: '🏝️', category: 'fun' },
     { id: 'wheel',      name: 'Колесо удачи',   icon: '🎡', category: 'fun' },
 ];
 

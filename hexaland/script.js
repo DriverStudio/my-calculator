@@ -1,4 +1,4 @@
-/* script.js - HEXA LANDS ENGINE v4.4 (Artifacts Fixed & Crisp Look) */
+/* script.js - HEXA LANDS ENGINE v5.3 (Origin Point Support) */
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -16,13 +16,38 @@ const finalScoreEl = document.getElementById('finalScore');
 const HEX_SIZE = 40;
 const START_TILES = 40;
 
-// БАЛАНС:
+// БАЛАНС
 const SMART_SPAWN_CHANCE = 0.10; 
 const QUEST_CHANCE = 0.15;       
-const ATTRACTION_CHANCE = 0.10;  
+const ATTRACTION_CHANCE = 0.1;  
 const QUEST_REWARD = 7;          
 
-// === ASSETS CONFIG ===
+// === FALLBACK DATA (Пример с ORIGIN) ===
+const FALLBACK_BIOMES = {
+    "1": [
+        // origin: {x:0.5, y:0.9} опускает центр привязки вниз -> дерево "стоит" на земле
+        { "id": "forest_default", "src": "forest_1.png", "weight": 50, "scale": 0.6, "origin": { "x": 0.5, "y": 0.9 } },
+        { "id": "forest_bear",    "src": "bear.png",     "weight": 5,  "scale": 0.5, "origin": { "x": 0.5, "y": 0.8 } }
+    ],
+    "2": [
+        // Вода обычно плоская, ей подойдет центр (0.5, 0.5)
+        { "id": "water_wave",     "src": "wave.png",     "weight": 60, "scale": 0.5, "origin": { "x": 0.5, "y": 0.5 } },
+        { "id": "water_ship",     "src": "ship.png",     "weight": 5,  "scale": 0.6, "origin": { "x": 0.5, "y": 0.8 } }
+    ],
+    "3": [
+        { "id": "house_small",    "src": "house_1.png",  "weight": 50, "scale": 0.6, "origin": { "x": 0.5, "y": 0.9 } },
+        { "id": "house_road",     "src": "road.png",     "weight": 30, "scale": 0.5, "origin": { "x": 0.5, "y": 0.5 } }
+    ],
+    "4": [
+        { "id": "field_wheat",    "src": "wheat.png",    "weight": 60, "scale": 0.6, "origin": { "x": 0.5, "y": 0.9 } },
+        { "id": "field_tractor",  "src": "tractor.png",  "weight": 5,  "scale": 0.5, "origin": { "x": 0.5, "y": 0.8 } }
+    ]
+};
+
+let BIOME_VARIANTS = {}; 
+let VARIANT_DATA = {}; 
+
+// === ASSETS CONFIG (Attractions) ===
 const ATTRACTIONS_LIST = [
     { id: 'tree_giant', name: 'tree_giant', biome: 1, minTarget: 15, scale: 2.5, anchorY: 0.8 },
     { id: 'fountain', name: 'fountain', biome: 2, minTarget: 10, scale: 1.5, anchorY: 0.8, fixedEdges: [2, 2, 2, 2, 2, 2] },
@@ -61,7 +86,7 @@ let isDragging = false;
 let lastMouseX, lastMouseY, clickStartX, clickStartY;
 let hoverHex = null;
 
-// [JUICE] Effects Variables
+// [JUICE] Effects
 let camVX = 0, camVY = 0;
 let particles = [];
 
@@ -95,23 +120,71 @@ const SoundFX = {
     error: () => SoundFX.playTone(150, 'sawtooth', 0.2, 0.1, -20)
 };
 
-// === PRELOADER ===
+// === КОНФИГ И АССЕТЫ ===
+function processConfig(data) {
+    BIOME_VARIANTS = data;
+    VARIANT_DATA = {}; 
+    Object.values(data).forEach(list => {
+        list.forEach(item => {
+            VARIANT_DATA[item.id] = item;
+        });
+    });
+    console.log("Конфиг применен:", VARIANT_DATA);
+}
+
+function loadConfig(callback) {
+    fetch('./assets/biomes.json')
+        .then(response => {
+            if (!response.ok) throw new Error("Status " + response.status);
+            return response.json();
+        })
+        .then(data => {
+            processConfig(data);
+            callback();
+        })
+        .catch(err => {
+            console.warn("⚠️ Не удалось загрузить JSON. Используем встроенный конфиг.", err);
+            processConfig(FALLBACK_BIOMES);
+            callback();
+        });
+}
+
 function preloadAssets(callback) {
     let loaded = 0;
-    const total = ATTRACTIONS_LIST.length;
-    if (total === 0) { callback(); return; }
+    let toLoad = [];
+
     ATTRACTIONS_LIST.forEach(attr => {
+        toLoad.push({ id: attr.id, src: `./assets/attractions/${attr.name}.svg` });
+    });
+
+    Object.values(BIOME_VARIANTS).forEach(list => {
+        list.forEach(item => {
+            if (item.src && item.src !== "") {
+                toLoad.push({ id: item.id, src: `./assets/details/${item.src}` });
+            }
+        });
+    });
+
+    const total = toLoad.length;
+    if (total === 0) { callback(); return; }
+
+    toLoad.forEach(item => {
         const img = new Image();
-        img.src = `./assets/attractions/${attr.name}.svg`;
-        img.onload = () => { assets[attr.id] = img; loaded++; if (loaded === total) callback(); };
-        img.onerror = () => { console.warn(`Failed to load: ${attr.name}.svg`); loaded++; if (loaded === total) callback(); };
+        img.src = item.src;
+        img.onload = () => { assets[item.id] = img; loaded++; if (loaded === total) callback(); };
+        img.onerror = () => { console.warn(`❌ Не найдена картинка: ${item.src}`); loaded++; if (loaded === total) callback(); };
     });
 }
 
 // === INIT ===
 function initGame() {
     if (!assetsLoaded) {
-        preloadAssets(() => { assetsLoaded = true; startGameLogic(); });
+        loadConfig(() => {
+            preloadAssets(() => {
+                assetsLoaded = true;
+                startGameLogic();
+            });
+        });
     } else {
         startGameLogic();
     }
@@ -130,12 +203,62 @@ function startGameLogic() {
     resize();
     window.addEventListener('resize', resize);
 
-    const starter = generateTile();
-    starter.edges = [1, 2, 3, 4, 1, 2]; 
+    const starter = createPerfectTile(0, 0, true);
     placeTileToMap(starter, 0, 0);
 
     drawNextTile();
     requestAnimationFrame(loop);
+}
+
+// === CONSOLE COMMAND: GENERATE FIELD ===
+window.generateField = function(radius = 5) {
+    console.log(`Generating perfect field with radius ${radius}...`);
+    map.clear();
+    particles = [];
+    score = 0;
+    stackCount = 999;
+    
+    const center = createPerfectTile(0, 0, true);
+    placeTileToMap(center, 0, 0);
+
+    for (let r = 1; r <= radius; r++) {
+        for (let q = -r; q <= r; q++) {
+             let r1 = Math.max(-r, -q - r);
+             let r2 = Math.min(r, -q + r);
+             for (let row = r1; row <= r2; row++) {
+                 if (!map.has(`${q},${row}`)) {
+                     const tile = createPerfectTile(q, row);
+                     placeTileToMap(tile, q, row);
+                     const pos = hexToPixel(q, row);
+                     spawnParticles(pos.x, pos.y, '#ffd700', 2);
+                 }
+             }
+        }
+    }
+    resetCam();
+    updateUI();
+};
+
+function createPerfectTile(q, r, forceRandom = false) {
+    const neighbors = getNeighbors(q, r);
+    const edges = [];
+    const details = [];
+    
+    for (let i = 0; i < 6; i++) {
+        const nPos = neighbors[i];
+        const nKey = `${nPos.q},${nPos.r}`;
+        let biome;
+        
+        if (map.has(nKey) && !forceRandom) {
+            biome = map.get(nKey).edges[(i + 3) % 6];
+        } else {
+            biome = Math.floor(Math.random() * 4) + 1;
+        }
+        
+        edges.push(biome);
+        details.push(getRandomVariant(biome));
+    }
+    return { edges, details, q, r };
 }
 
 function resize() {
@@ -185,7 +308,19 @@ function getNeighbors(q, r) {
     ];
 }
 
-// === LOGIC: TILES ===
+// === LOGIC ===
+function getRandomVariant(biomeId) {
+    const variants = BIOME_VARIANTS[biomeId];
+    if (!variants || variants.length === 0) return null;
+    const totalWeight = variants.reduce((sum, v) => sum + v.weight, 0);
+    let random = Math.random() * totalWeight;
+    for (let v of variants) {
+        if (random < v.weight) return v.id;
+        random -= v.weight;
+    }
+    return variants[0].id; 
+}
+
 function generateTile() {
     if (Math.random() < ATTRACTION_CHANCE) {
         const attrData = ATTRACTIONS_LIST[Math.floor(Math.random() * ATTRACTIONS_LIST.length)];
@@ -194,21 +329,11 @@ function generateTile() {
         else edges = Array(6).fill(attrData.biome);
         return {
             edges: edges, q: 0, r: 0, attraction: attrData.id,
+            details: Array(6).fill(null),
             quest: { biomeId: attrData.biome, target: attrData.minTarget + Math.floor(Math.random() * 5), current: 1, completed: false, isAttraction: true }
         };
     }
-    const edges = [];
-    const dominant = Math.floor(Math.random() * 4) + 1; 
-    for(let i=0; i<6; i++) {
-        if (Math.random() > 0.4) edges.push(dominant);
-        else edges.push(Math.floor(Math.random() * 4) + 1);
-    }
-    const tile = { edges: edges, q:0, r:0 };
-    if (Math.random() < QUEST_CHANCE) {
-        const target = Math.floor(Math.random() * 8) + 5; 
-        tile.quest = { biomeId: dominant, target: target, current: 1, completed: false };
-    }
-    return tile;
+    return createPerfectTile(0, 0, true);
 }
 
 function generateSmartTile() {
@@ -231,14 +356,9 @@ function generateSmartTile() {
     if (maxScore < 2) return generateTile();
     const bestSpots = candidates.filter(c => c.score === maxScore);
     const target = bestSpots[Math.floor(Math.random() * bestSpots.length)];
-    const edges = [];
-    for (let i = 0; i < 6; i++) {
-        const nPos = target.neighborsPos[i];
-        const nKey = `${nPos.q},${nPos.r}`;
-        if (map.has(nKey)) edges[i] = map.get(nKey).edges[(i + 3) % 6];
-        else edges[i] = Math.floor(Math.random() * 4) + 1;
-    }
-    return { edges: edges, q: 0, r: 0, isPerfect: true };
+    const tile = createPerfectTile(target.q, target.r);
+    tile.isPerfect = true;
+    return tile;
 }
 
 function drawNextTile() {
@@ -246,8 +366,6 @@ function drawNextTile() {
         gameOver();
         return;
     }
-    
-    // [JUICE] Preview Pop
     const pBox = document.querySelector('.preview-box');
     if(pBox) { pBox.style.transform = 'scale(0.9)'; setTimeout(()=>pBox.style.transform='scale(1)', 100); }
     SoundFX.click();
@@ -260,13 +378,18 @@ function drawNextTile() {
 function rotateCurrentTile(dir) {
     if (!currentTile || isGameOver) return;
     const arr = currentTile.edges;
-    if (dir > 0) arr.unshift(arr.pop());
-    else arr.push(arr.shift());
+    const dets = currentTile.details; 
+    if (dir > 0) {
+        arr.unshift(arr.pop());
+        dets.unshift(dets.pop());
+    } else {
+        arr.push(arr.shift());
+        dets.push(dets.shift());
+    }
     SoundFX.rotate(); 
     drawPreview();
 }
 
-// === LOGIC: GROUP ANALYSIS ===
 function analyzeGroup(startTile, biomeId) {
     let visited = new Set();
     let queue = [startTile];
@@ -314,12 +437,9 @@ function completeQuest(tile) {
     const bonusScore = tile.quest.isAttraction ? 500 : 100;
     stackCount += reward;
     score += bonusScore;
-    
-    // [JUICE]
     SoundFX.quest();
     const pos = hexToPixel(tile.q, tile.r);
     spawnParticles(pos.x, pos.y, '#ffd700', 15);
-    
     showFloatingText(tile.q, tile.r, `DONE! +${reward} Tiles`, '#ffeb3b');
 }
 
@@ -338,8 +458,6 @@ function tryPlaceTile(q, r) {
     if (!hasNeighbor && map.size > 0) { SoundFX.error(); return; }
 
     placeTileToMap(currentTile, q, r);
-    
-    // [JUICE]
     SoundFX.place();
     const pos = hexToPixel(q, r);
     spawnParticles(pos.x, pos.y, '#aaa', 6);
@@ -355,7 +473,6 @@ function tryPlaceTile(q, r) {
             const neighborTile = map.get(nKey);
             const myEdge = currentTile.edges[i];
             const nEdge = neighborTile.edges[(i + 3) % 6];
-
             if (myEdge === nEdge) {
                 points += 10;
                 matches++;
@@ -393,6 +510,7 @@ function tryPlaceTile(q, r) {
 function placeTileToMap(tile, q, r) {
     map.set(`${q},${r}`, {
         edges: [...tile.edges],
+        details: [...tile.details],
         q: q, 
         r: r,
         quest: tile.quest ? {...tile.quest} : null,
@@ -412,23 +530,16 @@ function updateUI() {
     stackEl.innerText = stackCount;
 }
 
-// === [JUICE] PARTICLES ===
+// === PARTICLES ===
 function spawnParticles(x, y, color, count) {
-    // Увеличиваем количество частиц в 2 раза для густоты
     for(let i=0; i<count * 2; i++) {
         const angle = Math.random() * Math.PI * 2;
-        // Скорость выше (взрыв), но разная для вариативности
         const speed = Math.random() * 8 + 2; 
-        
         particles.push({
-            x: x, 
-            y: y,
-            // Используем cos/sin для красивого разлета кругом
+            x: x, y: y,
             vx: Math.cos(angle) * speed,
             vy: Math.sin(angle) * speed,
-            life: 1.0, 
-            color: color,
-            // Стартовый размер больше (было 2-5, стало 4-9)
+            life: 1.0, color: color,
             size: Math.random() * 5 + 4 
         });
     }
@@ -437,44 +548,29 @@ function spawnParticles(x, y, color, count) {
 function updateParticles() {
     for(let i=particles.length-1; i>=0; i--) {
         let p = particles[i];
-        
-        p.x += p.vx; 
-        p.y += p.vy;
-        
-        // Физика: добавляем трение (частицы резко вылетают, но плавно тормозят)
-        p.vx *= 0.92; 
-        p.vy *= 0.92;
-        
-        // Живут дольше: вычитаем 0.02 вместо 0.05 (теперь живут ~50 кадров вместо 20)
+        p.x += p.vx; p.y += p.vy;
+        p.vx *= 0.92; p.vy *= 0.92;
         p.life -= 0.02;
-        
-        // Уменьшаются медленнее
         p.size *= 0.97;
-        
         if(p.life <= 0 || p.size < 0.5) particles.splice(i, 1);
     }
 }
 
 function drawParticles(c) {
     if (particles.length === 0) return;
-
     c.save();
-    // ВАЖНО: Режим наложения 'lighter' создает эффект свечения, 
-    // когда частицы накладываются друг на друга (как магия/огонь)
     c.globalCompositeOperation = 'lighter'; 
-    
     particles.forEach(p => {
         c.fillStyle = p.color;
-        c.globalAlpha = p.life; // Прозрачность зависит от жизни
+        c.globalAlpha = p.life;
         c.beginPath();
         c.arc(p.x, p.y, p.size, 0, Math.PI*2);
         c.fill();
     });
-    
     c.restore();
 }
 
-// === RENDERING (WITH Z-SORT) ===
+// === RENDERING ===
 function isDark() {
     return document.documentElement.getAttribute('data-theme') === 'dark';
 }
@@ -515,7 +611,6 @@ function drawFrame() {
 
     renderList.forEach(tile => {
         const pos = hexToPixel(tile.q, tile.r);
-        
         let s = 1;
         if(tile.spawnTime && !tile.isGhost) {
             const age = now - tile.spawnTime;
@@ -547,30 +642,26 @@ function drawFrame() {
 function drawPreview() {
     pCtx.clearRect(0, 0, 150, 150);
     if (!currentTile) return;
-    
     pCtx.save();
     pCtx.translate(75, 75);
-    
     if (currentTile.isPerfect) {
         pCtx.shadowColor = "#ffd700";
         pCtx.shadowBlur = 15;
-        pCtx.scale(1.25, 1.25);
+        pCtx.scale(1.1, 1.1); 
         drawHex(pCtx, 0, 0, currentTile, false);
     } else {
-        pCtx.scale(1.2, 1.2);
+        pCtx.scale(1.0, 1.0);
         drawHex(pCtx, 0, 0, currentTile, false);
     }
-
     pCtx.restore();
 }
 
-// [FIXED RENDERING] Идеально чистые стыки и центр
 function drawHex(c, x, y, tile, enableShadow = true) {
     const size = HEX_SIZE;
     const edges = tile.edges;
     const theme = isDark();
 
-    // 1. Shadow (Тень рисуем отдельно ДО основной геометрии)
+    // 1. Shadow
     if (enableShadow) {
         c.save();
         c.beginPath();
@@ -587,14 +678,14 @@ function drawHex(c, x, y, tile, enableShadow = true) {
         c.restore();
     }
 
-    // 2. Biome Segments (С ФИКСОМ ЦЕНТРА: добавляем stroke того же цвета)
+    // 2. Biome Segments
     for (let i = 0; i < 6; i++) {
         const type = edges[i];
         const biome = BIOMES_BY_ID[type];
         if (!biome) continue;
 
         c.beginPath();
-        c.moveTo(x, y); // Center
+        c.moveTo(x, y);
         const a1 = (Math.PI / 180) * (60 * i - 30);
         const a2 = (Math.PI / 180) * (60 * (i+1) - 30);
         c.lineTo(x + size * Math.cos(a1), y + size * Math.sin(a1));
@@ -603,58 +694,79 @@ function drawHex(c, x, y, tile, enableShadow = true) {
         
         c.fillStyle = theme ? biome.dark : biome.color;
         c.fill();
-        
-        // === ВАЖНЫЙ ФИКС ===
-        // Рисуем обводку того же цвета, чтобы закрыть микро-щели в центре и на стыках
         c.lineWidth = 1;
         c.strokeStyle = c.fillStyle;
         c.stroke();
     }
     
-    // 3. Details (Рисуем поверх заливки, чтобы не перекрывались)
+    // 3. Details (FIXED: Upright + Origin Support)
     for (let i = 0; i < 6; i++) {
         const type = edges[i];
         const biome = BIOMES_BY_ID[type];
+        const variantId = tile.details ? tile.details[i] : null;
+
         if (biome && !tile.attraction) {
             c.save();
-            // Создаем клип-маску для сегмента
-            c.beginPath();
-            c.moveTo(x, y);
-            const a1 = (Math.PI / 180) * (60 * i - 30);
-            const a2 = (Math.PI / 180) * (60 * (i+1) - 30);
-            c.lineTo(x + size * Math.cos(a1), y + size * Math.sin(a1));
-            c.lineTo(x + size * Math.cos(a2), y + size * Math.sin(a2));
-            c.closePath();
-            c.clip();
-            drawDetail(c, x, y, size, i, biome.detail, theme);
+            const angleDeg = 60 * i;
+            const angleRad = (Math.PI / 180) * angleDeg;
+            c.translate(x, y);
+            c.rotate(angleRad);
+            
+            if (variantId && assets[variantId]) {
+                const img = assets[variantId];
+                const config = VARIANT_DATA[variantId];
+                const myScale = (config && config.scale) ? config.scale : 0.5;
+                const imgSize = size * myScale;
+                
+                // === ORIGIN SUPPORT ===
+                const originX = (config && config.origin && config.origin.x !== undefined) ? config.origin.x : 0.5;
+                const originY = (config && config.origin && config.origin.y !== undefined) ? config.origin.y : 0.5;
+
+                // Перемещаемся в центр зоны отрисовки
+                c.translate(size * 0.5, 0);
+                // Отменяем вращение гекса
+                c.rotate(-angleRad);
+                // Рисуем картинку с учетом Origin
+                c.drawImage(img, -imgSize * originX, -imgSize * originY, imgSize, imgSize);
+                
+            } else {
+                c.rotate(-angleRad);
+                c.translate(-x, -y);
+                c.save();
+                c.beginPath();
+                c.moveTo(x, y);
+                const a1 = (Math.PI / 180) * (60 * i - 30);
+                const a2 = (Math.PI / 180) * (60 * (i+1) - 30);
+                c.lineTo(x + size * Math.cos(a1), y + size * Math.sin(a1));
+                c.lineTo(x + size * Math.cos(a2), y + size * Math.sin(a2));
+                c.closePath();
+                c.clip();
+                drawDetail(c, x, y, size, i, biome.detail, theme);
+                c.restore();
+            }
             c.restore();
         }
     }
 
-    // 4. Clean Borders (Две обводки для "хруста")
+    // 4. Borders
     c.beginPath();
     for (let i = 0; i < 6; i++) {
         const a = Math.PI / 180 * (60 * i - 30);
         c[i===0 ? 'moveTo' : 'lineTo'](x + size * Math.cos(a), y + size * Math.sin(a));
     }
     c.closePath();
-    
-    // Внешняя граница (разделение плиток)
-    c.strokeStyle = theme ? '#0f172a' : '#fff'; // Цвет фона, чтобы создать "зазор"
+    c.strokeStyle = theme ? '#0f172a' : '#fff'; 
     c.lineWidth = 3;
     c.lineJoin = 'round';
     c.stroke();
-    
-    // Внутренняя граница (контур плитки)
     c.strokeStyle = 'rgba(0,0,0,0.1)';
     c.lineWidth = 1;
     c.stroke();
     
-    // 5. [NEW] Inner Highlight (Блик для объема)
+    // 5. Highlight
     c.beginPath();
     for (let i = 0; i < 6; i++) {
         const a = Math.PI / 180 * (60 * i - 30);
-        // Чуть меньше радиус (0.85)
         c[i===0 ? 'moveTo' : 'lineTo'](x + (size*0.85) * Math.cos(a), y + (size*0.85) * Math.sin(a));
     }
     c.closePath();
@@ -662,8 +774,7 @@ function drawHex(c, x, y, tile, enableShadow = true) {
     c.lineWidth = 2;
     c.stroke();
 
-
-    // 6. ATTRACTION IMAGE
+    // 6. Attraction
     if (tile.attraction) {
         const img = assets[tile.attraction];
         const attrConf = ATTRACTIONS_LIST.find(a => a.id === tile.attraction);
@@ -685,7 +796,7 @@ function drawHex(c, x, y, tile, enableShadow = true) {
         }
     }
 
-    // 7. Quest Marker
+    // 7. Quest
     if (tile.quest && !tile.quest.completed && !tile.quest.failed) {
         c.save();
         c.translate(x, y);
@@ -703,13 +814,6 @@ function drawHex(c, x, y, tile, enableShadow = true) {
         c.textBaseline = 'middle';
         const remaining = tile.quest.target - tile.quest.current;
         c.fillText(remaining > 0 ? remaining : '✓', 0, 1);
-        if (!isAttr) {
-            const questColor = BIOMES_BY_ID[tile.quest.biomeId].color;
-            c.beginPath();
-            c.arc(0, -14, 4, 0, Math.PI * 2);
-            c.fillStyle = questColor;
-            c.fill();
-        }
         c.restore();
     }
 }
@@ -758,7 +862,6 @@ function showFloatingText(q, r, text, color = '#28a745') {
     div.style.left = screenX + 'px';
     div.style.top = screenY + 'px';
     div.style.color = color;
-    
     container.appendChild(div);
     setTimeout(() => div.remove(), 1500);
 }
@@ -827,7 +930,7 @@ container.addEventListener('wheel', (e) => {
 container.addEventListener('contextmenu', e => e.preventDefault());
 
 function loop() {
-    updateParticles(); // <--- ДОБАВИТЬ ЭТУ СТРОКУ
+    updateParticles();
     drawFrame();
     requestAnimationFrame(loop);
 }
