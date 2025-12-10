@@ -61,12 +61,12 @@ const SoundEngine = {
         // Переключатель (Switch)
         toggle: new Audio("data:audio/wav;base64,UklGRjIAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAP////8AAAAA//8AAP////8AAAD//wAA"),
         // Уведомление
-        notify: new Audio("data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU") 
+        notify: new Audio("../assets/sounds/notify_1.mp3") 
     },
 
     init() {
         // Настройка громкости
-        this.sounds.hover.volume = 0.05; // Ховер должен быть тихим
+        this.sounds.hover.volume = 0.1; // Ховер должен быть тихим
         this.sounds.click.volume = 0.2;
         this.sounds.toggle.volume = 0.4;
         this.sounds.notify.volume = 0.5;
@@ -148,7 +148,6 @@ function initDailyHook() {
         // Используем существующую функцию уведомлений
         if (typeof sendNotification === 'function') {
             sendNotification('Prisma Совет', tip.text, tip.icon);
-            SoundEngine.play('notify');
         }
 
         localStorage.setItem('prisma_last_tip_date', today);
@@ -1212,6 +1211,8 @@ function sendNotification(title, text, icon = '🔔', onClick = null) {
 
         // Вставляем после заголовка (header всегда первый child)
         panel.insertBefore(item, panel.children[1]);
+
+        SoundEngine.play('notify');
     }
 
     // --- TOAST (Всплывашка) ---

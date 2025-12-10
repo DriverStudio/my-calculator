@@ -6,10 +6,11 @@
         { "id": "none",           "src": "",             "weight": 15, "scale": 0.0, "origin": { "x": 0.5, "y": 0.95 } }
     ],
     "2": [
-        { "id": "water_wave",     "src": "wave.png",     "weight": 60, "scale": 0.5, "origin": { "x": 0.5, "y": 0.5 } },
+        { "id": "water_wave",     "src": "wave.png",     "weight": 15, "scale": 0.5, "origin": { "x": 0.5, "y": 0.5 } },
         { "id": "water_fish",     "src": "fish.png",     "weight": 20, "scale": 0.3, "origin": { "x": 0.5, "y": 0.5 } },
         { "id": "water_ship",     "src": "ship.png",     "weight": 5,  "scale": 0.6, "origin": { "x": 0.5, "y": 0.95 } },
-        { "id": "water_rock",     "src": "rock.png",     "weight": 15, "scale": 0.4, "origin": { "x": 0.5, "y": 0.95 } }
+        { "id": "water_rock",     "src": "rock.png",     "weight": 15, "scale": 0.4, "origin": { "x": 0.5, "y": 0.95 } },
+        { "id": "none",           "src": "",             "weight": 60, "scale": 0.0, "origin": { "x": 0.5, "y": 0.95 } }
     ],
     "3": [
         { "id": "house_small",    "src": "house_1.png",  "weight": 50, "scale": 0.5, "origin": { "x": 0.5, "y": 0.95 } },
