@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сравнение текстов | PRISMA</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        /* Сетка для двух редакторов */
+        .diff-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .diff-col {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .diff-label {
+            font-size: 0.9em;
+            font-weight: bold;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        /* Поля ввода */
+        .diff-area {
+            width: 100%;
+            height: 200px;
+            padding: 15px;
+            border: 2px solid #e1e4e8;
+            border-radius: 12px;
+            resize: vertical;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            background: rgba(255,255,255,0.5);
+            transition: border 0.2s;
+        }
+        
+        .diff-area:focus {
+            border-color: var(--accent);
+            outline: none;
+        }
+
+        /* Результат */
+        #resultContainer {
+            width: 100%;
+            min-height: 100px;
+            padding: 20px;
+            border: 1px solid #e1e4e8;
+            border-radius: 12px;
+            background: #fff;
+            font-family: 'Consolas', 'Monaco', monospace;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            margin-top: 20px;
+            display: none; /* Скрыт по умолчанию */
+        }
+        
+        /* Стили подсветки */
+        .diff-del {
+            background-color: #ffcccc;
+            color: #cc0000;
+            text-decoration: line-through;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        
+        .diff-ins {
+            background-color: #ccffcc;
+            color: #006600;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        /* Dark Mode Support */
+        [data-theme="dark"] .diff-area {
+            background: rgba(0,0,0,0.2);
+            border-color: #334155;
+            color: #e2e8f0;
+        }
+        [data-theme="dark"] .diff-area:focus {
+            border-color: var(--accent);
+        }
+        [data-theme="dark"] #resultContainer {
+            background: #1e293b;
+            border-color: #334155;
+            color: #e2e8f0;
+        }
+        [data-theme="dark"] .diff-del {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: #ff6b6b;
+        }
+        [data-theme="dark"] .diff-ins {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: #51cf66;
+        }
+
+        @media (max-width: 700px) {
+            .diff-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header style="width: 100%; margin-bottom: 25px;">
+            <h1>⚖️ Сравнение текстов</h1>
+            <p style="color: var(--text-muted);">Найдите отличия между двумя версиями документа.</p>
+        </header>
+
+        <div class="diff-grid">
+            <div class="diff-col">
+                <span class="diff-label">Оригинал</span>
+                <textarea id="textOld" class="diff-area" placeholder="Вставьте старый текст..."></textarea>
+            </div>
+            <div class="diff-col">
+                <span class="diff-label">Измененный</span>
+                <textarea id="textNew" class="diff-area" placeholder="Вставьте новый текст..."></textarea>
+            </div>
+        </div>
+
+        <button id="btnCompare">🔍 Сравнить версии</button>
+
+        <div id="resultContainer"></div>
+    </div>
+
+    <script src="../main.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

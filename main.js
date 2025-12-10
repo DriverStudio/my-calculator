@@ -5,50 +5,161 @@
 // ==========================================
 
 const APPS = [
-    { id: 'roas',       name: 'Реклама (ROAS)', icon: '💰',     category: 'finance' },
-    { id: 'crypto',     name: 'Сложный %',      icon: '📈',     category: 'finance' },
-    { id: 'mortgage',   name: 'Ипотека',        icon: '🏠',     category: 'finance' },
-    { id: 'nds',        name: 'НДС 20%',        icon: '📊',      category: 'finance' },
-    { id: 'goal',       name: 'Копилка',        icon: '🎯',      category: 'finance' },
-    { id: 'bmi',        name: 'Вес (BMI)',      icon: '⚖️',     category: 'health' },
-    { id: 'calories',   name: 'Калории',        icon: '🥦',     category: 'health' },
-    { id: 'gym',        name: 'Жим (1ПМ)',      icon: '💪', category: 'health' },
-    { id: 'breathe',    name: 'Релакс',         icon: '🧘', category: 'health' },
-    { id: 'life',       name: 'Жизнь (Memento)',icon: '⏳', category: 'health' },
-    { id: 'sounds',     name: 'Фокус и Релакс', icon: '🎧', category: 'health' },
-    { id: 'ambient',    name: 'Фокус Видео',    icon: '🏔️', category: 'health' },
-    { id: 'habits',     name: 'Мой Сад',        icon: '🌿', category: 'health' },
-    { id: 'freelance',  name: 'Рейт в час',     icon: '💸', category: 'work' },
-    { id: 'pomodoro',   name: 'Фокус Таймер',   icon: '🍅', category: 'work' },
-    { id: 'text',       name: 'Анализ текста',  icon: '📝', category: 'work' },
-    { id: 'translit',   name: 'Транслит',       icon: '🔤', category: 'work' },
-    { id: 'palette',    name: 'Палитры',        icon: '🎨', category: 'work' },
-    { id: 'json',       name: 'JSON Редактор',  icon: 'hb', category: 'work' },
-    { id: 'glass',      name: 'Glass UI',       icon: '💎', category: 'work' },
-    { id: 'notes',      name: 'Заметки',        icon: '📌', category: 'work' },
-    { id: 'pass',       name: 'Пароли',         icon: '🔐', category: 'tools' },
-    { id: 'qr',         name: 'QR Код',         icon: '📱', category: 'tools' },
-    { id: 'date',       name: 'Дней до...',     icon: '📅', category: 'tools' },
-    { id: 'metronome',  name: 'Метроном',       icon: '🥁', category: 'tools' },
-    { id: 'blob',       name: 'Liquid Blob',    icon: '💧', category: 'tools' },
-    { id: 'audio',      name: 'Аудио Каттер',   icon: '✂️', category: 'tools' },
+    { id: 'roas',       name: 'Реклама (ROAS)',         icon: '💰', category: 'finance' },
+    { id: 'crypto',     name: 'Сложный %',              icon: '📈', category: 'finance' },
+    { id: 'mortgage',   name: 'Ипотека',                icon: '🏠', category: 'finance' },
+    { id: 'nds',        name: 'НДС 20%',                icon: '📊', category: 'finance' },
+    { id: 'goal',       name: 'Копилка',                icon: '🎯', category: 'finance' },
+    { id: 'bmi',        name: 'Вес (BMI)',              icon: '⚖️', category: 'health' },
+    { id: 'calories',   name: 'Калории',                icon: '🥦', category: 'health' },
+    { id: 'gym',        name: 'Жим (1ПМ)',              icon: '💪', category: 'health' },
+    { id: 'breathe',    name: 'Релакс',                 icon: '🧘', category: 'health' },
+    { id: 'life',       name: 'Жизнь (Memento)',        icon: '⏳', category: 'health' },
+    { id: 'sounds',     name: 'Фокус и Релакс',         icon: '🎧', category: 'health' },
+    { id: 'ambient',    name: 'Фокус Видео', icon: '🏔️', category: 'health' },
+    { id: 'habits',     name: 'Мой Сад', icon: '🌿', category: 'health' },
+    { id: 'freelance',  name: 'Рейт в час', icon: '💸', category: 'work' },
+    { id: 'pomodoro',   name: 'Фокус Таймер', icon: '🍅', category: 'work' },
+    { id: 'text',       name: 'Анализ текста', icon: '📝', category: 'work' },
+    { id: 'diff',       name: 'Сравнение', icon: '⚖️', category: 'work' },
+    { id: 'translit',   name: 'Транслит', icon: '🔤', category: 'work' },
+    { id: 'palette',    name: 'Палитры', icon: '🎨', category: 'work' },
+    { id: 'json',       name: 'JSON Редактор', icon: 'hb', category: 'work' },
+    { id: 'glass',      name: 'Glass UI', icon: '💎', category: 'work' },
+    { id: 'notes',      name: 'Заметки', icon: '📌', category: 'work' },
+    { id: 'pass',       name: 'Пароли', icon: '🔐', category: 'tools' },
+    { id: 'qr',         name: 'QR Код', icon: '📱', category: 'tools' },
+    { id: 'date',       name: 'Дней до...', icon: '📅', category: 'tools' },
+    { id: 'timezone',   name: 'Планер Встреч', icon: '🌍', category: 'tools' },
+    { id: 'metronome',  name: 'Метроном', icon: '🥁', category: 'tools' },
+    { id: 'blob',       name: 'Liquid Blob', icon: '💧', category: 'tools' },
+    { id: 'audio',      name: 'Аудио Каттер', icon: '✂️', category: 'tools' },
     { id: 'mesh',       name: 'Mesh Gradients', icon: '🌈', category: 'tools' },
-    { id: 'image',      name: 'Сжатие фото',    icon: '🖼️', category: 'tools' },
-    { id: 'sign',       name: 'Автограф',       icon: '✍️', category: 'tools' },
-    { id: 'timer',      name: 'Visual Timer',   icon: '⏳', category: 'tools' },
-    { id: 'timeline',   name: 'Timeline',       icon: '🧬', category: 'tools' },
-    { id: 'clicker',    name: 'Принтер $',      icon: '🖨️', category: 'fun' },
-    { id: 'reaction',   name: 'Реакция',        icon: '⚡', category: 'fun' },
-    { id: 'typer',      name: 'Хакер Тайпер',   icon: '⌨️', category: 'fun' },
-    { id: 'hexaland',   name: 'Hexa Lands',     icon: '🏝️', category: 'fun' },
-    { id: 'wheel',      name: 'Колесо удачи',   icon: '🎡', category: 'fun' },
+    { id: 'image',      name: 'Сжатие фото', icon: '🖼️', category: 'tools' },
+    { id: 'sign',       name: 'Автограф', icon: '✍️', category: 'tools' },
+    { id: 'timer',      name: 'Visual Timer', icon: '⏳', category: 'tools' },
+    { id: 'timeline',   name: 'Timeline', icon: '🧬', category: 'tools' },
+    { id: 'clicker',    name: 'Принтер $', icon: '🖨️', category: 'fun' },
+    { id: 'reaction',   name: 'Реакция', icon: '⚡', category: 'fun' },
+    { id: 'typer',      name: 'Хакер Тайпер', icon: '⌨️', category: 'fun' },
+    { id: 'hexaland',   name: 'Hexa Lands', icon: '🏝️', category: 'fun' },
+    { id: 'wheel',      name: 'Колесо удачи', icon: '🎡', category: 'fun' },
 ];
 
+// ==========================================
+// 🔊 SOUND ENGINE (UPDATED: HOVER SUPPORT)
+// ==========================================
+const SoundEngine = {
+    enabled: localStorage.getItem('prisma_sound') !== 'off',
+    lastHovered: null, // Запоминаем последний элемент, чтобы не спамить
+    
+    sounds: {
+        // Очень тихий "тик" для наведения (Short Air Tick)
+        hover: new Audio("../assets/sounds/hover_1.mp3"),
+        // Клик (Bubble Pop)
+        click: new Audio("../assets/sounds/click_1.mp3"),
+        // Переключатель (Switch)
+        toggle: new Audio("data:audio/wav;base64,UklGRjIAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAP////8AAAAA//8AAP////8AAAD//wAA"),
+        // Уведомление
+        notify: new Audio("data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU") 
+    },
+
+    init() {
+        // Настройка громкости
+        this.sounds.hover.volume = 0.05; // Ховер должен быть тихим
+        this.sounds.click.volume = 0.2;
+        this.sounds.toggle.volume = 0.4;
+        this.sounds.notify.volume = 0.5;
+
+        // Предзагрузка
+        Object.values(this.sounds).forEach(s => s.load());
+        
+        this.attachListeners();
+    },
+
+    play(name) {
+        if (!this.enabled || !this.sounds[name]) return;
+        
+        const s = this.sounds[name];
+        // Сброс времени обязателен для быстрых повторов
+        s.currentTime = 0; 
+        
+        // play() возвращает промис, который может упасть, если юзер еще не кликнул на странице
+        s.play().catch(() => {}); 
+    },
+
+    toggle() {
+        this.enabled = !this.enabled;
+        localStorage.setItem('prisma_sound', this.enabled ? 'on' : 'off');
+        this.play('toggle');
+        return this.enabled;
+    },
+
+    attachListeners() {
+        // 1. КЛИК (Click)
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('button, a, .tool-card, .theme-toggle, .nav-link, input, select')) {
+                this.play('click');
+            }
+        });
+
+        // 2. НАВЕДЕНИЕ (Hover) - Только для десктопов
+        if (window.matchMedia('(hover: hover)').matches) {
+            document.addEventListener('mouseover', (e) => {
+                // Ищем карточку или ссылку под курсором
+                const target = e.target.closest('.tool-card, .nav-link, button');
+
+                // Если мы зашли на НОВЫЙ элемент (не тот же самый, что секунду назад)
+                if (target && target !== this.lastHovered) {
+                    this.play('hover');
+                    this.lastHovered = target; // Запоминаем: "мы сейчас на этой кнопке"
+                } 
+                // Если мы ушли в пустоту
+                else if (!target) {
+                    this.lastHovered = null;
+                }
+            });
+        }
+    }
+};
+
+// ==========================================
+// 📅 DAILY HOOKS (Совет дня)
+// ==========================================
+const DAILY_TIPS = [
+    { icon: '💡', text: 'Совет: Нажмите Ctrl+F для быстрого поиска.' },
+    { icon: '🌙', text: 'Совет: Темная тема снижает нагрузку на глаза.' },
+    { icon: '🍅', text: 'Попробуйте Pomodoro для фокуса: 25 минут работы.' },
+    { icon: '🎹', text: 'Включите фоновые звуки, чтобы заглушить шум.' },
+    { icon: '💰', text: 'Сложный процент работает на вас. Проверьте калькулятор.' },
+    { icon: '💧', text: 'Время пить воду! Загляните в Habit Garden.' }
+];
+
+function initDailyHook() {
+    const lastDate = localStorage.getItem('prisma_last_tip_date');
+    const today = new Date().toDateString();
+
+    if (lastDate === today) return; // Уже видели сегодня
+
+    // Ждем 2 секунды после входа, чтобы не пугать
+    setTimeout(() => {
+        const tip = DAILY_TIPS[Math.floor(Math.random() * DAILY_TIPS.length)];
+
+        // Используем существующую функцию уведомлений
+        if (typeof sendNotification === 'function') {
+            sendNotification('Prisma Совет', tip.text, tip.icon);
+            SoundEngine.play('notify');
+        }
+
+        localStorage.setItem('prisma_last_tip_date', today);
+    }, 2000);
+}
+
 // Настройки Рекламы и Аналитики
-const SPREADSHEET_ID = '1BSQxNAZgGc5q1ONvHlDy0NzYq3zZaraedBADrlx4X3w'; 
+const SPREADSHEET_ID = '1BSQxNAZgGc5q1ONvHlDy0NzYq3zZaraedBADrlx4X3w';
 const SHEET_NAME = 'Sheet1';
 const YANDEX_METRICA_ID = 105629640;
-const GOOGLE_ANALYTICS_ID = ''; 
+const GOOGLE_ANALYTICS_ID = '';
 
 // Логика путей (Роутинг)
 let currentAppId = 'home';
@@ -67,7 +178,7 @@ console.log(`📍 App: ${currentAppId}, Path: ${pathPrefix}`);
 // 2. СИСТЕМА ПЕРЕВОДОВ (I18N) - FIXED
 // ==========================================
 
-window.I18N = {}; 
+window.I18N = {};
 let currentLang = localStorage.getItem('lang') || 'ru';
 
 async function initTranslations() {
@@ -75,7 +186,7 @@ async function initTranslations() {
     try {
         const response = await fetch(pathPrefix + 'translations_all_services.json');
         if (!response.ok) throw new Error('Network error');
-        
+
         window.I18N = await response.json();
         console.log('✅ I18N: Загружено!');
         applyLanguage(currentLang);
@@ -83,7 +194,7 @@ async function initTranslations() {
         console.error("❌ I18N Error:", e);
         // Даже при ошибке обновляем кнопку
         const btn = document.getElementById('langBtn');
-        if(btn) btn.innerText = currentLang.toUpperCase();
+        if (btn) btn.innerText = currentLang.toUpperCase();
     }
 }
 
@@ -104,7 +215,7 @@ function applyLanguage(lang) {
         const keyPath = el.getAttribute('data-i18n').split('.');
         const section = keyPath[0];
         const key = keyPath[1];
-        
+
         if (window.I18N[lang][section] && window.I18N[lang][section][key]) {
             const val = window.I18N[lang][section][key];
             if (el.tagName === 'INPUT') el.placeholder = val;
@@ -131,7 +242,7 @@ function initLoader() {
     const loader = document.createElement('div');
     loader.className = 'page-loader';
     loader.innerHTML = '<div class="spinner"></div>';
-    
+
     // Вставляем в самое начало body
     document.body.prepend(loader);
 
@@ -140,7 +251,7 @@ function initLoader() {
         loader.classList.add('hidden');
         // Полностью удаляем из DOM через полсекунды (когда анимация пройдет), чтобы не мешал
         setTimeout(() => {
-            if(loader.parentNode) loader.parentNode.removeChild(loader);
+            if (loader.parentNode) loader.parentNode.removeChild(loader);
         }, 600);
     };
 
@@ -150,7 +261,7 @@ function initLoader() {
     } else {
         window.addEventListener('load', hideLoader);
     }
-    
+
     // Страховка: если что-то зависло, всё равно убрать лоадер через 3 сек
     setTimeout(hideLoader, 3000);
 }
@@ -158,7 +269,7 @@ function initLoader() {
 function initMenu() {
     const navBar = document.createElement('div');
     navBar.className = 'nav-bar';
-    
+
     // 1. Создаем контейнер для скролла
     const scrollBox = document.createElement('div');
     scrollBox.className = 'nav-scroll';
@@ -166,7 +277,7 @@ function initMenu() {
     // === 🔥 ФИКС ДЕРГАНЬЯ: ВОССТАНАВЛИВАЕМ ПОЗИЦИЮ СКРОЛЛА ===
     // Читаем сохраненную позицию из памяти
     const savedScroll = sessionStorage.getItem('navScrollPos');
-    
+
     // Если позиция сохранена, применяем её сразу, как только элемент появится
     if (savedScroll) {
         // requestAnimationFrame гарантирует, что это произойдет до отрисовки кадра
@@ -191,7 +302,7 @@ function initMenu() {
 
     const homeLink = document.createElement('a');
     homeLink.className = `nav-link ${currentAppId === 'home' ? 'active' : ''}`;
-    homeLink.href = pathPrefix + 'index.html'; 
+    homeLink.href = pathPrefix + 'index.html';
     homeLink.innerHTML = '🏠 Все';
     scrollBox.appendChild(homeLink);
 
@@ -211,14 +322,14 @@ function initMenu() {
     controls.style.gap = '8px';
     controls.style.paddingRight = '20px';
     // Чтобы кнопки справа не сжимались
-    controls.style.flexShrink = '0'; 
+    controls.style.flexShrink = '0';
 
     // === 🔔 КОЛОКОЛЬЧИК (НОВОЕ) ===
     const bellBtn = document.createElement('div');
     bellBtn.className = 'notification-btn';
     bellBtn.id = 'notifBtn';
     bellBtn.innerHTML = '🔔<div class="bell-badge" id="bellBadge"></div>';
-    
+
     // Панель уведомлений
     const notifPanel = document.createElement('div');
     notifPanel.className = 'notif-panel';
@@ -250,11 +361,25 @@ function initMenu() {
     controls.appendChild(notifPanel);
     // === КОНЕЦ КОЛОКОЛЬЧИКА ===
 
+    // === 🔊 КНОПКА ЗВУКА ===
+    const soundBtn = document.createElement('div');
+    soundBtn.className = 'theme-toggle';
+    soundBtn.id = 'soundBtn';
+    soundBtn.innerText = SoundEngine.enabled ? '🔊' : '🔇';
+    soundBtn.title = 'Вкл/Выкл звуки интерфейса';
+    soundBtn.onclick = () => {
+        const isOn = SoundEngine.toggle();
+        soundBtn.innerText = isOn ? '🔊' : '🔇';
+    };
+    controls.appendChild(soundBtn);
+    // =======================
+    // Вставляем ПЕРЕД кнопкой темы
+    controls.appendChild(soundBtn);
 
     // Кнопка Языка
     const langBtn = document.createElement('div');
-    langBtn.className = 'theme-toggle'; 
-    langBtn.id = 'langBtn'; 
+    langBtn.className = 'theme-toggle';
+    langBtn.id = 'langBtn';
     langBtn.innerText = currentLang.toUpperCase(); // innerText безопаснее
     langBtn.style.fontWeight = 'bold';
     langBtn.style.fontSize = '14px';
@@ -263,8 +388,8 @@ function initMenu() {
     // Кнопка Темы
     const themeBtn = document.createElement('div');
     themeBtn.className = 'theme-toggle';
-    themeBtn.id = 'themeBtn'; 
-    themeBtn.innerText = '🌙'; 
+    themeBtn.id = 'themeBtn';
+    themeBtn.innerText = '🌙';
     themeBtn.onclick = toggleTheme;
 
     controls.appendChild(langBtn);
@@ -285,12 +410,12 @@ function applyTheme(isDark) {
     if (isDark) {
         document.documentElement.setAttribute('data-theme', 'dark');
         localStorage.setItem('theme', 'dark');
-        if(icon) icon.innerText = '☀️';
+        if (icon) icon.innerText = '☀️';
         createStarBackground();
     } else {
         document.documentElement.removeAttribute('data-theme');
         localStorage.setItem('theme', 'light');
-        if(icon) icon.innerText = '🌙';
+        if (icon) icon.innerText = '🌙';
     }
 }
 
@@ -311,7 +436,7 @@ async function initAds() {
         const url = `https://opensheet.elk.sh/${SPREADSHEET_ID}/${SHEET_NAME}`;
         const response = await fetch(url);
         const data = await response.json();
-        
+
         const myAds = data.filter(row => row.calc_id === targetId);
 
         const renderAd = (slotId, type) => {
@@ -343,12 +468,12 @@ async function initAds() {
         renderAd('ad-banner-top', 'top_banner');
         renderAd('ad-sidebar', 'sidebar');
 
-    } catch (e) { 
+    } catch (e) {
         console.error("Ads Error:", e);
         // При ошибке сети тоже просто скрываем слоты, не трогая контент
         const sidebarSlot = document.getElementById('ad-sidebar');
         if (sidebarSlot) sidebarSlot.style.display = 'none';
-        
+
         const topSlot = document.getElementById('ad-banner-top');
         if (topSlot) topSlot.style.display = 'none';
     }
@@ -377,7 +502,7 @@ function createStarBackground() {
             let shadows = [];
             // Генерируем звезды (количество зависит от слоя)
             for (let s = 0; s < 100 * i; s++) {
-                shadows.push(`${Math.floor(Math.random()*100)}vw ${Math.floor(Math.random()*100)}vh 0 ${Math.random()*2}px rgba(255,255,255,${Math.random()})`);
+                shadows.push(`${Math.floor(Math.random() * 100)}vw ${Math.floor(Math.random() * 100)}vh 0 ${Math.random() * 2}px rgba(255,255,255,${Math.random()})`);
             }
             starData.push(shadows.join(','));
         });
@@ -390,10 +515,10 @@ function createStarBackground() {
         const layer = document.createElement('div');
         layer.className = 'star-layer';
         layer.id = `star-layer-${i}`;
-        
+
         // Применяем сохраненные тени (координаты звезд)
         layer.style.boxShadow = starData[index];
-        
+
         container.appendChild(layer);
     });
 
@@ -404,8 +529,8 @@ function createStarBackground() {
         const y = window.scrollY;
         const l1 = document.getElementById('star-layer-1');
         const l2 = document.getElementById('star-layer-2');
-        if(l1) l1.style.transform = `translateY(${y * 0.5}px)`;
-        if(l2) l2.style.transform = `translateY(${y * 0.3}px)`;
+        if (l1) l1.style.transform = `translateY(${y * 0.5}px)`;
+        if (l2) l2.style.transform = `translateY(${y * 0.3}px)`;
     });
 }
 
@@ -423,13 +548,13 @@ function initSpotlight() {
         card.style.setProperty('--x', `${e.clientX - rect.left}px`);
         card.style.setProperty('--y', `${e.clientY - rect.top}px`);
     };
-    
+
     const observer = new MutationObserver((mutations) => {
         if (mutations.some(m => m.addedNodes.length)) {
-             document.querySelectorAll('.tool-card').forEach(c => c.onmousemove = (e) => handleMove(e, c));
+            document.querySelectorAll('.tool-card').forEach(c => c.onmousemove = (e) => handleMove(e, c));
         }
     });
-    
+
     document.querySelectorAll('.tool-card').forEach(c => c.onmousemove = (e) => handleMove(e, c));
     const grid = document.querySelector('.catalog-grid');
     if (grid) observer.observe(grid, { childList: true });
@@ -456,7 +581,7 @@ function initSidePortals() {
     // Предыдущий
     const prevIndex = (currentIndex - 1 + APPS.length) % APPS.length;
     const prevApp = APPS[prevIndex];
-    
+
     // Следующий
     const nextIndex = (currentIndex + 1) % APPS.length;
     const nextApp = APPS[nextIndex];
@@ -466,20 +591,20 @@ function initSidePortals() {
     const createPortal = (app, side) => {
         const container = document.createElement('div');
         container.className = `portal-container portal-${side}`;
-        
+
         const url = `${pathPrefix}${app.id}/index.html`;
 
         // 1. Создаем iframe вручную
         const iframe = document.createElement('iframe');
         iframe.className = 'portal-frame';
         iframe.tabIndex = -1;
-        
+
         // 2. СЛУШАЕМ ЗАГРУЗКУ
         iframe.onload = () => {
             // Как только загрузился — добавляем класс, который плавно покажет его
             iframe.classList.add('is-ready');
         };
-        
+
         // Задаем src ПОСЛЕ назначения onload
         iframe.src = url;
 
@@ -487,7 +612,7 @@ function initSidePortals() {
         const overlay = document.createElement('div');
         overlay.className = 'portal-overlay';
         overlay.title = `Перейти: ${app.name}`;
-        
+
         // Сборка
         container.appendChild(iframe);
         container.appendChild(overlay);
@@ -506,7 +631,7 @@ function initSidePortals() {
     // 4. Создаем порталы
     createPortal(prevApp, 'left');
     createPortal(nextApp, 'right');
-    
+
     // 5. Добавляем управление стрелками клавиатуры
     document.addEventListener('keydown', (e) => {
         // Игнорируем, если фокус в инпуте
@@ -529,15 +654,15 @@ function initPageTransitions() {
     // 1. Перехватываем клики по всем ссылкам
     document.addEventListener('click', (e) => {
         const link = e.target.closest('a');
-        
+
         // Если клик не по ссылке, или ссылка открывается в новом окне (_blank), игнорируем
         if (!link || link.target === '_blank' || link.getAttribute('href').startsWith('#')) return;
 
         // Если это внутренняя ссылка
         const href = link.getAttribute('href');
         if (href) {
-            e.preventDefault(); 
-            
+            e.preventDefault();
+
             // 1. Вешаем класс, запускающий CSS @keyframes pageExit
             document.body.classList.add('is-exiting');
 
@@ -560,7 +685,7 @@ function initPageTransitions() {
 // Загрузка капчи
 (function loadCaptchaScript() {
     const script = document.createElement('script');
-    script.src = pathPrefix + 'captcha.js'; 
+    script.src = pathPrefix + 'captcha.js';
     script.onload = () => {
         if (typeof initCaptchaSystem === 'function') initCaptchaSystem();
     };
@@ -571,11 +696,11 @@ function initPageTransitions() {
 function initInputFormatting() {
     const inputs = document.querySelectorAll('input[inputmode="decimal"], input[inputmode="numeric"]');
     inputs.forEach(input => {
-        input.addEventListener('blur', function() {
+        input.addEventListener('blur', function () {
             const raw = this.value.replace(/\s/g, '').replace(',', '.');
             if (raw && !isNaN(raw)) this.value = Number(raw).toLocaleString('ru-RU');
         });
-        input.addEventListener('focus', function() {
+        input.addEventListener('focus', function () {
             this.value = this.value.replace(/\s/g, '');
         });
     });
@@ -584,17 +709,19 @@ function initInputFormatting() {
 // Копирование результата
 function copyResult() {
     const res = document.getElementById('resultValue')?.innerText;
-    if(res) navigator.clipboard.writeText(res).then(() => alert('Скопировано!'));
+    if (res) navigator.clipboard.writeText(res).then(() => alert('Скопировано!'));
 }
 
 // Аналитика (Yandex + Google)
 if (YANDEX_METRICA_ID) {
-    (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-    m[i].l=1*new Date();
-    for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-    k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-    (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-    ym(YANDEX_METRICA_ID, "init", { clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true });
+    (function (m, e, t, r, i, k, a) {
+        m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments) };
+        m[i].l = 1 * new Date();
+        for (var j = 0; j < document.scripts.length; j++) { if (document.scripts[j].src === r) { return; } }
+        k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
+    })
+        (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+    ym(YANDEX_METRICA_ID, "init", { clickmap: true, trackLinks: true, accurateTrackBounce: true, webvisor: true });
 }
 
 if (GOOGLE_ANALYTICS_ID) {
@@ -603,7 +730,7 @@ if (GOOGLE_ANALYTICS_ID) {
     script.src = `https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ANALYTICS_ID}`;
     document.head.appendChild(script);
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
     gtag('config', GOOGLE_ANALYTICS_ID);
 }
@@ -623,17 +750,17 @@ function initAutoIcons() {
 
     // 3. Проверяем, существует ли файл
     const tester = new Image();
-    
-    tester.onload = function() {
+
+    tester.onload = function () {
         // SVG найдена -> ставим её
         applyPageIcon(iconPath, true);
     };
-    
-    tester.onerror = function() {
+
+    tester.onerror = function () {
         // SVG нет -> ставим эмодзи из конфига
         applyPageIcon(app.icon || '💎', false);
     };
-    
+
     tester.src = iconPath;
 }
 
@@ -663,16 +790,16 @@ function applyPageIcon(src, isSvg) {
         if (isSvg) {
             const img = document.createElement('img');
             img.src = src;
-            img.className = 'logo-icon'; 
+            img.className = 'logo-icon';
             img.alt = 'Logo';
-            
+
             // Базовые стили, если в CSS их нет
             img.style.height = '1em';
             img.style.width = 'auto';
             img.style.verticalAlign = 'middle';
             img.style.marginRight = '10px';
             img.style.marginBottom = '4px'; // Чуть-чуть коррекции
-            
+
             h1.prepend(img);
         } else {
             // Если эмодзи
@@ -710,7 +837,7 @@ function initAutoSave() {
         input.addEventListener('input', () => {
             localStorage.setItem(storageKey, input.value);
         });
-        
+
         // Для select (выпадающих списков) событие change надежнее
         input.addEventListener('change', () => {
             localStorage.setItem(storageKey, input.value);
@@ -734,13 +861,13 @@ function initHabitReminder() {
     const today = new Date().toISOString().split('T')[0];
     const thirstyHabits = habits.filter(h => {
         if (h.lastWatered === today) return false;
-        
+
         // Проверка на "мертвые" растения
         if (h.lastWatered) {
             const last = new Date(h.lastWatered);
             const now = new Date();
             const diffDays = Math.floor((now - last) / (1000 * 60 * 60 * 24));
-            if (diffDays > 2) return false; 
+            if (diffDays > 2) return false;
         }
         return true;
     });
@@ -758,7 +885,7 @@ function initHabitReminder() {
 
         // 2. Наполняем панель
         const text = count === 1 ? 'растение хочет пить' : 'растения хотят пить';
-        
+
         panel.innerHTML = `
             <div style="padding: 0 5px 10px; font-weight: bold; font-size: 13px; color: var(--text-muted); border-bottom: 1px solid rgba(0,0,0,0.05); margin-bottom: 5px;">
                 Уведомления
@@ -785,10 +912,10 @@ function initHabitReminder() {
 function showToast(count) {
     const toast = document.createElement('div');
     toast.className = 'global-toast';
-    
+
     // Текст зависит от числа
     const text = count === 1 ? 'растение хочет пить' : 'растения хотят пить';
-    
+
     toast.innerHTML = `
         <span style="font-size:20px">🌱</span>
         <div style="font-size:14px; font-weight:600">
@@ -802,7 +929,7 @@ function showToast(count) {
         document.body.classList.add('is-exiting');
         setTimeout(() => {
             // Учитываем pathPrefix, чтобы ссылка сработала из любой папки
-            window.location.href = `${pathPrefix}habits/index.html`; 
+            window.location.href = `${pathPrefix}habits/index.html`;
         }, 300);
     };
 
@@ -838,7 +965,7 @@ async function initTutorial() {
         if (response.ok) {
             const steps = await response.json();
             console.log('🎓 Найден туториал для', currentAppId);
-            
+
             // 3. Если файл есть — грузим движок и запускаем
             loadDriverJs(steps);
         }
@@ -864,11 +991,11 @@ function loadDriverJs(steps) {
     // Динамически подключаем скрипт
     const script = document.createElement('script');
     script.src = 'https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js';
-    
+
     script.onload = () => {
         // Сохраняем шаги глобально, чтобы кнопка в футере могла их перезапустить
         window.currentTutorialSteps = steps;
-        
+
         // Проверяем, видел ли юзер этот туториал ранее
         const key = `tutorial_seen_${currentAppId}`;
         if (!localStorage.getItem(key)) {
@@ -876,7 +1003,7 @@ function loadDriverJs(steps) {
             localStorage.setItem(key, 'true');
         }
     };
-    
+
     document.head.appendChild(script);
 }
 
@@ -897,15 +1024,15 @@ function startTour(steps) {
 }
 
 // Глобальная функция для кнопки "Обучение" в футере
-window.restartTour = function() {
+window.restartTour = function () {
     if (window.currentTutorialSteps) {
         startTour(window.currentTutorialSteps);
     } else {
         // Если шаги еще не загружены, попробуем загрузить принудительно
         // (на случай если юзер закрыл и снова нажал, а переменная стерлась)
         initTutorial().then(() => {
-             if(window.currentTutorialSteps) startTour(window.currentTutorialSteps);
-             else alert('Для этого раздела нет обучения');
+            if (window.currentTutorialSteps) startTour(window.currentTutorialSteps);
+            else alert('Для этого раздела нет обучения');
         });
     }
 };
@@ -916,33 +1043,33 @@ window.restartTour = function() {
 // ==========================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    
+
     // === 🛠️ ФИКС ДЛЯ ПОРТАЛОВ (Убираем скролл и лишнее) ===
     if (window.self !== window.top) {
         // Мы внутри iframe!
-        
+
         // 1. Убираем скроллбары намертво
         document.documentElement.style.overflow = 'hidden';
         document.body.style.overflow = 'hidden';
-        
+
         // 2. (Опционально) Скрываем меню навигации в миниатюрах, 
         // чтобы карточка выглядела чище (только контент)
         const nav = document.querySelector('.nav-bar');
         if (nav) nav.style.display = 'none';
-        
+
         // 3. Отступ сверху тоже убираем, чтобы контент был по центру
         document.body.style.paddingTop = '0';
     }
     initTheme();
     initAmbientBlobs();
     initSpotlight();
-    
+
     initMenu();          // 1. Создаем меню
     initTranslations();  // 2. Грузим язык
     initAds();           // 3. Грузим рекламу
 
     initAutoIcons();
-    
+
     initInputFormatting();
     initFooter();
     initPageTransitions();
@@ -951,16 +1078,19 @@ document.addEventListener('DOMContentLoaded', () => {
     initHabitReminder();
 
     initTutorial();      // 4. Пытаемся загрузить туториал (если есть)
-    
+
+    SoundEngine.init(); // Включаем звуки
+    initDailyHook();    // Проверяем совет дня
+
     const copyBtn = document.getElementById('btnCopy');
-    if(copyBtn) copyBtn.onclick = copyResult;
+    if (copyBtn) copyBtn.onclick = copyResult;
 });
 
 function initFooter() {
     const footer = document.createElement('footer');
     footer.className = 'global-footer';
     const year = new Date().getFullYear();
-    
+
     // Добавляем ссылку "Обучение" с onclick="restartTour()"
     footer.innerHTML = `
         <div style="margin-bottom: 8px;">&copy; ${year} <b>DriverStudio</b></div>
@@ -977,16 +1107,16 @@ function initFooter() {
 function getNumber(id) {
     const el = document.getElementById(id);
     if (!el) return 0;
-    
+
     // 1. Берем значение
     let val = el.value;
-    
+
     // 2. Удаляем пробелы (от форматирования 10 000 -> 10000)
     val = val.replace(/\s/g, '');
-    
+
     // 3. Заменяем запятую на точку (если юзер ввел 10,5)
     val = val.replace(',', '.');
-    
+
     // 4. Превращаем в число. Если пусто или мусор — возвращаем 0
     const num = parseFloat(val);
     return isNaN(num) ? 0 : num;
@@ -1008,10 +1138,10 @@ function getNumber(id) {
 function checkNotifEmpty() {
     const panel = document.getElementById('notifPanel');
     const badge = document.getElementById('bellBadge');
-    
+
     // Ищем элементы с классом .notif-item
     const items = panel.querySelectorAll('.notif-item');
-    
+
     if (items.length === 0) {
         // Если пусто -> возвращаем надпись "Нет уведомлений"
         panel.innerHTML = '<div class="notif-empty">Нет новых уведомлений</div>';
@@ -1037,9 +1167,9 @@ function clearAllNotifications() {
 function sendNotification(title, text, icon = '🔔', onClick = null) {
     const panel = document.getElementById('notifPanel');
     const badge = document.getElementById('bellBadge');
-    
+
     if (panel && badge) {
-        badge.classList.add('active'); 
+        badge.classList.add('active');
 
         // Если сейчас висит заглушка "Нет уведомлений" — создаем шапку
         if (panel.querySelector('.notif-empty')) {
@@ -1053,7 +1183,7 @@ function sendNotification(title, text, icon = '🔔', onClick = null) {
         // Создаем само уведомление
         const item = document.createElement('div');
         item.className = 'notif-item';
-        
+
         // ВАЖНО: Добавили крестик (notif-close)
         item.innerHTML = `
             <div class="notif-icon">${icon}</div>
@@ -1063,7 +1193,7 @@ function sendNotification(title, text, icon = '🔔', onClick = null) {
             </div>
             <div class="notif-close">✕</div> 
         `;
-        
+
         // 1. Логика клика по самому уведомлению
         item.onclick = (e) => {
             // Если кликнули не по крестику

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeting Planner | PRISMA</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <style>
+        /* Слайдер */
+        .slider-wrapper {
+            position: sticky;
+            top: 70px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid rgba(0,0,0,0.1);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .time-display {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--text-main) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-variant-numeric: tabular-nums;
+            line-height: 1.1;
+            margin: 10px 0;
+        }
+
+        input[type=range] {
+            width: 100%;
+            height: 6px;
+            background: #e1e4e8;
+            border-radius: 5px;
+            outline: none;
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+
+        /* Список городов */
+        .cities-grid {
+            display: grid;
+            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            margin-bottom: 30px;
+        }
+
+        .city-card {
+            background: #fff;
+            border: 1px solid #e1e4e8;
+            border-radius: 16px;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            transition: transform 0.2s;
+        }
+        .city-card:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+
+        .city-card .remove-btn {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #ff4757;
+            color: white;
+            border: 2px solid #fff;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: 0.2s;
+            font-size: 14px;
+        }
+        .city-card:hover .remove-btn { opacity: 1; }
+
+        .time-val { font-size: 1.4rem; font-weight: 700; color: var(--accent); }
+        
+        /* Бэджи статуса */
+        .status-badge { font-size: 0.75rem; padding: 4px 8px; border-radius: 6px; font-weight: 600; }
+        .status-work { background: #d1fae5; color: #065f46; } /* Зеленый */
+        .status-sleep { background: #f1f5f9; color: #64748b; } /* Серый */
+        .status-evening { background: #ffedd5; color: #9a3412; } /* Оранжевый */
+
+        /* Карта */
+        #map {
+            height: 400px;
+            width: 100%;
+            border-radius: 20px;
+            z-index: 1;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .location-box {
+            background: #f8f9fa;
+            border-left: 4px solid var(--accent);
+            padding: 15px;
+            border-radius: 0 12px 12px 0;
+            margin-bottom: 25px;
+        }
+
+        /* Модальное окно */
+        dialog {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            padding: 30px;
+            width: 90%;
+            max-width: 450px;
+            backdrop-filter: blur(5px);
+        }
+        dialog::backdrop { background: rgba(0,0,0,0.4); }
+        
+        select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            margin: 15px 0;
+            font-size: 16px;
+            background-color: #fff;
+        }
+
+        /* Dark Mode */
+        [data-theme="dark"] .slider-wrapper { background: rgba(30, 41, 59, 0.9); border-color: #475569; }
+        [data-theme="dark"] .city-card { background: rgba(255,255,255,0.05); border-color: #475569; color: #fff; }
+        [data-theme="dark"] dialog { background: #1e293b; color: #fff; }
+        [data-theme="dark"] select { background: #0f172a; color: #fff; border-color: #475569; }
+        [data-theme="dark"] .location-box { background: rgba(255,255,255,0.05); }
+    </style>
+</head>
+
+<body>
+    <div class="container" style="display: block;">
+        
+        <header style="margin-bottom: 20px; text-align: center;">
+            <h1>🌍 Планер встреч</h1>
+            <p style="color: var(--text-muted);">Синхронизируйте время и выберите локацию</p>
+        </header>
+
+        <div class="slider-wrapper">
+            <div style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted);">Время встречи</div>
+            <div class="time-display" id="mainClock">12:00</div>
+            <input type="range" id="timeSlider" min="0" max="1439" value="720" step="15">
+        </div>
+
+        <div class="cities-grid" id="citiesList">
+            </div>
+
+        <button class="btn-secondary" id="btnAddCityBtn" style="width: 100%; margin-bottom: 40px; border-style: dashed;">
+            ➕ Добавить часовой пояс / Участника
+        </button>
+
+        <hr style="border: 0; border-top: 1px solid rgba(0,0,0,0.1); margin: 30px 0;">
+
+        <h3 style="margin-bottom: 15px;">📍 Место встречи</h3>
+        <div id="map"></div>
+        
+        <div class="location-box">
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px;">Выбранное место:</div>
+            <div id="placeName" style="font-weight: bold; font-size: 1.1rem;">📍 Место не выбрано (кликните по карте)</div>
+            <div id="placeAddress" style="font-size: 0.9rem; margin-top: 5px; opacity: 0.8;"></div>
+        </div>
+
+        <button id="btnShare" style="padding: 18px; font-size: 1.1rem; box-shadow: 0 10px 30px rgba(40, 167, 69, 0.3);">
+            📨 Создать приглашение
+        </button>
+    </div>
+
+    <dialog id="addCityDialog">
+        <h3 style="margin-top: 0;">Добавить город</h3>
+        <p style="font-size: 0.9rem; color: #777;">Выберите город, чтобы видеть его время в списке.</p>
+        <select id="citySelect">
+            <option value="" disabled selected>Поиск города...</option>
+            </select>
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button class="btn-secondary" onclick="document.getElementById('addCityDialog').close()" style="flex: 1;">Отмена</button>
+            <button id="confirmAddCity" style="flex: 1;">Добавить</button>
+        </div>
+    </dialog>
+
+    <div id="appToast" class="global-toast">
+        <span class="toast-icon">✅</span>
+        <span class="toast-msg">Текст скопирован!</span>
+    </div>
+
+    <script src="../main.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
