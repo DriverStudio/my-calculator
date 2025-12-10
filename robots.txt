@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
 
-# Замени ссылку ниже на свой реальный адрес!
-Sitemap: https://ваш-логин.github.io/название-репозитория/sitemap.xml
+Sitemap: https://driverstudio.github.io/my-calculator/sitemap.xml
